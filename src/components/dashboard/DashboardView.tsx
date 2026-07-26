@@ -10,17 +10,12 @@ import {
   LogOut, 
   Plus, 
   Search, 
-  Edit3, 
   Trash2, 
   Upload, 
   X, 
-  CheckCircle2,
-  TrendingUp,
-  Eye,
-  ArrowUpRight
+  Eye
 } from 'lucide-react';
 import { Product, Category, BusinessSettings } from '../../types';
-import { ImagePlaceholder } from '../common/ImagePlaceholder';
 
 interface DashboardViewProps {
   products: Product[];
@@ -92,28 +87,22 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   });
 
   return (
-    <div className="flex h-screen bg-[#0B0B0B] text-white overflow-hidden font-sans select-none">
-      {/* LEFT SIDEBAR - Neobrutalist Dark */}
-      <aside className="w-64 bg-[#0B0B0B] border-r-2 border-black flex flex-col justify-between p-4 z-20">
+    <div className="flex h-full min-h-0 overflow-hidden bg-[#0B0B0B] font-sans text-white">
+      <aside className="z-20 hidden w-52 flex-none flex-col justify-between border-r border-[#292929] bg-[#0B0B0B] p-3 md:flex">
         <div>
-          {/* Logo Brand */}
-          <div className="flex items-center space-x-3 pb-6 pt-2 border-b border-[#262626]">
-            <div className="w-10 h-10 bg-[#D9FF3F] text-black font-bebas text-2xl border-2 border-black shadow-[3px_3px_0px_#000] flex items-center justify-center font-bold">
-              GZ
-            </div>
-            <div>
-              <h1 className="font-bebas text-2xl tracking-wider leading-none text-white">
-                GEAR ZONE.
-              </h1>
-              <span className="font-mono text-[10px] text-[#7C3AED] uppercase tracking-widest font-bold">CMS ADMIN</span>
-            </div>
+          <div className="flex items-start justify-between border-b border-[#262626] pb-5 pt-2">
+            <h1 className="font-bebas text-[25px] leading-[0.82] tracking-wide text-white">
+              GEAR
+              <br />
+              ZONE.
+            </h1>
+            <span className="pt-1 font-mono text-sm leading-3 text-[#565656]">⋮</span>
           </div>
 
-          {/* Navigation Links */}
-          <nav className="mt-6 space-y-1.5">
+          <nav className="mt-5 space-y-1">
             <button
               onClick={() => setActiveTab('dashboard')}
-              className={`w-full flex items-center space-x-3 px-3 py-2.5 font-bebas text-base tracking-wider transition-all border ${activeTab === 'dashboard' ? 'bg-[#D9FF3F] text-black border-black shadow-[3px_3px_0px_#000] font-bold' : 'text-textGray hover:text-white border-transparent hover:bg-[#171717]'}`}
+              className={`w-full flex items-center space-x-3 px-3 py-2 font-bebas text-sm tracking-wider transition-all border ${activeTab === 'dashboard' ? 'bg-[#D9FF3F] text-black border-black shadow-[3px_3px_0px_#000] font-bold' : 'text-textGray hover:text-white border-transparent hover:bg-[#171717]'}`}
             >
               <LayoutDashboard className="w-5 h-5" />
               <span>DASHBOARD</span>
@@ -121,7 +110,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
             <button
               onClick={() => setActiveTab('products')}
-              className={`w-full flex items-center space-x-3 px-3 py-2.5 font-bebas text-base tracking-wider transition-all border ${activeTab === 'products' ? 'bg-[#D9FF3F] text-black border-black shadow-[3px_3px_0px_#000] font-bold' : 'text-textGray hover:text-white border-transparent hover:bg-[#171717]'}`}
+              className={`w-full flex items-center space-x-3 px-3 py-2 font-bebas text-sm tracking-wider transition-all border ${activeTab === 'products' ? 'bg-[#D9FF3F] text-black border-black shadow-[3px_3px_0px_#000] font-bold' : 'text-textGray hover:text-white border-transparent hover:bg-[#171717]'}`}
             >
               <Package className="w-5 h-5" />
               <span>PRODUCTS</span>
@@ -129,7 +118,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
             <button
               onClick={() => setActiveTab('categories')}
-              className={`w-full flex items-center space-x-3 px-3 py-2.5 font-bebas text-base tracking-wider transition-all border ${activeTab === 'categories' ? 'bg-[#D9FF3F] text-black border-black shadow-[3px_3px_0px_#000] font-bold' : 'text-textGray hover:text-white border-transparent hover:bg-[#171717]'}`}
+              className={`w-full flex items-center space-x-3 px-3 py-2 font-bebas text-sm tracking-wider transition-all border ${activeTab === 'categories' ? 'bg-[#D9FF3F] text-black border-black shadow-[3px_3px_0px_#000] font-bold' : 'text-textGray hover:text-white border-transparent hover:bg-[#171717]'}`}
             >
               <Grid className="w-5 h-5" />
               <span>CATEGORIES</span>
@@ -137,7 +126,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
             <button
               onClick={() => setActiveTab('banners')}
-              className={`w-full flex items-center space-x-3 px-3 py-2.5 font-bebas text-base tracking-wider transition-all border ${activeTab === 'banners' ? 'bg-[#D9FF3F] text-black border-black shadow-[3px_3px_0px_#000] font-bold' : 'text-textGray hover:text-white border-transparent hover:bg-[#171717]'}`}
+              className={`w-full flex items-center space-x-3 px-3 py-2 font-bebas text-sm tracking-wider transition-all border ${activeTab === 'banners' ? 'bg-[#D9FF3F] text-black border-black shadow-[3px_3px_0px_#000] font-bold' : 'text-textGray hover:text-white border-transparent hover:bg-[#171717]'}`}
             >
               <Image className="w-5 h-5" />
               <span>BANNERS</span>
@@ -145,7 +134,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
             <button
               onClick={() => setActiveTab('orders')}
-              className={`w-full flex items-center space-x-3 px-3 py-2.5 font-bebas text-base tracking-wider transition-all border ${activeTab === 'orders' ? 'bg-[#D9FF3F] text-black border-black shadow-[3px_3px_0px_#000] font-bold' : 'text-textGray hover:text-white border-transparent hover:bg-[#171717]'}`}
+              className={`w-full flex items-center space-x-3 px-3 py-2 font-bebas text-sm tracking-wider transition-all border ${activeTab === 'orders' ? 'bg-[#D9FF3F] text-black border-black shadow-[3px_3px_0px_#000] font-bold' : 'text-textGray hover:text-white border-transparent hover:bg-[#171717]'}`}
             >
               <ShoppingCart className="w-5 h-5" />
               <span>ORDERS</span>
@@ -153,7 +142,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
             <button
               onClick={() => setActiveTab('contacts')}
-              className={`w-full flex items-center space-x-3 px-3 py-2.5 font-bebas text-base tracking-wider transition-all border ${activeTab === 'contacts' ? 'bg-[#D9FF3F] text-black border-black shadow-[3px_3px_0px_#000] font-bold' : 'text-textGray hover:text-white border-transparent hover:bg-[#171717]'}`}
+              className={`w-full flex items-center space-x-3 px-3 py-2 font-bebas text-sm tracking-wider transition-all border ${activeTab === 'contacts' ? 'bg-[#D9FF3F] text-black border-black shadow-[3px_3px_0px_#000] font-bold' : 'text-textGray hover:text-white border-transparent hover:bg-[#171717]'}`}
             >
               <Users className="w-5 h-5" />
               <span>CONTACTS</span>
@@ -161,7 +150,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
             <button
               onClick={() => setActiveTab('settings')}
-              className={`w-full flex items-center space-x-3 px-3 py-2.5 font-bebas text-base tracking-wider transition-all border ${activeTab === 'settings' ? 'bg-[#D9FF3F] text-black border-black shadow-[3px_3px_0px_#000] font-bold' : 'text-textGray hover:text-white border-transparent hover:bg-[#171717]'}`}
+              className={`w-full flex items-center space-x-3 px-3 py-2 font-bebas text-sm tracking-wider transition-all border ${activeTab === 'settings' ? 'bg-[#D9FF3F] text-black border-black shadow-[3px_3px_0px_#000] font-bold' : 'text-textGray hover:text-white border-transparent hover:bg-[#171717]'}`}
             >
               <Settings className="w-5 h-5" />
               <span>SETTINGS</span>
@@ -179,17 +168,17 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       </aside>
 
       {/* MAIN CONTENT AREA */}
-      <main className="flex-1 flex flex-col overflow-hidden bg-[#0B0B0B]">
+      <main className="flex min-w-0 flex-1 flex-col overflow-hidden bg-[#0B0B0B]">
         {/* Top Navbar */}
-        <header className="h-16 bg-[#0B0B0B] border-b-2 border-black px-6 flex items-center justify-between z-10">
+        <header className="z-10 flex h-14 flex-none items-center justify-between border-b border-[#292929] bg-[#0B0B0B] px-4 lg:px-5">
           <div className="flex items-center space-x-4">
-            <h2 className="font-bebas text-3xl tracking-wider text-white uppercase">
+            <h2 className="font-bebas text-[26px] uppercase tracking-wider text-white">
               {activeTab}
             </h2>
           </div>
 
           <div className="flex items-center space-x-3">
-            <div className="bg-[#171717] border border-[#333] px-3 py-1 text-xs font-mono text-[#D9FF3F] flex items-center space-x-2">
+            <div className="flex items-center space-x-2 border border-[#333] bg-[#171717] px-2 py-1 font-mono text-[9px] text-[#D9FF3F]">
               <span className="w-2 h-2 rounded-full bg-accentSuccess animate-pulse"></span>
               <span>ADMIN: LIVE SYSTEM</span>
             </div>
@@ -197,56 +186,56 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </header>
 
         {/* Dynamic Body Content */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        <div className="flex-1 space-y-5 overflow-y-auto p-3 lg:p-5">
 
           {/* VIEW: DASHBOARD STATS & OVERVIEW */}
           {activeTab === 'dashboard' && (
-            <div className="space-y-6">
+            <div className="space-y-5">
               {/* Stat Cards Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-[#171717] border-2 border-black p-4 shadow-[4px_4px_0px_#D9FF3F] flex items-center justify-between">
+              <div className="grid grid-cols-2 gap-2 xl:grid-cols-4 xl:gap-3">
+                <div className="flex items-center justify-between border border-[#303030] bg-[#111] p-3">
                   <div>
                     <span className="text-[10px] font-mono text-textGray uppercase block">TOTAL PRODUCTS</span>
-                    <span className="font-bebas text-4xl text-white font-bold">245</span>
+                    <span className="font-bebas text-[34px] font-bold text-white">245</span>
                   </div>
-                  <div className="w-12 h-12 bg-[#222] border border-[#333] flex items-center justify-center text-[#D9FF3F]">
+                  <div className="flex h-9 w-9 items-center justify-center text-[#D9FF3F]">
                     <Package className="w-6 h-6" />
                   </div>
                 </div>
 
-                <div className="bg-[#171717] border-2 border-black p-4 shadow-[4px_4px_0px_#7C3AED] flex items-center justify-between">
+                <div className="flex items-center justify-between border border-[#303030] bg-[#111] p-3">
                   <div>
                     <span className="text-[10px] font-mono text-textGray uppercase block">CATEGORIES</span>
-                    <span className="font-bebas text-4xl text-white font-bold">{categories.length}</span>
+                    <span className="font-bebas text-[34px] font-bold text-white">18</span>
                   </div>
-                  <div className="w-12 h-12 bg-[#222] border border-[#333] flex items-center justify-center text-[#7C3AED]">
+                  <div className="flex h-9 w-9 items-center justify-center text-[#D9FF3F]">
                     <Grid className="w-6 h-6" />
                   </div>
                 </div>
 
-                <div className="bg-[#171717] border-2 border-black p-4 shadow-[4px_4px_0px_#FF4D6D] flex items-center justify-between">
+                <div className="flex items-center justify-between border border-[#303030] bg-[#111] p-3">
                   <div>
                     <span className="text-[10px] font-mono text-textGray uppercase block">TOTAL ORDERS</span>
-                    <span className="font-bebas text-4xl text-white font-bold">120</span>
+                    <span className="font-bebas text-[34px] font-bold text-white">120</span>
                   </div>
-                  <div className="w-12 h-12 bg-[#222] border border-[#333] flex items-center justify-center text-[#FF4D6D]">
+                  <div className="flex h-9 w-9 items-center justify-center text-[#FF4D6D]">
                     <ShoppingCart className="w-6 h-6" />
                   </div>
                 </div>
 
-                <div className="bg-[#171717] border-2 border-black p-4 shadow-[4px_4px_0px_#7CFC7C] flex items-center justify-between">
+                <div className="flex items-center justify-between border border-[#303030] bg-[#111] p-3">
                   <div>
                     <span className="text-[10px] font-mono text-textGray uppercase block">TOTAL VIEWS</span>
-                    <span className="font-bebas text-4xl text-white font-bold">8.4K</span>
+                    <span className="font-bebas text-[34px] font-bold text-white">8.4K</span>
                   </div>
-                  <div className="w-12 h-12 bg-[#222] border border-[#333] flex items-center justify-center text-[#7CFC7C]">
+                  <div className="flex h-9 w-9 items-center justify-center text-[#D9FF3F]">
                     <Eye className="w-6 h-6" />
                   </div>
                 </div>
               </div>
 
               {/* Recent Products Table */}
-              <div className="bg-[#171717] border-2 border-black p-5 shadow-[4px_4px_0px_#000] space-y-4">
+              <div className="space-y-3 border border-[#303030] bg-[#111] p-3 lg:p-4">
                 <div className="flex justify-between items-center border-b border-[#262626] pb-3">
                   <h3 className="font-bebas text-2xl text-white tracking-wide uppercase">RECENT PRODUCTS</h3>
                   <button 
@@ -265,12 +254,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                         <th className="py-2 px-3">CATEGORY</th>
                         <th className="py-2 px-3">PRICE</th>
                         <th className="py-2 px-3">STATUS</th>
-                        <th className="py-2 px-3 text-right">ACTION</th>
+                        <th className="py-2 px-3 text-right">DATE</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#222] font-mono text-xs">
                       {products.slice(0, 5).map(prod => (
-                        <tr key={prod.id} className="hover:bg-[#202020] transition-colors">
+                        <tr
+                          key={prod.id}
+                          onClick={() => onSelectProductForMobilePreview(prod.id)}
+                          className="cursor-pointer transition-colors hover:bg-[#202020]"
+                        >
                           <td className="py-3 px-3 flex items-center space-x-3">
                             <div className="w-8 h-8 bg-[#111] border border-[#333] flex-shrink-0">
                               <img src={prod.images[0]} alt="" className="w-full h-full object-cover" />
@@ -284,13 +277,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                               {prod.status}
                             </span>
                           </td>
-                          <td className="py-3 px-3 text-right">
-                            <button 
-                              onClick={() => onSelectProductForMobilePreview(prod.id)}
-                              className="text-xs font-mono text-textGray hover:text-[#D9FF3F] flex items-center ml-auto"
-                            >
-                              PREVIEW <ArrowUpRight className="w-3 h-3 ml-0.5" />
-                            </button>
+                          <td className="py-3 px-3 text-right text-[9px] text-textGray">
+                            {new Date(prod.createdAt).toLocaleDateString('en-GB', {
+                              day: '2-digit',
+                              month: 'short',
+                              year: 'numeric',
+                            })}
                           </td>
                         </tr>
                       ))}

@@ -1,25 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Home, 
-  Grid, 
-  Search, 
-  PhoneCall, 
-  User, 
-  ArrowLeft, 
-  ArrowUpRight, 
-  Heart, 
-  Share2, 
-  MessageSquare, 
-  Plus, 
-  SlidersHorizontal,
-  ChevronRight,
-  MapPin,
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  ArrowLeft,
+  ArrowUpRight,
+  AtSign,
+  Backpack,
+  BatteryFull,
+  Footprints,
+  Grid3X3,
+  Heart,
+  Home,
   Mail,
-  Globe,
-  Tv
+  MapPin,
+  Menu,
+  MessageCircle,
+  PackageSearch,
+  Phone,
+  Search,
+  Share2,
+  Shirt,
+  ShoppingBag,
+  Signal,
+  SlidersHorizontal,
+  User,
+  UsersRound,
+  Wifi,
+  Play,
 } from 'lucide-react';
-import { Product, Category, BusinessSettings } from '../../types';
-import { ImagePlaceholder } from '../common/ImagePlaceholder';
+import { BusinessSettings, Category, Product } from '../../types';
 
 interface MobileSimulatorProps {
   products: Product[];
@@ -31,554 +38,664 @@ interface MobileSimulatorProps {
 
 type TabType = 'home' | 'categories' | 'search' | 'contact' | 'profile';
 
+const categoryIcons = [Footprints, Backpack, ShoppingBag, Shirt, SlidersHorizontal, Grid3X3];
+
+const ProductImage = ({
+  product,
+  className = '',
+}: {
+  product: Product;
+  className?: string;
+}) => (
+  <img
+    src={product.images[0]}
+    alt={product.name}
+    className={`h-full w-full object-contain grayscale contrast-125 ${className}`}
+  />
+);
+
 export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
   products,
   categories,
   businessSettings,
   activeProductId,
-  onProductSelect
+  onProductSelect,
 }) => {
   const [activeTab, setActiveTab] = useState<TabType>('home');
-  const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [showIntro, setShowIntro] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState('ALL');
+  const [searchQuery, setSearchQuery] = useState('');
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
   const [wishlist, setWishlist] = useState<string[]>([]);
-  const [isSplashScreen, setIsSplashScreen] = useState<boolean>(false);
 
   useEffect(() => {
-    if (activeProductId) {
-      const found = products.find(p => p.id === activeProductId);
-      if (found) {
-        setCurrentProduct(found);
-      }
+    if (!activeProductId) return;
+    const product = products.find((item) => item.id === activeProductId);
+    if (product) {
+      setShowIntro(false);
+      setCurrentProduct(product);
     }
   }, [activeProductId, products]);
 
-  const toggleWishlist = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setWishlist(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
-  };
+  const filteredProducts = useMemo(
+    () =>
+      products.filter((product) => {
+        const matchesCategory =
+          selectedCategory === 'ALL' ||
+          product.category.toLowerCase() === selectedCategory.toLowerCase();
+        const query = searchQuery.toLowerCase();
+        return (
+          matchesCategory &&
+          (product.name.toLowerCase().includes(query) ||
+            product.category.toLowerCase().includes(query))
+        );
+      }),
+    [products, searchQuery, selectedCategory],
+  );
 
-  const handleProductClick = (product: Product) => {
+  const featuredProducts = products.filter((product) => product.featured);
+  const heroProduct = products.find((product) => product.category === 'Shoes') ?? products[0];
+
+  const openProduct = (product: Product) => {
+    setShowIntro(false);
     setCurrentProduct(product);
-    if (onProductSelect) onProductSelect(product.id);
+    onProductSelect?.(product.id);
   };
 
-  const filteredProducts = products.filter(p => {
-    const matchesCat = selectedCategory === 'ALL' || p.category.toLowerCase() === selectedCategory.toLowerCase();
-    const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.description.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCat && matchesSearch;
-  });
+  const navigate = (tab: TabType) => {
+    setShowIntro(false);
+    setCurrentProduct(null);
+    setActiveTab(tab);
+  };
+
+  const toggleWishlist = (id: string, event?: React.MouseEvent) => {
+    event?.stopPropagation();
+    setWishlist((current) =>
+      current.includes(id) ? current.filter((item) => item !== id) : [...current, id],
+    );
+  };
 
   return (
-    <div className="flex justify-center items-center py-4">
-      {/* Mobile Smartphone Frame */}
-      <div className="w-[375px] h-[780px] bg-black rounded-[48px] p-3 shadow-[0_0_50px_rgba(217,255,63,0.15)] border-4 border-[#262626] relative overflow-hidden flex flex-col">
-        {/* Phone Speaker Notch */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-36 h-6 bg-black rounded-b-2xl z-50 flex items-center justify-center">
-          <div className="w-12 h-1 bg-[#222] rounded-full"></div>
-          <div className="w-2 h-2 rounded-full bg-[#111] ml-2"></div>
-        </div>
-
-        {/* Top Status Bar */}
-        <div className="pt-2 px-6 pb-2 flex justify-between items-center text-xs font-mono text-white/70 select-none z-40 bg-[#0B0B0B]">
+    <div className="flex h-full items-center justify-center">
+      <div
+        className="mobile-shell relative flex w-[390px] max-w-[calc(100vw-20px)] flex-col overflow-hidden rounded-[26px] border-[5px] border-[#252525] bg-[#090909] shadow-[0_24px_70px_rgba(0,0,0,.55)]"
+        style={{ height: 'min(800px, calc(100dvh - 76px))', minHeight: 570 }}
+      >
+        <div className="relative z-50 flex h-7 flex-none items-center justify-between bg-[#090909] px-4 text-[10px] font-semibold text-white">
           <span>9:41</span>
-          <div className="flex items-center space-x-1">
-            <span className="text-[10px]">5G</span>
-            <div className="w-4 h-2 border border-white/70 rounded-sm p-0.5">
-              <div className="w-full h-full bg-white/90"></div>
-            </div>
+          <div className="flex items-center gap-1">
+            <Signal className="h-3 w-3" strokeWidth={2.6} />
+            <Wifi className="h-3 w-3" strokeWidth={2.6} />
+            <BatteryFull className="h-3.5 w-3.5" strokeWidth={2.6} />
           </div>
         </div>
 
-        {/* Content Area */}
-        <div className="flex-1 bg-[#0B0B0B] overflow-y-auto relative scrollbar-none flex flex-col">
-          
-          {/* VIEW: PRODUCT DETAIL OVERLAY */}
-          {currentProduct ? (
-            <div className="flex-1 flex flex-col bg-[#0B0B0B] text-white z-30 pb-20">
-              {/* Top Navigation */}
-              <div className="sticky top-0 bg-[#0B0B0B]/90 backdrop-blur-md px-4 py-3 border-b border-[#262626] flex items-center justify-between z-20">
-                <button 
-                  onClick={() => setCurrentProduct(null)}
-                  className="w-9 h-9 bg-[#171717] border border-[#333] flex items-center justify-center hover:bg-[#D9FF3F] hover:text-black transition-colors"
-                >
-                  <ArrowLeft className="w-5 h-5" />
-                </button>
-                <span className="font-bebas text-lg tracking-wider truncate max-w-[180px]">
-                  {currentProduct.category}
-                </span>
-                <button 
-                  onClick={(e) => toggleWishlist(currentProduct.id, e)}
-                  className={`w-9 h-9 border border-[#333] flex items-center justify-center transition-colors ${wishlist.includes(currentProduct.id) ? 'bg-[#FF4D6D] text-black border-[#FF4D6D]' : 'bg-[#171717] text-white'}`}
-                >
-                  <Heart className="w-5 h-5 fill-current" />
-                </button>
-              </div>
+        {showIntro ? (
+          <section className="hero-noise relative flex min-h-0 flex-1 flex-col overflow-hidden bg-[#090909] px-5 pb-5 pt-3">
+            <div className="pointer-events-none absolute -right-8 top-14 h-28 w-28 hero-stripes opacity-40" />
+            <div className="pointer-events-none absolute -right-5 top-[32%] h-52 w-24 bg-[#cbff16]" />
+            <div className="pointer-events-none absolute -bottom-12 -right-3 h-44 w-28 rotate-[33deg] bg-[#202020]" />
+            <div className="pointer-events-none absolute bottom-0 left-0 h-28 w-full cross-grid opacity-35" />
 
-              <div className="p-4 space-y-5 flex-1">
-                {/* Large Product Gallery Header */}
-                <div className="relative">
-                  <ImagePlaceholder 
-                    src={currentProduct.images[0]} 
-                    alt={currentProduct.name}
-                    aspectRatio="aspect-[4/5]"
-                    label={currentProduct.name}
-                    sublabel="HIGH RESOLUTION SPEC"
-                  />
-                  {currentProduct.tag && (
-                    <div className="absolute top-3 left-3 bg-[#D9FF3F] text-black font-bebas px-2 py-1 text-xs border border-black shadow-[2px_2px_0px_#000]">
-                      {currentProduct.tag}
-                    </div>
-                  )}
-                </div>
-
-                {/* Title & Price Header */}
-                <div className="space-y-1">
-                  <h1 className="font-bebas text-4xl leading-none text-white tracking-wide uppercase">
-                    {currentProduct.name}
-                  </h1>
-                  <div className="flex items-center justify-between pt-1">
-                    <span className="font-mono text-2xl font-bold text-[#D9FF3F]">
-                      ₹{currentProduct.price.toLocaleString()}
-                    </span>
-                    <span className="text-xs font-mono px-2 py-1 bg-[#171717] border border-[#333] text-accentSuccess">
-                      {currentProduct.stockStatus}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Description */}
-                <div className="bg-[#171717] p-3 border border-[#262626] space-y-1">
-                  <span className="text-[10px] font-mono text-textGray uppercase tracking-wider">DESCRIPTION</span>
-                  <p className="text-xs text-gray-300 leading-relaxed font-sans">
-                    {currentProduct.description}
-                  </p>
-                </div>
-
-                {/* Features Specs */}
-                <div className="space-y-2">
-                  <span className="text-xs font-bebas text-white tracking-wider uppercase">FEATURES</span>
-                  <div className="space-y-1">
-                    {currentProduct.features.map((feat, idx) => (
-                      <div key={idx} className="flex items-center space-x-2 bg-[#141414] border border-[#262626] p-2 text-xs font-mono">
-                        <span className="text-[#D9FF3F] font-bold">+</span>
-                        <span className="text-gray-300">{feat}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Sticky Bottom Actions */}
-              <div className="fixed bottom-14 left-0 right-0 p-3 bg-[#0B0B0B] border-t-2 border-black flex space-x-2 z-40 max-w-[350px] mx-auto">
-                <a
-                  href={`tel:${businessSettings.phone}`}
-                  className="flex-1 bg-[#D9FF3F] text-black font-bebas text-lg py-3 px-3 border-2 border-black shadow-[3px_3px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 flex items-center justify-center space-x-1"
-                >
-                  <span>ADD TO CONTACT</span>
-                </a>
-                <a
-                  href={`https://wa.me/${businessSettings.whatsapp.replace(/[^0-9]/g, '')}?text=Interested in ${encodeURIComponent(currentProduct.name)}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="bg-[#7C3AED] text-white p-3 border-2 border-black shadow-[3px_3px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 flex items-center justify-center"
-                >
-                  <MessageSquare className="w-5 h-5" />
-                </a>
+            <div className="relative z-10 flex items-start justify-between">
+              <h1 className="font-bebas text-[54px] leading-[0.83] tracking-[-0.02em] text-white">
+                GEAR
+                <br />
+                THAT
+                <br />
+                MOVES
+                <br />
+                YOU.
+              </h1>
+              <div className="mt-1 text-right font-mono text-sm leading-4 text-[#4a4a4a]">
+                +&nbsp;&nbsp;+
+                <br />
+                +&nbsp;&nbsp;+
               </div>
             </div>
-          ) : (
-            /* TABBED VIEWS */
-            <div className="flex-1 flex flex-col pb-16">
-              {activeTab === 'home' && (
-                <div className="p-4 space-y-6">
-                  {/* Neobrutalist Hero Section */}
-                  <div className="bg-[#171717] border-2 border-black p-5 relative overflow-hidden shadow-[4px_4px_0px_#D9FF3F]">
-                    <div className="absolute top-2 right-2 flex space-x-1">
-                      <span className="text-xs text-[#444] font-mono">+</span>
-                      <span className="text-xs text-[#444] font-mono">+</span>
-                    </div>
-                    <span className="text-xs font-mono bg-[#7C3AED] text-white px-2 py-0.5 font-bold uppercase border border-black">
-                      FALL / WINTER '26
-                    </span>
-                    <h1 className="font-bebas text-5xl leading-none text-white tracking-wider mt-3 mb-2">
-                      GEAR THAT<br /><span className="text-[#D9FF3F]">MOVES YOU.</span>
-                    </h1>
-                    <p className="text-xs text-textGray font-sans mb-4 max-w-[220px]">
-                      Premium essentials. Built for adventure, designed for you.
-                    </p>
-                    <button 
-                      onClick={() => setActiveTab('search')}
-                      className="bg-[#D9FF3F] text-black font-bebas text-base px-4 py-2 border-2 border-black shadow-[3px_3px_0px_#000] flex items-center space-x-2 active:translate-x-0.5"
-                    >
-                      <span>EXPLORE NOW</span>
-                      <ArrowUpRight className="w-4 h-4" />
-                    </button>
-                  </div>
 
-                  {/* Search Bar Quick Access */}
-                  <div 
-                    onClick={() => setActiveTab('search')}
-                    className="bg-[#141414] border border-[#262626] p-3 flex items-center justify-between cursor-pointer hover:border-[#D9FF3F] transition-colors"
-                  >
-                    <span className="text-xs font-mono text-textGray">SEARCH PRODUCTS...</span>
-                    <div className="w-7 h-7 bg-[#D9FF3F] text-black border border-black flex items-center justify-center">
-                      <Search className="w-4 h-4" />
-                    </div>
-                  </div>
+            <p className="relative z-20 mt-5 max-w-[154px] text-[10px] font-medium leading-[1.35] text-[#c5c5c5]">
+              Premium essentials,
+              <br />
+              built for adventure,
+              <br />
+              designed for you.
+            </p>
 
-                  {/* Category Grid Section */}
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <h2 className="font-bebas text-2xl tracking-wide uppercase text-white">CATEGORIES</h2>
-                      <button 
-                        onClick={() => setActiveTab('categories')}
-                        className="text-xs font-mono text-textGray hover:text-[#D9FF3F] flex items-center"
-                      >
-                        VIEW ALL <ChevronRight className="w-3 h-3 ml-0.5" />
-                      </button>
-                    </div>
-                    <div className="grid grid-cols-3 gap-2">
-                      {categories.map((cat) => (
-                        <div 
-                          key={cat.id} 
-                          onClick={() => {
-                            setSelectedCategory(cat.name);
-                            setActiveTab('search');
-                          }}
-                          className="bg-[#171717] border border-[#262626] p-2 flex flex-col items-center justify-center text-center cursor-pointer hover:border-[#D9FF3F] hover:bg-[#1f1f1f] transition-all group shadow-[2px_2px_0px_#000]"
-                        >
-                          <div className="w-10 h-10 bg-[#222] border border-[#333] group-hover:border-[#D9FF3F] mb-1 flex items-center justify-center">
-                            <Grid className="w-5 h-5 text-textGray group-hover:text-[#D9FF3F]" />
-                          </div>
-                          <span className="font-bebas text-xs text-white uppercase tracking-wider truncate w-full">
-                            {cat.name}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+            {heroProduct && (
+              <div className="pointer-events-none absolute bottom-[108px] right-[-5px] z-10 h-[265px] w-[295px] -rotate-[15deg] drop-shadow-[0_26px_12px_rgba(0,0,0,.7)]">
+                <ProductImage product={heroProduct} className="brightness-[1.15]" />
+              </div>
+            )}
 
-                  {/* Featured Products Horizontal Scroll */}
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <h2 className="font-bebas text-2xl tracking-wide uppercase text-white">FEATURED PRODUCTS</h2>
-                      <button 
-                        onClick={() => setActiveTab('search')}
-                        className="text-xs font-mono text-textGray hover:text-[#D9FF3F] flex items-center"
-                      >
-                        VIEW ALL <ChevronRight className="w-3 h-3 ml-0.5" />
-                      </button>
-                    </div>
+            <button
+              type="button"
+              onClick={() => navigate('home')}
+              className="relative z-30 mt-auto flex w-fit items-center gap-2 border border-black bg-[#cbff16] px-3 py-2 font-bebas text-sm tracking-wide text-black shadow-[3px_3px_0_#fff]"
+            >
+              EXPLORE NOW
+              <ArrowUpRight className="h-4 w-4" strokeWidth={2.7} />
+            </button>
 
-                    <div className="flex space-x-3 overflow-x-auto pb-2 scrollbar-none">
-                      {products.filter(p => p.featured).map((product) => (
-                        <div 
-                          key={product.id}
-                          onClick={() => handleProductClick(product)}
-                          className="min-w-[160px] max-w-[160px] bg-[#171717] border border-[#262626] p-2 flex flex-col cursor-pointer group hover:border-[#D9FF3F] transition-all"
-                        >
-                          <ImagePlaceholder 
-                            src={product.images[0]} 
-                            aspectRatio="aspect-square" 
-                            label={product.name}
-                          />
-                          <div className="pt-2 flex-1 flex flex-col justify-between">
-                            <h3 className="font-bebas text-sm text-white uppercase tracking-wide truncate group-hover:text-[#D9FF3F]">
-                              {product.name}
-                            </h3>
-                            <div className="flex items-center justify-between pt-1">
-                              <span className="font-mono text-xs text-white font-bold">
-                                ₹{product.price}
-                              </span>
-                              <div className="w-5 h-5 bg-[#D9FF3F] text-black border border-black flex items-center justify-center">
-                                <Plus className="w-3 h-3" />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+            <div className="relative z-30 mt-7 flex justify-center gap-3">
+              <span className="h-1.5 w-5 rounded-full bg-white" />
+              <span className="h-1.5 w-1.5 rounded-full bg-[#555]" />
+              <span className="h-1.5 w-1.5 rounded-full bg-[#555]" />
+            </div>
+          </section>
+        ) : (
+          <>
+            <div className="flex h-11 flex-none items-center justify-between border-b border-[#202020] bg-[#090909] px-4">
+              {currentProduct ? (
+                <button
+                  type="button"
+                  onClick={() => setCurrentProduct(null)}
+                  aria-label="Back to products"
+                  className="text-white transition-colors hover:text-[#cbff16]"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  aria-label="Open menu"
+                  className="text-white transition-colors hover:text-[#cbff16]"
+                >
+                  <Menu className="h-4 w-4" />
+                </button>
               )}
 
-              {activeTab === 'categories' && (
-                <div className="p-4 space-y-4">
-                  <div className="flex justify-between items-center border-b border-[#262626] pb-3">
-                    <h1 className="font-bebas text-3xl text-white tracking-wider uppercase">DISCOVER OUR RANGE</h1>
+              <span className="font-bebas text-sm tracking-[0.08em] text-white">
+                {currentProduct ? currentProduct.category : businessSettings.name}
+              </span>
+
+              <button
+                type="button"
+                aria-label={currentProduct ? 'Share product' : 'Shopping bag'}
+                className="text-white transition-colors hover:text-[#cbff16]"
+              >
+                {currentProduct ? (
+                  <Share2 className="h-4 w-4" />
+                ) : (
+                  <ShoppingBag className="h-4 w-4" />
+                )}
+              </button>
+            </div>
+
+            <main className="mobile-scroll relative min-h-0 flex-1 overflow-y-auto bg-[#090909]">
+              {currentProduct ? (
+                <div className="pb-24">
+                  <div className="relative h-[330px] overflow-hidden border-b border-black bg-[#151515]">
+                    <div className="absolute inset-y-0 right-0 w-[54%] skew-x-[-11deg] bg-[#cbff16]" />
+                    <div className="absolute left-4 top-3 z-10 max-w-[210px]">
+                      <h1 className="font-bebas text-[42px] leading-[0.86] tracking-[-0.02em] text-white">
+                        {currentProduct.name}
+                      </h1>
+                      <p className="mt-3 font-mono text-base font-bold text-white">
+                        ₹{currentProduct.price.toLocaleString()}
+                      </p>
+                      {currentProduct.tag && (
+                        <span className="mt-2 inline-flex border border-[#cbff16] bg-[#161616] px-2 py-1 font-mono text-[8px] text-[#cbff16]">
+                          ★ {currentProduct.tag}
+                        </span>
+                      )}
+                    </div>
+                    <div className="absolute bottom-2 right-0 z-10 h-[240px] w-[260px]">
+                      <ProductImage product={currentProduct} className="drop-shadow-[0_20px_10px_rgba(0,0,0,.65)]" />
+                    </div>
+                    <div className="absolute bottom-4 left-[54%] z-20 font-mono text-xs text-black">
+                      +&nbsp;&nbsp;+
+                      <br />
+                      &nbsp;&nbsp;+&nbsp;&nbsp;+
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
-                    {categories.map((cat) => (
-                      <div 
-                        key={cat.id}
-                        onClick={() => {
-                          setSelectedCategory(cat.name);
-                          setActiveTab('search');
-                        }}
-                        className="bg-[#171717] border border-[#262626] p-3 flex flex-col justify-between cursor-pointer hover:border-[#D9FF3F] transition-all group aspect-square shadow-[3px_3px_0px_#000]"
+                  <div className="grid grid-cols-5 gap-1 border-b border-[#303030] bg-[#111] p-2">
+                    {[...products.slice(0, 4), currentProduct].map((product, index) => (
+                      <button
+                        key={`${product.id}-${index}`}
+                        type="button"
+                        onClick={() => openProduct(product)}
+                        className={`h-12 border bg-[#d4d4d4] p-1 ${
+                          product.id === currentProduct.id
+                            ? 'border-[#cbff16]'
+                            : 'border-[#333]'
+                        }`}
                       >
-                        <div className="flex justify-between items-start">
-                          <span className="font-mono text-xs text-[#666]">{cat.productCount} ITEMS</span>
-                          <div className="w-7 h-7 bg-[#222] border border-[#333] group-hover:bg-[#D9FF3F] group-hover:text-black flex items-center justify-center transition-colors">
-                            <ArrowUpRight className="w-4 h-4" />
-                          </div>
-                        </div>
-                        <div>
-                          <h3 className="font-bebas text-xl text-white uppercase tracking-wide group-hover:text-[#D9FF3F]">
-                            {cat.name}
-                          </h3>
-                          <p className="text-[10px] text-textGray font-sans line-clamp-1">
-                            {cat.description}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {activeTab === 'search' && (
-                <div className="p-4 space-y-4">
-                  {/* Category Pills Header */}
-                  <div className="flex space-x-2 overflow-x-auto pb-1 scrollbar-none">
-                    <button 
-                      onClick={() => setSelectedCategory('ALL')}
-                      className={`font-bebas px-3 py-1 text-sm border border-black ${selectedCategory === 'ALL' ? 'bg-[#D9FF3F] text-black font-bold' : 'bg-[#171717] text-white'}`}
-                    >
-                      ALL
-                    </button>
-                    {categories.map((cat) => (
-                      <button 
-                        key={cat.id}
-                        onClick={() => setSelectedCategory(cat.name)}
-                        className={`font-bebas px-3 py-1 text-sm whitespace-nowrap border border-black ${selectedCategory === cat.name ? 'bg-[#D9FF3F] text-black font-bold' : 'bg-[#171717] text-white'}`}
-                      >
-                        {cat.name.toUpperCase()}
+                        <ProductImage product={product} />
                       </button>
                     ))}
                   </div>
 
-                  {/* Search Field */}
-                  <div className="relative">
-                    <input 
-                      type="text"
-                      placeholder="SEARCH PRODUCTS..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full bg-[#171717] border border-[#333] px-3 py-2 text-xs font-mono text-white placeholder-textGray focus:outline-none focus:border-[#D9FF3F]"
-                    />
-                    <Search className="w-4 h-4 text-textGray absolute right-3 top-2.5" />
-                  </div>
-
-                  {/* 2-Column Responsive Grid */}
-                  <div className="grid grid-cols-2 gap-3">
-                    {filteredProducts.map((product) => (
-                      <div 
-                        key={product.id}
-                        onClick={() => handleProductClick(product)}
-                        className="bg-[#171717] border border-[#262626] p-2 flex flex-col justify-between cursor-pointer group hover:border-[#D9FF3F] transition-all shadow-[2px_2px_0px_#000]"
-                      >
-                        <div className="relative">
-                          <ImagePlaceholder 
-                            src={product.images[0]} 
-                            aspectRatio="aspect-square" 
-                            label={product.name}
-                          />
-                          <button 
-                            onClick={(e) => toggleWishlist(product.id, e)}
-                            className="absolute top-2 right-2 w-7 h-7 bg-black/70 border border-[#333] flex items-center justify-center text-white"
-                          >
-                            <Heart className={`w-4 h-4 ${wishlist.includes(product.id) ? 'fill-[#FF4D6D] text-[#FF4D6D]' : ''}`} />
-                          </button>
-                        </div>
-                        <div className="pt-2 flex-1 flex flex-col justify-between space-y-1">
-                          <h3 className="font-bebas text-sm text-white uppercase tracking-wide line-clamp-1 group-hover:text-[#D9FF3F]">
-                            {product.name}
-                          </h3>
-                          <div className="flex items-center justify-between">
-                            <span className="font-mono text-xs text-white font-bold">
-                              ₹{product.price.toLocaleString()}
-                            </span>
-                            <div className="w-6 h-6 bg-[#D9FF3F] text-black border border-black flex items-center justify-center">
-                              <Plus className="w-4 h-4" />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {activeTab === 'contact' && (
-                <div className="p-4 space-y-4">
-                  <div className="border-b border-[#262626] pb-3">
-                    <h1 className="font-bebas text-3xl text-white tracking-wider uppercase">GET IN TOUCH</h1>
-                    <p className="text-xs text-textGray">We're here to help.</p>
-                  </div>
-
-                  <div className="space-y-3">
-                    <a 
-                      href={`tel:${businessSettings.phone}`}
-                      className="bg-[#171717] border border-[#262626] p-3 flex items-center justify-between hover:border-[#D9FF3F] group transition-all"
-                    >
-                      <div className="flex items-center space-x-3">
-                        <div className="w-9 h-9 bg-[#222] border border-[#333] flex items-center justify-center text-[#D9FF3F]">
-                          <PhoneCall className="w-5 h-5" />
-                        </div>
-                        <div>
-                          <span className="text-[10px] font-mono text-textGray uppercase block">PHONE</span>
-                          <span className="font-mono text-xs text-white font-bold">{businessSettings.phone}</span>
-                        </div>
-                      </div>
-                      <div className="w-7 h-7 bg-[#D9FF3F] text-black border border-black flex items-center justify-center">
-                        <ArrowUpRight className="w-4 h-4" />
-                      </div>
-                    </a>
-
-                    <a 
-                      href={`https://wa.me/${businessSettings.whatsapp.replace(/[^0-9]/g, '')}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="bg-[#171717] border border-[#262626] p-3 flex items-center justify-between hover:border-[#D9FF3F] group transition-all"
-                    >
-                      <div className="flex items-center space-x-3">
-                        <div className="w-9 h-9 bg-[#222] border border-[#333] flex items-center justify-center text-accentSuccess">
-                          <MessageSquare className="w-5 h-5" />
-                        </div>
-                        <div>
-                          <span className="text-[10px] font-mono text-textGray uppercase block">WHATSAPP</span>
-                          <span className="font-mono text-xs text-white font-bold">{businessSettings.whatsapp}</span>
-                        </div>
-                      </div>
-                      <div className="w-7 h-7 bg-[#D9FF3F] text-black border border-black flex items-center justify-center">
-                        <ArrowUpRight className="w-4 h-4" />
-                      </div>
-                    </a>
-
-                    <a 
-                      href={`mailto:${businessSettings.email}`}
-                      className="bg-[#171717] border border-[#262626] p-3 flex items-center justify-between hover:border-[#D9FF3F] group transition-all"
-                    >
-                      <div className="flex items-center space-x-3">
-                        <div className="w-9 h-9 bg-[#222] border border-[#333] flex items-center justify-center text-[#7C3AED]">
-                          <Mail className="w-5 h-5" />
-                        </div>
-                        <div>
-                          <span className="text-[10px] font-mono text-textGray uppercase block">EMAIL</span>
-                          <span className="font-mono text-xs text-white font-bold">{businessSettings.email}</span>
-                        </div>
-                      </div>
-                      <div className="w-7 h-7 bg-[#D9FF3F] text-black border border-black flex items-center justify-center">
-                        <ArrowUpRight className="w-4 h-4" />
-                      </div>
-                    </a>
-
-                    <div className="bg-[#171717] border border-[#262626] p-3 space-y-2">
-                      <div className="flex items-center space-x-2 text-textGray">
-                        <MapPin className="w-4 h-4 text-[#D9FF3F]" />
-                        <span className="text-[10px] font-mono uppercase">ADDRESS</span>
-                      </div>
-                      <p className="font-sans text-xs text-gray-300">
-                        {businessSettings.address}
+                  <div className="space-y-3 p-4">
+                    <div className="border-b border-[#333] pb-3">
+                      <h2 className="font-bebas text-sm tracking-wide text-white">DESCRIPTION</h2>
+                      <p className="mt-1 text-[10px] leading-[1.4] text-[#b9b9b9]">
+                        {currentProduct.description}
                       </p>
                     </div>
-
-                    {/* Social Handles */}
-                    <div className="pt-2">
-                      <span className="text-[10px] font-mono text-textGray uppercase tracking-wider block mb-2">FOLLOW US</span>
-                      <div className="flex space-x-2">
-                        <div className="flex-1 bg-[#171717] border border-[#262626] p-2 flex items-center justify-center space-x-1">
-                          <Globe className="w-4 h-4 text-white" />
-                          <span className="text-[10px] font-mono text-gray-300">{businessSettings.instagram}</span>
-                        </div>
-                        <div className="flex-1 bg-[#171717] border border-[#262626] p-2 flex items-center justify-center space-x-1">
-                          <Tv className="w-4 h-4 text-[#FF4D6D]" />
-                          <span className="text-[10px] font-mono text-gray-300">{businessSettings.youtube}</span>
-                        </div>
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <h2 className="font-bebas text-sm tracking-wide text-white">FEATURES</h2>
+                        <span className="font-mono text-base text-white">+</span>
                       </div>
+                      <ul className="mt-1 space-y-0.5 text-[9px] leading-[1.3] text-[#d0d0d0]">
+                        {currentProduct.features.map((feature) => (
+                          <li key={feature}>+&nbsp; {feature}</li>
+                        ))}
+                      </ul>
                     </div>
+                  </div>
+
+                  <div className="absolute bottom-0 left-0 right-0 z-30 flex gap-2 border-t border-[#242424] bg-[#090909] p-2">
+                    <a
+                      href={`tel:${businessSettings.phone}`}
+                      className="flex-1 border border-black bg-[#cbff16] py-2.5 text-center font-bebas text-sm text-black"
+                    >
+                      ADD TO CONTACT
+                    </a>
+                    <a
+                      href={`https://wa.me/${businessSettings.whatsapp.replace(/\D/g, '')}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex flex-1 items-center justify-center gap-2 border border-black bg-[#8b45ff] py-2.5 font-bebas text-sm text-white"
+                    >
+                      WHATSAPP <MessageCircle className="h-3.5 w-3.5" />
+                    </a>
                   </div>
                 </div>
-              )}
-
-              {activeTab === 'profile' && (
-                <div className="p-4 space-y-4">
-                  <div className="bg-[#171717] border-2 border-black p-4 flex items-center space-x-3 shadow-[4px_4px_0px_#D9FF3F]">
-                    <div className="w-12 h-12 bg-[#D9FF3F] text-black font-bebas text-2xl border border-black flex items-center justify-center font-bold">
-                      GZ
-                    </div>
-                    <div>
-                      <h2 className="font-bebas text-2xl text-white">GUEST USER</h2>
-                      <span className="text-[10px] font-mono text-[#7C3AED] bg-[#222] px-2 py-0.5 border border-[#333]">EXPLO VIP MEMBER</span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <span className="text-xs font-bebas text-textGray">WISHLIST ({wishlist.length})</span>
-                    {wishlist.length === 0 ? (
-                      <div className="bg-[#141414] border border-[#262626] p-6 text-center text-xs font-mono text-textGray">
-                        NO SAVED PRODUCTS YET
+              ) : (
+                <>
+                  {activeTab === 'home' && (
+                    <div className="space-y-4 px-3 pb-5 pt-2">
+                      <div>
+                        <h1 className="font-bebas text-[34px] leading-[0.86] tracking-[-0.01em] text-white">
+                          DISCOVER
+                          <br />
+                          <span className="text-[#cbff16]">OUR RANGE</span>
+                        </h1>
                       </div>
-                    ) : (
-                      <div className="space-y-2">
-                        {products.filter(p => wishlist.includes(p.id)).map(p => (
-                          <div key={p.id} onClick={() => handleProductClick(p)} className="bg-[#171717] border border-[#262626] p-2 flex items-center justify-between cursor-pointer">
-                            <span className="font-bebas text-sm text-white">{p.name}</span>
-                            <span className="font-mono text-xs text-[#D9FF3F]">₹{p.price}</span>
-                          </div>
+
+                      <button
+                        type="button"
+                        onClick={() => navigate('search')}
+                        className="flex h-9 w-full items-center justify-between border border-[#222] bg-[#f1f1f1] pl-3 text-left font-mono text-[9px] text-[#777]"
+                      >
+                        SEARCH PRODUCTS...
+                        <span className="flex h-full w-11 items-center justify-center bg-[#cbff16] text-black">
+                          <SlidersHorizontal className="h-4 w-4" />
+                        </span>
+                      </button>
+
+                      <section>
+                        <div className="mb-2 flex items-center justify-between">
+                          <h2 className="font-bebas text-sm tracking-wide text-white">CATEGORIES</h2>
+                          <button
+                            type="button"
+                            onClick={() => navigate('categories')}
+                            className="font-mono text-[8px] text-[#b3b3b3]"
+                          >
+                            VIEW ALL
+                          </button>
+                        </div>
+                        <div className="grid grid-cols-3 gap-1.5">
+                          {categories.slice(0, 6).map((category, index) => {
+                            const Icon = categoryIcons[index % categoryIcons.length];
+                            return (
+                              <button
+                                type="button"
+                                key={category.id}
+                                onClick={() => {
+                                  setSelectedCategory(category.name);
+                                  navigate('search');
+                                }}
+                                className="flex h-[82px] flex-col items-center justify-center border border-black bg-[#f0f0f0] text-black transition-transform active:translate-y-0.5"
+                              >
+                                <Icon className="h-8 w-8" strokeWidth={1.5} />
+                                <span className="mt-2 font-bebas text-[10px] tracking-wide">
+                                  {category.name}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </section>
+
+                      <ProductGrid
+                        title="FEATURED PRODUCTS"
+                        products={featuredProducts.slice(0, 4)}
+                        wishlist={wishlist}
+                        onProductClick={openProduct}
+                        onToggleWishlist={toggleWishlist}
+                      />
+                    </div>
+                  )}
+
+                  {activeTab === 'categories' && (
+                    <div className="space-y-4 p-3">
+                      <h1 className="font-bebas text-[34px] leading-none text-white">
+                        SHOP BY
+                        <br />
+                        <span className="text-[#cbff16]">CATEGORY</span>
+                      </h1>
+                      <div className="grid grid-cols-2 gap-2">
+                        {categories.map((category, index) => {
+                          const Icon = categoryIcons[index % categoryIcons.length];
+                          return (
+                            <button
+                              type="button"
+                              key={category.id}
+                              onClick={() => {
+                                setSelectedCategory(category.name);
+                                navigate('search');
+                              }}
+                              className="flex aspect-[1.25] flex-col items-start justify-between border border-black bg-[#ededed] p-3 text-left text-black"
+                            >
+                              <div className="flex w-full items-start justify-between">
+                                <Icon className="h-8 w-8" strokeWidth={1.5} />
+                                <ArrowUpRight className="h-4 w-4" />
+                              </div>
+                              <div>
+                                <h2 className="font-bebas text-lg">{category.name}</h2>
+                                <p className="font-mono text-[8px]">{category.productCount} PRODUCTS</p>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {activeTab === 'search' && (
+                    <div className="space-y-3 p-3">
+                      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+                        {['ALL', ...categories.map((category) => category.name)].map((category) => (
+                          <button
+                            type="button"
+                            key={category}
+                            onClick={() => setSelectedCategory(category)}
+                            className={`whitespace-nowrap px-3 py-1.5 font-bebas text-[10px] ${
+                              selectedCategory === category
+                                ? 'bg-[#cbff16] text-black'
+                                : 'border border-[#333] bg-[#171717] text-white'
+                            }`}
+                          >
+                            {category}
+                          </button>
                         ))}
                       </div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+                      <div className="relative">
+                        <input
+                          value={searchQuery}
+                          onChange={(event) => setSearchQuery(event.target.value)}
+                          placeholder="SEARCH PRODUCTS..."
+                          aria-label="Search products"
+                          className="h-9 w-full border border-[#333] bg-[#f2f2f2] px-3 pr-10 font-mono text-[9px] text-black outline-none focus:border-[#cbff16]"
+                        />
+                        <Search className="absolute right-3 top-2.5 h-4 w-4 text-black" />
+                      </div>
+                      <ProductGrid
+                        title={selectedCategory === 'ALL' ? 'ALL PRODUCTS' : selectedCategory}
+                        products={filteredProducts}
+                        wishlist={wishlist}
+                        onProductClick={openProduct}
+                        onToggleWishlist={toggleWishlist}
+                      />
+                    </div>
+                  )}
 
-        {/* Bottom Tab Bar */}
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-[#0B0B0B] border-t-2 border-[#262626] px-4 flex items-center justify-around z-40">
-          <button 
-            onClick={() => { setCurrentProduct(null); setActiveTab('home'); }}
-            className={`flex flex-col items-center space-y-0.5 ${activeTab === 'home' && !currentProduct ? 'text-[#D9FF3F]' : 'text-textGray'}`}
-          >
-            <Home className="w-5 h-5" />
-            <span className="text-[9px] font-bebas tracking-widest">HOME</span>
-          </button>
-          <button 
-            onClick={() => { setCurrentProduct(null); setActiveTab('categories'); }}
-            className={`flex flex-col items-center space-y-0.5 ${activeTab === 'categories' && !currentProduct ? 'text-[#D9FF3F]' : 'text-textGray'}`}
-          >
-            <Grid className="w-5 h-5" />
-            <span className="text-[9px] font-bebas tracking-widest">CATEGORIES</span>
-          </button>
-          <button 
-            onClick={() => { setCurrentProduct(null); setActiveTab('search'); }}
-            className={`flex flex-col items-center space-y-0.5 ${activeTab === 'search' && !currentProduct ? 'text-[#D9FF3F]' : 'text-textGray'}`}
-          >
-            <Search className="w-5 h-5" />
-            <span className="text-[9px] font-bebas tracking-widest">SEARCH</span>
-          </button>
-          <button 
-            onClick={() => { setCurrentProduct(null); setActiveTab('contact'); }}
-            className={`flex flex-col items-center space-y-0.5 ${activeTab === 'contact' && !currentProduct ? 'text-[#D9FF3F]' : 'text-textGray'}`}
-          >
-            <PhoneCall className="w-5 h-5" />
-            <span className="text-[9px] font-bebas tracking-widest">CONTACT</span>
-          </button>
-          <button 
-            onClick={() => { setCurrentProduct(null); setActiveTab('profile'); }}
-            className={`flex flex-col items-center space-y-0.5 ${activeTab === 'profile' && !currentProduct ? 'text-[#D9FF3F]' : 'text-textGray'}`}
-          >
-            <User className="w-5 h-5" />
-            <span className="text-[9px] font-bebas tracking-widest">PROFILE</span>
-          </button>
-        </div>
+                  {activeTab === 'contact' && (
+                    <div className="hero-noise min-h-full space-y-5 px-4 py-4">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h1 className="font-bebas text-[40px] leading-[0.88] text-white">
+                            GET IN
+                            <br />
+                            TOUCH
+                          </h1>
+                          <p className="mt-2 text-[10px] text-[#c8c8c8]">We’re here to help.</p>
+                        </div>
+                        <div className="mt-1 flex h-16 w-16 items-center justify-center bg-[#8b45ff] text-black">
+                          <ArrowUpRight className="h-11 w-11" strokeWidth={2.8} />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <ContactRow
+                          icon={Phone}
+                          label="PHONE"
+                          value={businessSettings.phone}
+                          href={`tel:${businessSettings.phone}`}
+                        />
+                        <ContactRow
+                          icon={MessageCircle}
+                          label="WHATSAPP"
+                          value={businessSettings.whatsapp}
+                          href={`https://wa.me/${businessSettings.whatsapp.replace(/\D/g, '')}`}
+                        />
+                        <ContactRow
+                          icon={Mail}
+                          label="EMAIL"
+                          value={businessSettings.email}
+                          href={`mailto:${businessSettings.email}`}
+                        />
+                        <ContactRow
+                          icon={MapPin}
+                          label="ADDRESS"
+                          value={businessSettings.address}
+                        />
+                      </div>
+
+                      <div className="border border-[#282828] p-3">
+                        <span className="font-bebas text-[10px] text-[#aaa]">FOLLOW US</span>
+                        <div className="mt-2 grid grid-cols-3 divide-x divide-[#333]">
+                          {[AtSign, UsersRound, Play].map((Icon, index) => (
+                            <button
+                              type="button"
+                              key={index}
+                              aria-label={['Instagram', 'Facebook', 'YouTube'][index]}
+                              className="flex items-center justify-center py-2 text-white hover:text-[#cbff16]"
+                            >
+                              <Icon className="h-4 w-4" />
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {activeTab === 'profile' && (
+                    <div className="space-y-4 p-4">
+                      <div className="border border-[#303030] bg-[#151515] p-4">
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-12 w-12 items-center justify-center bg-[#cbff16] font-bebas text-xl text-black">
+                            GZ
+                          </div>
+                          <div>
+                            <h1 className="font-bebas text-2xl text-white">GEAR MEMBER</h1>
+                            <p className="font-mono text-[8px] text-[#cbff16]">ADVENTURE CLUB / 2026</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="border border-[#303030] bg-[#151515] p-4">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bebas text-sm text-white">SAVED GEAR</span>
+                          <span className="font-mono text-xs text-[#cbff16]">{wishlist.length}</span>
+                        </div>
+                        <div className="mt-3 space-y-2">
+                          {wishlist.length ? (
+                            products
+                              .filter((product) => wishlist.includes(product.id))
+                              .map((product) => (
+                                <button
+                                  type="button"
+                                  key={product.id}
+                                  onClick={() => openProduct(product)}
+                                  className="flex w-full items-center justify-between border-t border-[#2a2a2a] pt-2 text-left"
+                                >
+                                  <span className="font-bebas text-xs text-white">{product.name}</span>
+                                  <span className="font-mono text-[9px] text-[#cbff16]">
+                                    ₹{product.price.toLocaleString()}
+                                  </span>
+                                </button>
+                              ))
+                          ) : (
+                            <p className="border-t border-[#2a2a2a] pt-3 font-mono text-[9px] text-[#888]">
+                              NO SAVED PRODUCTS YET
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </main>
+
+            {!currentProduct && (
+              <nav className="grid h-14 flex-none grid-cols-5 border-t border-[#303030] bg-[#090909]">
+                {(
+                  [
+                    ['home', Home, 'HOME'],
+                    ['categories', Grid3X3, 'CATEGORIES'],
+                    ['search', Search, 'SEARCH'],
+                    ['contact', Phone, 'CONTACT'],
+                    ['profile', User, 'PROFILE'],
+                  ] as const
+                ).map(([tab, Icon, label]) => (
+                  <button
+                    type="button"
+                    key={tab}
+                    onClick={() => navigate(tab)}
+                    className={`flex flex-col items-center justify-center gap-0.5 transition-colors ${
+                      activeTab === tab ? 'bg-[#cbff16] text-black' : 'text-[#a5a5a5]'
+                    }`}
+                  >
+                    <Icon className="h-4 w-4" strokeWidth={1.8} />
+                    <span className="font-bebas text-[7px] tracking-wide">{label}</span>
+                  </button>
+                ))}
+              </nav>
+            )}
+          </>
+        )}
       </div>
     </div>
   );
 };
+
+function ProductGrid({
+  title,
+  products,
+  wishlist,
+  onProductClick,
+  onToggleWishlist,
+}: {
+  title: string;
+  products: Product[];
+  wishlist: string[];
+  onProductClick: (product: Product) => void;
+  onToggleWishlist: (id: string, event: React.MouseEvent) => void;
+}) {
+  return (
+    <section>
+      <div className="mb-2 flex items-center justify-between">
+        <h2 className="font-bebas text-sm tracking-wide text-white">{title}</h2>
+        <span className="font-mono text-[8px] text-[#aaa]">VIEW ALL</span>
+      </div>
+      <div className="grid grid-cols-2 gap-2">
+        {products.map((product) => (
+          <button
+            type="button"
+            key={product.id}
+            onClick={() => onProductClick(product)}
+            className="group overflow-hidden border border-black bg-[#d8d8d8] text-left text-black"
+          >
+            <div className="relative h-[150px] overflow-hidden bg-[#cfcfcf]">
+              <ProductImage
+                product={product}
+                className="transition-transform duration-300 group-hover:scale-105"
+              />
+              <span className="absolute left-0 top-0 h-full w-1 bg-[#cbff16]" />
+              <span
+                role="button"
+                tabIndex={0}
+                aria-label="Save product"
+                onClick={(event) => onToggleWishlist(product.id, event)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    onToggleWishlist(product.id, event as unknown as React.MouseEvent);
+                  }
+                }}
+                className="absolute right-2 top-2 text-black"
+              >
+                <Heart
+                  className={`h-4 w-4 ${
+                    wishlist.includes(product.id) ? 'fill-black' : ''
+                  }`}
+                />
+              </span>
+            </div>
+            <div className="p-2">
+              <h3 className="truncate font-bebas text-sm">{product.name}</h3>
+              <div className="mt-1 flex items-center justify-between">
+                <span className="font-mono text-[10px] font-bold">
+                  ₹{product.price.toLocaleString()}
+                </span>
+                <span className="flex h-5 w-5 items-center justify-center bg-[#cbff16] text-base leading-none">
+                  +
+                </span>
+              </div>
+            </div>
+          </button>
+        ))}
+        {!products.length && (
+          <div className="col-span-2 flex min-h-36 flex-col items-center justify-center border border-dashed border-[#333] text-[#777]">
+            <PackageSearch className="mb-2 h-7 w-7" />
+            <span className="font-mono text-[9px]">NO GEAR FOUND</span>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function ContactRow({
+  icon: Icon,
+  label,
+  value,
+  href,
+}: {
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+  label: string;
+  value: string;
+  href?: string;
+}) {
+  const content = (
+    <>
+      <div className="flex min-w-0 items-center gap-3">
+        <Icon className="h-5 w-5 flex-none text-black" strokeWidth={1.7} />
+        <div className="min-w-0">
+          <span className="block font-bebas text-[10px] text-black">{label}</span>
+          <span className="block truncate font-mono text-[8px] text-[#333]">{value}</span>
+        </div>
+      </div>
+      <span className="flex h-8 w-8 flex-none items-center justify-center bg-[#cbff16] text-black">
+        <ArrowUpRight className="h-4 w-4" />
+      </span>
+    </>
+  );
+
+  const className =
+    'flex min-h-14 items-center justify-between gap-3 border border-black bg-[#f1f1f1] p-2.5';
+
+  return href ? (
+    <a href={href} className={className}>
+      {content}
+    </a>
+  ) : (
+    <div className={className}>{content}</div>
+  );
+}

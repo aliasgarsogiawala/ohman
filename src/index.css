@@ -1,10 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  html,
+  body,
+  #root {
+    width: 100%;
+    height: 100%;
+  }
+
   body {
-    @apply bg-[#0B0B0B] text-white selection:bg-[#D9FF3F] selection:text-black;
+    @apply m-0 bg-[#0B0B0B] font-sans text-white selection:bg-[#D9FF3F] selection:text-black;
+    min-width: 320px;
+  }
+
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button,
+  a {
+    outline-offset: 3px;
+  }
+
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid #d9ff3f;
   }
 }
 
@@ -35,4 +66,65 @@
 .font-bebas {
   font-family: 'Bebas Neue', sans-serif;
   letter-spacing: 0.05em;
+}
+
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-none::-webkit-scrollbar,
+.mobile-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.mobile-scroll {
+  scrollbar-width: none;
+}
+
+.hero-stripes {
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0,
+    transparent 11px,
+    rgba(255, 255, 255, 0.32) 11px,
+    rgba(255, 255, 255, 0.32) 17px
+  );
+}
+
+.cross-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px);
+  background-size: 18px 18px;
+  mask-image: radial-gradient(circle at 30% 50%, black, transparent 72%);
+}
+
+.hero-noise::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: '';
+  opacity: 0.18;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.5) 0.45px, transparent 0.6px);
+  background-size: 4px 4px;
+  mix-blend-mode: soft-light;
+}
+
+.hero-noise > * {
+  position: relative;
+  z-index: 1;
+}
+
+.mobile-shell {
+  isolation: isolate;
+}
+
+@media (max-width: 640px) {
+  .mobile-shell {
+    width: min(390px, calc(100vw - 10px));
+    max-width: none;
+    border-radius: 20px;
+    border-width: 3px;
+  }
 }

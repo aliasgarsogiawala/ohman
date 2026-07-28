@@ -13,9 +13,14 @@ import {
   Trash2, 
   Upload, 
   X, 
-  Eye
+  Eye,
+  ArrowUpRight,
+  Calendar,
+  Download,
+  MessageCircle
 } from 'lucide-react';
 import { Product, Category, BusinessSettings } from '../../types';
+import { demoBanners, demoContacts, demoOrders } from '../../data/mockData';
 
 interface DashboardViewProps {
   products: Product[];
@@ -357,7 +362,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                         <td className="py-3 px-4 text-textGray">{product.category}</td>
                         <td className="py-3 px-4 text-[#D9FF3F] font-bold">₹{product.price}</td>
                         <td className="py-3 px-4">
-                          <span className="px-2 py-0.5 bg-[#222] text-[#7CFC7C] border border-[#333] text-[10px]">
+                          <span
+                            className={`border border-[#333] bg-[#222] px-2 py-0.5 text-[10px] ${
+                              product.status === 'ACTIVE'
+                                ? 'text-[#7CFC7C]'
+                                : product.status === 'DRAFT'
+                                  ? 'text-[#D9FF3F]'
+                                  : 'text-[#9CA3AF]'
+                            }`}
+                          >
                             {product.status}
                           </span>
                         </td>
@@ -381,15 +394,29 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     ))}
                   </tbody>
                 </table>
+                <div className="flex items-center justify-between border-t border-[#2b2b2b] bg-[#111] px-4 py-3">
+                  <span className="font-mono text-[10px] text-textGray">
+                    SHOWING {filteredProducts.length} OF {products.length} PRODUCTS
+                  </span>
+                  <div className="flex items-center gap-1">
+                    <button className="border border-[#333] bg-[#1d1d1d] px-2 py-1 font-mono text-[9px] text-textGray">
+                      PREV
+                    </button>
+                    <span className="bg-[#D9FF3F] px-2 py-1 font-mono text-[9px] font-bold text-black">01</span>
+                    <button className="border border-[#333] bg-[#1d1d1d] px-2 py-1 font-mono text-[9px] text-white">
+                      NEXT
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           )}
 
           {/* VIEW: CATEGORIES GRID */}
           {activeTab === 'categories' && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
               {categories.map(cat => (
-                <div key={cat.id} className="bg-[#171717] border-2 border-black p-4 shadow-[4px_4px_0px_#000] flex flex-col justify-between space-y-4">
+                <div key={cat.id} className="flex min-h-52 flex-col justify-between space-y-4 border border-[#303030] bg-[#141414] p-4">
                   <div className="flex justify-between items-start">
                     <div className="w-12 h-12 bg-[#222] border border-[#333] flex items-center justify-center text-[#D9FF3F]">
                       <Grid className="w-6 h-6" />
@@ -399,6 +426,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   <div>
                     <h3 className="font-bebas text-2xl text-white">{cat.name}</h3>
                     <p className="text-xs text-textGray font-sans">{cat.description}</p>
+                    <div className="mt-4 h-1.5 overflow-hidden bg-[#282828]">
+                      <div
+                        className="h-full bg-[#D9FF3F]"
+                        style={{ width: `${Math.min(100, 28 + cat.productCount)}%` }}
+                      />
+                    </div>
+                    <div className="mt-1 flex justify-between font-mono text-[9px] text-[#777]">
+                      <span>{products.filter(product => product.category === cat.name).length} IN CATALOGUE</span>
+                      <span>{cat.productCount} TOTAL</span>
+                    </div>
                   </div>
                   <div className="pt-2 border-t border-[#262626] flex justify-between">
                     <button className="text-xs font-mono text-[#D9FF3F] hover:underline">EDIT</button>
@@ -406,6 +443,179 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+
+          {activeTab === 'banners' && (
+            <div className="space-y-4">
+              <div className="flex flex-col gap-3 border border-[#303030] bg-[#141414] p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="font-bebas text-xl text-white">CAMPAIGN BANNERS</p>
+                  <p className="font-mono text-[10px] text-textGray">MANAGE MOBILE HOME PROMOTIONS AND SCHEDULED DROPS</p>
+                </div>
+                <button className="flex items-center justify-center gap-2 border border-black bg-[#7C3AED] px-4 py-2 font-bebas text-sm text-white shadow-[3px_3px_0_#000]">
+                  <Plus className="h-4 w-4" /> NEW BANNER
+                </button>
+              </div>
+
+              <div className="grid gap-4 xl:grid-cols-2 2xl:grid-cols-3">
+                {demoBanners.map((banner, index) => (
+                  <article key={banner.id} className="overflow-hidden border border-[#303030] bg-[#141414]">
+                    <div className="relative flex min-h-[180px] flex-col justify-between overflow-hidden bg-[#0a0a0a] p-4">
+                      <span
+                        className="absolute -right-10 top-0 h-full w-32 rotate-[12deg]"
+                        style={{ backgroundColor: banner.accent }}
+                      />
+                      <div className="relative z-10 flex items-start justify-between">
+                        <span className="font-mono text-[9px] text-[#aaa]">{banner.eyebrow}</span>
+                        <span className="font-mono text-lg text-[#555]">0{index + 1}</span>
+                      </div>
+                      <div className="relative z-10 max-w-[75%]">
+                        <h3 className="font-bebas text-[34px] leading-[0.86] text-white">{banner.title}</h3>
+                        <p className="mt-2 text-[10px] leading-snug text-[#b5b5b5]">{banner.copy}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between p-3">
+                      <span
+                        className={`border border-[#333] px-2 py-1 font-mono text-[9px] ${
+                          banner.status === 'LIVE'
+                            ? 'text-[#7CFC7C]'
+                            : banner.status === 'SCHEDULED'
+                              ? 'text-[#D9FF3F]'
+                              : 'text-textGray'
+                        }`}
+                      >
+                        {banner.status}
+                      </span>
+                      <div className="flex items-center gap-2 text-textGray">
+                        <Calendar className="h-4 w-4" />
+                        <ArrowUpRight className="h-4 w-4" />
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'orders' && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+                {[
+                  ['TODAY’S ORDERS', '08', '#D9FF3F'],
+                  ['REVENUE', '₹22,392', '#FFFFFF'],
+                  ['TO SHIP', '03', '#7C3AED'],
+                  ['DELIVERED', '18', '#7CFC7C'],
+                ].map(([label, value, color]) => (
+                  <div key={label} className="border border-[#303030] bg-[#141414] p-4">
+                    <span className="font-mono text-[9px] text-textGray">{label}</span>
+                    <p className="mt-2 font-bebas text-3xl" style={{ color }}>{value}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="overflow-x-auto border border-[#303030] bg-[#141414]">
+                <div className="flex items-center justify-between border-b border-[#303030] p-4">
+                  <div>
+                    <h3 className="font-bebas text-xl text-white">RECENT ORDERS</h3>
+                    <p className="font-mono text-[9px] text-textGray">LIVE FULFILMENT QUEUE</p>
+                  </div>
+                  <button className="flex items-center gap-2 border border-[#333] bg-[#1c1c1c] px-3 py-2 font-mono text-[9px] text-white">
+                    <Download className="h-3.5 w-3.5" /> EXPORT
+                  </button>
+                </div>
+                <table className="w-full min-w-[760px] border-collapse text-left">
+                  <thead className="bg-[#101010] font-mono text-[9px] text-textGray">
+                    <tr>
+                      <th className="px-4 py-3">ORDER</th>
+                      <th className="px-4 py-3">CUSTOMER</th>
+                      <th className="px-4 py-3">PRODUCT</th>
+                      <th className="px-4 py-3">TOTAL</th>
+                      <th className="px-4 py-3">STATUS</th>
+                      <th className="px-4 py-3 text-right">DATE</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#292929] font-mono text-[10px]">
+                    {demoOrders.map(order => (
+                      <tr key={order.id} className="hover:bg-[#1b1b1b]">
+                        <td className="px-4 py-3 font-bold text-white">{order.id}</td>
+                        <td className="px-4 py-3 text-white">{order.customer}</td>
+                        <td className="px-4 py-3 text-textGray">{order.item}</td>
+                        <td className="px-4 py-3 font-bold text-[#D9FF3F]">₹{order.total.toLocaleString()}</td>
+                        <td className="px-4 py-3">
+                          <span className="border border-[#333] bg-[#202020] px-2 py-1 text-[#7CFC7C]">
+                            {order.status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-right text-textGray">{order.date}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'contacts' && (
+            <div className="space-y-4">
+              <div className="grid gap-3 sm:grid-cols-3">
+                {[
+                  ['NEW ENQUIRIES', '12', 'LAST 24 HOURS'],
+                  ['QUALIFIED LEADS', '34', 'THIS MONTH'],
+                  ['RESPONSE RATE', '92%', 'AVG. 18 MIN'],
+                ].map(([label, value, helper]) => (
+                  <div key={label} className="flex items-center justify-between border border-[#303030] bg-[#141414] p-4">
+                    <div>
+                      <span className="font-mono text-[9px] text-textGray">{label}</span>
+                      <p className="font-bebas text-3xl text-white">{value}</p>
+                    </div>
+                    <span className="font-mono text-[8px] text-[#D9FF3F]">{helper}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="overflow-x-auto border border-[#303030] bg-[#141414]">
+                <div className="flex items-center justify-between border-b border-[#303030] p-4">
+                  <div>
+                    <h3 className="font-bebas text-xl text-white">CUSTOMER CONTACTS</h3>
+                    <p className="font-mono text-[9px] text-textGray">ENQUIRIES ACROSS WHATSAPP, SOCIAL AND WEB</p>
+                  </div>
+                  <button className="flex items-center gap-2 bg-[#D9FF3F] px-3 py-2 font-bebas text-sm text-black">
+                    <MessageCircle className="h-4 w-4" /> NEW MESSAGE
+                  </button>
+                </div>
+                <table className="w-full min-w-[760px] border-collapse text-left">
+                  <thead className="bg-[#101010] font-mono text-[9px] text-textGray">
+                    <tr>
+                      <th className="px-4 py-3">CONTACT</th>
+                      <th className="px-4 py-3">INTEREST</th>
+                      <th className="px-4 py-3">CHANNEL</th>
+                      <th className="px-4 py-3">LOCATION</th>
+                      <th className="px-4 py-3">STATUS</th>
+                      <th className="px-4 py-3 text-right">LAST ACTIVE</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#292929] font-mono text-[10px]">
+                    {demoContacts.map(contact => (
+                      <tr key={contact.name} className="hover:bg-[#1b1b1b]">
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-3">
+                            <span className="flex h-8 w-8 items-center justify-center bg-[#292929] font-bebas text-sm text-[#D9FF3F]">
+                              {contact.name.split(' ').map(part => part[0]).join('')}
+                            </span>
+                            <span className="font-bold text-white">{contact.name}</span>
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 text-textGray">{contact.interest}</td>
+                        <td className="px-4 py-3 text-white">{contact.channel}</td>
+                        <td className="px-4 py-3 text-textGray">{contact.location}</td>
+                        <td className="px-4 py-3">
+                          <span className="border border-[#333] px-2 py-1 text-[#D9FF3F]">{contact.status}</span>
+                        </td>
+                        <td className="px-4 py-3 text-right text-textGray">{contact.lastSeen}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
 
@@ -456,6 +666,27 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   />
                 </div>
 
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-textGray mb-1">WEBSITE</label>
+                    <input
+                      type="text"
+                      value={settingsForm.website}
+                      onChange={(e) => setSettingsForm({...settingsForm, website: e.target.value})}
+                      className="w-full bg-[#0B0B0B] border border-[#333] p-2 text-white focus:outline-none focus:border-[#D9FF3F]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-textGray mb-1">INSTAGRAM</label>
+                    <input
+                      type="text"
+                      value={settingsForm.instagram}
+                      onChange={(e) => setSettingsForm({...settingsForm, instagram: e.target.value})}
+                      className="w-full bg-[#0B0B0B] border border-[#333] p-2 text-white focus:outline-none focus:border-[#D9FF3F]"
+                    />
+                  </div>
+                </div>
+
                 <div>
                   <label className="block text-textGray mb-1">PHYSICAL ADDRESS</label>
                   <textarea 
@@ -476,20 +707,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           )}
 
-          {/* GENERIC PLACEHOLDER FOR OTHER DASHBOARD TABS */}
-          {['banners', 'orders', 'contacts'].includes(activeTab) && (
-            <div className="bg-[#171717] border-2 border-black border-dashed p-12 text-center space-y-3">
-              <span className="font-bebas text-3xl text-[#D9FF3F]">{activeTab.toUpperCase()} MODULE ACTIVE</span>
-              <p className="font-mono text-xs text-textGray">CONNECTED TO MOCK CATALOGUE SERVICE</p>
-            </div>
-          )}
         </div>
       </main>
 
       {/* ADD PRODUCT MODAL / DRAWER */}
       {isAddProductModalOpen && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#171717] border-2 border-black p-6 w-full max-w-xl shadow-[6px_6px_0px_#D9FF3F] space-y-4 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-stretch justify-end bg-black/75 backdrop-blur-sm">
+          <div className="h-full w-full max-w-2xl space-y-4 overflow-y-auto border-l border-[#333] bg-[#141414] p-5 shadow-[-12px_0_40px_rgba(0,0,0,.55)]">
             <div className="flex justify-between items-center border-b border-[#262626] pb-3">
               <h3 className="font-bebas text-3xl text-white tracking-wider">ADD PRODUCT</h3>
               <button 
@@ -555,6 +779,20 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <Upload className="w-6 h-6 text-[#D9FF3F] mx-auto mb-1" />
                 <span className="font-bebas text-sm text-white uppercase block">CLICK TO UPLOAD OR DRAG AND DROP</span>
                 <span className="text-[10px] text-textGray">SVG, PNG, JPG (MAX 800x800px)</span>
+              </div>
+
+              <div className="grid grid-cols-4 gap-2">
+                {products.slice(0, 3).map(product => (
+                  <div key={product.id} className="aspect-square overflow-hidden border border-[#333] bg-[#ddd] p-1">
+                    <img src={product.images[0]} alt="" className="h-full w-full object-cover grayscale" />
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  className="flex aspect-square items-center justify-center border border-[#333] bg-[#1b1b1b] text-2xl text-textGray hover:border-[#D9FF3F] hover:text-[#D9FF3F]"
+                >
+                  +
+                </button>
               </div>
 
               <div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowLeft,
   ArrowUpRight,
@@ -67,6 +67,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
   const [wishlist, setWishlist] = useState<string[]>([]);
+  const scrollRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     if (!activeProductId) return;
@@ -76,6 +77,12 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
       setCurrentProduct(product);
     }
   }, [activeProductId, products]);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = 0;
+    }
+  }, [activeTab, currentProduct, showIntro]);
 
   const filteredProducts = useMemo(
     () =>
@@ -137,7 +144,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
             <div className="pointer-events-none absolute -bottom-12 -right-3 h-44 w-28 rotate-[33deg] bg-[#202020]" />
             <div className="pointer-events-none absolute bottom-0 left-0 h-28 w-full cross-grid opacity-35" />
 
-            <div className="relative z-10 flex items-start justify-between">
+            <div className="relative z-30 flex items-start justify-between">
               <h1 className="font-bebas text-[54px] leading-[0.83] tracking-[-0.02em] text-white">
                 GEAR
                 <br />
@@ -154,7 +161,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
               </div>
             </div>
 
-            <p className="relative z-20 mt-5 max-w-[154px] text-[10px] font-medium leading-[1.35] text-[#c5c5c5]">
+            <p className="relative z-30 mt-5 max-w-[154px] text-[10px] font-medium leading-[1.35] text-[#c5c5c5]">
               Premium essentials,
               <br />
               built for adventure,
@@ -163,7 +170,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
             </p>
 
             {heroProduct && (
-              <div className="pointer-events-none absolute bottom-[108px] right-[-5px] z-10 h-[265px] w-[295px] -rotate-[15deg] drop-shadow-[0_26px_12px_rgba(0,0,0,.7)]">
+              <div className="pointer-events-none absolute bottom-[106px] right-[-34px] z-10 h-[235px] w-[250px] -rotate-[13deg] drop-shadow-[0_26px_12px_rgba(0,0,0,.7)]">
                 <ProductImage product={heroProduct} className="brightness-[1.15]" />
               </div>
             )}
@@ -222,7 +229,10 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
               </button>
             </div>
 
-            <main className="mobile-scroll relative min-h-0 flex-1 overflow-y-auto bg-[#090909]">
+            <main
+              ref={scrollRef}
+              className="mobile-scroll relative min-h-0 flex-1 overflow-y-auto bg-[#090909]"
+            >
               {currentProduct ? (
                 <div className="pb-24">
                   <div className="relative h-[330px] overflow-hidden border-b border-black bg-[#151515]">

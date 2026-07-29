@@ -4,7 +4,6 @@ import {
   Package, 
   Grid, 
   Image, 
-  ShoppingCart, 
   Users, 
   Settings, 
   LogOut, 
@@ -16,11 +15,10 @@ import {
   Eye,
   ArrowUpRight,
   Calendar,
-  Download,
   MessageCircle
 } from 'lucide-react';
 import { Product, Category, BusinessSettings } from '../../types';
-import { demoBanners, demoContacts, demoOrders } from '../../data/mockData';
+import { demoBanners, demoContacts } from '../../data/mockData';
 
 interface DashboardViewProps {
   products: Product[];
@@ -32,7 +30,7 @@ interface DashboardViewProps {
   onSelectProductForMobilePreview: (id: string) => void;
 }
 
-type DashboardTab = 'dashboard' | 'products' | 'categories' | 'banners' | 'orders' | 'contacts' | 'settings';
+type DashboardTab = 'dashboard' | 'products' | 'categories' | 'banners' | 'contacts' | 'settings';
 
 export const DashboardView: React.FC<DashboardViewProps> = ({
   products,
@@ -138,14 +136,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </button>
 
             <button
-              onClick={() => setActiveTab('orders')}
-              className={`w-full flex items-center space-x-3 px-3 py-2 font-bebas text-sm tracking-wider transition-all border ${activeTab === 'orders' ? 'bg-[#D9FF3F] text-black border-black shadow-[3px_3px_0px_#000] font-bold' : 'text-textGray hover:text-white border-transparent hover:bg-[#171717]'}`}
-            >
-              <ShoppingCart className="w-5 h-5" />
-              <span>ORDERS</span>
-            </button>
-
-            <button
               onClick={() => setActiveTab('contacts')}
               className={`w-full flex items-center space-x-3 px-3 py-2 font-bebas text-sm tracking-wider transition-all border ${activeTab === 'contacts' ? 'bg-[#D9FF3F] text-black border-black shadow-[3px_3px_0px_#000] font-bold' : 'text-textGray hover:text-white border-transparent hover:bg-[#171717]'}`}
             >
@@ -221,11 +211,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
                 <div className="flex items-center justify-between border border-[#303030] bg-[#111] p-3">
                   <div>
-                    <span className="text-[10px] font-mono text-textGray uppercase block">TOTAL ORDERS</span>
-                    <span className="font-bebas text-[34px] font-bold text-white">120</span>
+                    <span className="text-[10px] font-mono text-textGray uppercase block">TOTAL ENQUIRIES</span>
+                    <span className="font-bebas text-[34px] font-bold text-white">428</span>
                   </div>
-                  <div className="flex h-9 w-9 items-center justify-center text-[#FF4D6D]">
-                    <ShoppingCart className="w-6 h-6" />
+                  <div className="flex h-9 w-9 items-center justify-center text-[#7C3AED]">
+                    <MessageCircle className="w-6 h-6" />
                   </div>
                 </div>
 
@@ -238,6 +228,27 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     <Eye className="w-6 h-6" />
                   </div>
                 </div>
+              </div>
+
+              <div className="grid gap-3 lg:grid-cols-3">
+                {[
+                  ['HOT LEADS', '18', 'READY FOR CALLBACK'],
+                  ['WHATSAPP CLICKS', '286', 'LAST 7 DAYS'],
+                  ['AVG. RESPONSE', '18 MIN', 'CLIENT-FRIENDLY'],
+                ].map(([label, value, helper]) => (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => setActiveTab('contacts')}
+                    className="group flex items-center justify-between border border-[#303030] bg-[#141414] p-4 text-left transition-colors hover:border-[#D9FF3F]"
+                  >
+                    <div>
+                      <span className="font-mono text-[9px] text-textGray">{label}</span>
+                      <p className="font-bebas text-3xl text-white group-hover:text-[#D9FF3F]">{value}</p>
+                    </div>
+                    <span className="max-w-24 text-right font-mono text-[8px] leading-tight text-[#D9FF3F]">{helper}</span>
+                  </button>
+                ))}
               </div>
 
               {/* Recent Products Table */}
@@ -495,63 +506,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     </div>
                   </article>
                 ))}
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'orders' && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
-                {[
-                  ['TODAY’S ORDERS', '08', '#D9FF3F'],
-                  ['REVENUE', '₹22,392', '#FFFFFF'],
-                  ['TO SHIP', '03', '#7C3AED'],
-                  ['DELIVERED', '18', '#7CFC7C'],
-                ].map(([label, value, color]) => (
-                  <div key={label} className="border border-[#303030] bg-[#141414] p-4">
-                    <span className="font-mono text-[9px] text-textGray">{label}</span>
-                    <p className="mt-2 font-bebas text-3xl" style={{ color }}>{value}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="overflow-x-auto border border-[#303030] bg-[#141414]">
-                <div className="flex items-center justify-between border-b border-[#303030] p-4">
-                  <div>
-                    <h3 className="font-bebas text-xl text-white">RECENT ORDERS</h3>
-                    <p className="font-mono text-[9px] text-textGray">LIVE FULFILMENT QUEUE</p>
-                  </div>
-                  <button className="flex items-center gap-2 border border-[#333] bg-[#1c1c1c] px-3 py-2 font-mono text-[9px] text-white">
-                    <Download className="h-3.5 w-3.5" /> EXPORT
-                  </button>
-                </div>
-                <table className="w-full min-w-[760px] border-collapse text-left">
-                  <thead className="bg-[#101010] font-mono text-[9px] text-textGray">
-                    <tr>
-                      <th className="px-4 py-3">ORDER</th>
-                      <th className="px-4 py-3">CUSTOMER</th>
-                      <th className="px-4 py-3">PRODUCT</th>
-                      <th className="px-4 py-3">TOTAL</th>
-                      <th className="px-4 py-3">STATUS</th>
-                      <th className="px-4 py-3 text-right">DATE</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#292929] font-mono text-[10px]">
-                    {demoOrders.map(order => (
-                      <tr key={order.id} className="hover:bg-[#1b1b1b]">
-                        <td className="px-4 py-3 font-bold text-white">{order.id}</td>
-                        <td className="px-4 py-3 text-white">{order.customer}</td>
-                        <td className="px-4 py-3 text-textGray">{order.item}</td>
-                        <td className="px-4 py-3 font-bold text-[#D9FF3F]">₹{order.total.toLocaleString()}</td>
-                        <td className="px-4 py-3">
-                          <span className="border border-[#333] bg-[#202020] px-2 py-1 text-[#7CFC7C]">
-                            {order.status}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 text-right text-textGray">{order.date}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
               </div>
             </div>
           )}

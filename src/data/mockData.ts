@@ -334,17 +334,6 @@ export const initialProducts: Product[] = [
   }),
 ];
 
-export const demoOrders = [
-  { id: 'OM-1048', customer: 'Arjun Mehta', item: 'Summit Pro 40L', total: 3499, status: 'PAID', date: '28 Jul 2026' },
-  { id: 'OM-1047', customer: 'Naina Kapoor', item: 'Velocity Runner 2', total: 3299, status: 'PACKED', date: '28 Jul 2026' },
-  { id: 'OM-1046', customer: 'Rohan Shah', item: 'Transit Sling 8L', total: 1299, status: 'SHIPPED', date: '27 Jul 2026' },
-  { id: 'OM-1045', customer: 'Mira Desai', item: 'Heavyweight Logo Tee', total: 1099, status: 'DELIVERED', date: '27 Jul 2026' },
-  { id: 'OM-1044', customer: 'Kabir Rao', item: 'Expedition Duffel 80L', total: 3899, status: 'PAID', date: '26 Jul 2026' },
-  { id: 'OM-1043', customer: 'Ishita Sen', item: 'Utility Chest Rig', total: 1899, status: 'PACKED', date: '26 Jul 2026' },
-  { id: 'OM-1042', customer: 'Dev Malhotra', item: 'Terra Grip Trail', total: 4199, status: 'SHIPPED', date: '25 Jul 2026' },
-  { id: 'OM-1041', customer: 'Anika Jain', item: 'Metro Weekender', total: 3199, status: 'DELIVERED', date: '24 Jul 2026' },
-];
-
 export const demoContacts = [
   { name: 'Aarav Khanna', interest: 'Corporate trekking kits', channel: 'WhatsApp', location: 'Pune', status: 'HOT', lastSeen: '8 min ago' },
   { name: 'Meera Iyer', interest: 'Summit Pro 40L', channel: 'Instagram', location: 'Bengaluru', status: 'NEW', lastSeen: '24 min ago' },

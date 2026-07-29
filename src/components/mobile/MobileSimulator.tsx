@@ -18,7 +18,6 @@ import {
   Search,
   Share2,
   Shirt,
-  ShoppingBag,
   Signal,
   SlidersHorizontal,
   User,
@@ -38,7 +37,7 @@ interface MobileSimulatorProps {
 
 type TabType = 'home' | 'categories' | 'search' | 'contact' | 'profile';
 
-const categoryIcons = [Footprints, Backpack, ShoppingBag, Shirt, SlidersHorizontal, Grid3X3];
+const categoryIcons = [Footprints, Backpack, PackageSearch, Shirt, SlidersHorizontal, Grid3X3];
 
 const ProductImage = ({
   product,
@@ -217,13 +216,13 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
 
               <button
                 type="button"
-                aria-label={currentProduct ? 'Share product' : 'Shopping bag'}
+                aria-label={currentProduct ? 'Share product' : 'Contact Oh Man'}
                 className="text-white transition-colors hover:text-[#cbff16]"
               >
                 {currentProduct ? (
                   <Share2 className="h-4 w-4" />
                 ) : (
-                  <ShoppingBag className="h-4 w-4" />
+                  <MessageCircle className="h-4 w-4" />
                 )}
               </button>
             </div>
@@ -301,7 +300,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                       href={`tel:${businessSettings.phone}`}
                       className="flex-1 border border-black bg-[#cbff16] py-2.5 text-center font-bebas text-sm text-black"
                     >
-                      ADD TO CONTACT
+                      ENQUIRE NOW
                     </a>
                     <a
                       href={`https://wa.me/${businessSettings.whatsapp.replace(/\D/g, '')}`}

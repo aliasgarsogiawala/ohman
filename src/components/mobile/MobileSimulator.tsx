@@ -137,55 +137,65 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
         </div>
 
         {showIntro ? (
-          <section className="hero-noise relative flex min-h-0 flex-1 flex-col overflow-hidden bg-[#090909] px-5 pb-5 pt-3">
-            <div className="pointer-events-none absolute -right-8 top-14 h-28 w-28 hero-stripes opacity-40" />
-            <div className="pointer-events-none absolute -right-5 top-[32%] h-52 w-24 bg-[#cbff16]" />
-            <div className="pointer-events-none absolute -bottom-12 -right-3 h-44 w-28 rotate-[33deg] bg-[#202020]" />
-            <div className="pointer-events-none absolute bottom-0 left-0 h-28 w-full cross-grid opacity-35" />
+          <section className="hero-noise relative flex min-h-0 flex-1 flex-col overflow-hidden bg-[#090909] px-4 pb-4 pt-3">
+            <div className="pointer-events-none absolute -right-8 top-12 h-32 w-36 hero-stripes opacity-45" />
+            <div className="pointer-events-none absolute -left-6 top-[43%] h-28 w-28 rotate-45 border-[18px] border-[#8b45ff] opacity-90" />
+            <div className="pointer-events-none absolute right-[-26px] top-[24%] h-[310px] w-[126px] bg-[#cbff16]" />
+            <div className="pointer-events-none absolute bottom-0 left-0 h-36 w-full cross-grid opacity-40" />
+            <div className="pointer-events-none absolute bottom-[98px] left-0 h-px w-full bg-white/25" />
 
-            <div className="relative z-30 flex items-start justify-between">
-              <h1 className="font-bebas text-[54px] leading-[0.83] tracking-[-0.02em] text-white">
-                OH
+            <header className="relative z-30 flex items-start justify-between border-b border-white/20 pb-2">
+              <div className="font-mono text-[8px] tracking-[0.13em] text-[#cbff16]">
+                OH MAN. / FIELD CATALOGUE
                 <br />
-                MAN.
-                <br />
+                ISSUE 01 — 2026
+              </div>
+              <div className="flex h-8 w-8 items-center justify-center border border-[#cbff16] font-bebas text-xs text-[#cbff16]">
+                OM
+              </div>
+            </header>
+
+            <div className="relative z-30 mt-4">
+              <p className="mb-1 font-mono text-[8px] tracking-[0.22em] text-[#bdbdbd]">MADE FOR THE LONG WAY</p>
+              <h1 className="font-bebas text-[51px] leading-[0.78] tracking-[-0.025em] text-white">
                 MOVE
                 <br />
-                LOUD.
+                WITH
+                <br />
+                <span className="text-[#cbff16]">PURPOSE.</span>
               </h1>
-              <div className="om-stamp mt-1 bg-[#f4f2eb] px-1.5 py-1 text-right font-mono text-[8px] leading-3 text-black">
-                EST. 2026<br />
-                / OM-001 /
+            </div>
+
+            <div className="relative z-30 mt-3 flex items-start justify-between">
+              <p className="max-w-[128px] text-[9px] font-medium leading-[1.45] text-[#d0d0d0]">
+                Utility pieces for city miles, trail days and every move in between.
+              </p>
+              <div className="om-stamp mr-1 bg-[#f4f2eb] px-1.5 py-1 font-mono text-[7px] leading-[1.45] text-black">
+                1,500+<br />
+                OBJECTS<br />
+                TO MOVE
               </div>
             </div>
 
-            <p className="relative z-30 mt-5 max-w-[154px] text-[10px] font-medium leading-[1.35] text-[#c5c5c5]">
-              Objects for motion,
-              <br />
-              built with intent,
-              <br />
-              made for your day.
-            </p>
-
             {heroProduct && (
-              <div className="pointer-events-none absolute bottom-[106px] right-[-34px] z-10 h-[235px] w-[250px] -rotate-[13deg] drop-shadow-[0_26px_12px_rgba(0,0,0,.7)]">
-                <ProductImage product={heroProduct} className="brightness-[1.15]" />
+              <div className="pointer-events-none absolute bottom-[78px] right-[-22px] z-20 h-[274px] w-[298px] -rotate-[11deg] drop-shadow-[0_28px_13px_rgba(0,0,0,.8)]">
+                <ProductImage product={heroProduct} className="brightness-[1.18] contrast-150" />
               </div>
             )}
 
-            <button
-              type="button"
-              onClick={() => navigate('home')}
-              className="relative z-30 mt-auto flex w-fit items-center gap-2 border-2 border-black bg-[#cbff16] px-3 py-2 font-bebas text-sm tracking-wide text-black shadow-[4px_4px_0_#f4f2eb]"
-            >
-              EXPLORE NOW
-              <ArrowUpRight className="h-4 w-4" strokeWidth={2.7} />
-            </button>
-
-            <div className="relative z-30 mt-7 flex justify-center gap-3">
-              <span className="h-1.5 w-5 rounded-full bg-white" />
-              <span className="h-1.5 w-1.5 rounded-full bg-[#555]" />
-              <span className="h-1.5 w-1.5 rounded-full bg-[#555]" />
+            <div className="relative z-30 mt-auto">
+              <div className="mb-2 flex items-center justify-between border-y border-white/20 py-1.5 font-mono text-[7px] tracking-[0.12em] text-[#d7d7d7]">
+                <span>CITY / TRAIL / DAILY</span>
+                <span className="text-[#cbff16]">01 — 01</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => navigate('home')}
+                className="flex w-full items-center justify-between border-2 border-black bg-[#cbff16] px-3 py-2.5 font-bebas text-base tracking-wide text-black shadow-[4px_4px_0_#8b45ff] transition-transform active:translate-x-0.5 active:translate-y-0.5"
+              >
+                EXPLORE THE CATALOGUE
+                <ArrowUpRight className="h-5 w-5" strokeWidth={2.8} />
+              </button>
             </div>
           </section>
         ) : (

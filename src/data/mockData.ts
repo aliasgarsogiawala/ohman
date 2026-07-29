@@ -349,7 +349,7 @@ export const demoBanners = [
     title: 'MOVE BEYOND',
     eyebrow: 'MONSOON TRAIL EDIT',
     copy: 'Water-ready packs and technical layers for the season ahead.',
-    accent: '#D9FF3F',
+    accent: '#F7C318',
     status: 'LIVE',
   },
   {
@@ -357,7 +357,7 @@ export const demoBanners = [
     title: 'CITY / SUMMIT',
     eyebrow: 'NEW ARRIVALS',
     copy: 'One system. Weekday movement to weekend altitude.',
-    accent: '#7C3AED',
+    accent: '#D9432E',
     status: 'SCHEDULED',
   },
   {
@@ -372,12 +372,12 @@ export const demoBanners = [
 
 export const initialBusinessSettings: BusinessSettings = {
   name: 'OH MAN.',
-  tagline: 'MOVE LIKE YOU MEAN IT.',
+  tagline: "MUMBAI MEN'S STYLE, SINCE 2013.",
   phone: '+91 98765 43210',
   whatsapp: '+91 98765 43210',
   email: 'hello@ohman.in',
   website: 'https://ohman.in',
-  address: '47, Studio Lane, Bandra West, Mumbai, India - 400050',
+  address: '70–72 Sheth Motisha, Opp. Hathibaug, Mazgaon, Mumbai - 400010',
   instagram: 'ohman.world',
   facebook: 'ohman.world',
   youtube: 'ohmantv',

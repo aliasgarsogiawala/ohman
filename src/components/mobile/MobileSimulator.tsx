@@ -100,7 +100,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
   );
 
   const featuredProducts = products.filter((product) => product.featured);
-  const heroProduct = products.find((product) => product.category === 'Shoes') ?? products[0];
+  const heroProduct = products.find((product) => product.category === 'T-Shirts') ?? products[0];
 
   const openProduct = (product: Product) => {
     setShowIntro(false);
@@ -124,7 +124,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
   return (
     <div className="flex h-full items-center justify-center">
       <div
-        className="mobile-shell relative flex w-[390px] max-w-[calc(100vw-20px)] flex-col overflow-hidden rounded-[26px] border-[5px] border-[#252525] bg-[#090909] shadow-[8px_8px_0_#D9FF3F,0_24px_70px_rgba(0,0,0,.55)]"
+        className="mobile-shell relative flex w-[390px] max-w-[calc(100vw-20px)] flex-col overflow-hidden rounded-[26px] border-[5px] border-[#252525] bg-[#090909] shadow-[8px_8px_0_#F7C318,0_24px_70px_rgba(0,0,0,.55)]"
         style={{ height: 'min(800px, calc(100dvh - 76px))', minHeight: 570 }}
       >
         <div className="relative z-50 flex h-7 flex-none items-center justify-between bg-[#090909] px-4 text-[10px] font-semibold text-white">
@@ -139,41 +139,41 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
         {showIntro ? (
           <section className="hero-noise relative flex min-h-0 flex-1 flex-col overflow-hidden bg-[#090909] px-4 pb-4 pt-3">
             <div className="pointer-events-none absolute -right-8 top-12 h-32 w-36 hero-stripes opacity-45" />
-            <div className="pointer-events-none absolute -left-6 top-[43%] h-28 w-28 rotate-45 border-[18px] border-[#8b45ff] opacity-90" />
-            <div className="pointer-events-none absolute right-[-26px] top-[24%] h-[310px] w-[126px] bg-[#cbff16]" />
+            <div className="pointer-events-none absolute -left-6 top-[43%] h-28 w-28 rotate-45 border-[18px] border-[#d9432e] opacity-90" />
+            <div className="pointer-events-none absolute right-[-26px] top-[24%] h-[310px] w-[126px] bg-[#f7c318]" />
             <div className="pointer-events-none absolute bottom-0 left-0 h-36 w-full cross-grid opacity-40" />
             <div className="pointer-events-none absolute bottom-[98px] left-0 h-px w-full bg-white/25" />
 
             <header className="relative z-30 flex items-start justify-between border-b border-white/20 pb-2">
-              <div className="font-mono text-[8px] tracking-[0.13em] text-[#cbff16]">
-                OH MAN. / FIELD CATALOGUE
+              <div className="font-mono text-[8px] tracking-[0.13em] text-[#f7c318]">
+                OH MAN / MENSWEAR
                 <br />
-                ISSUE 01 — 2026
+                MAZGAON — EST. 2013
               </div>
-              <div className="flex h-8 w-8 items-center justify-center border border-[#cbff16] font-bebas text-xs text-[#cbff16]">
+              <div className="flex h-8 w-8 items-center justify-center border border-[#f7c318] font-bebas text-xs text-[#f7c318]">
                 OM
               </div>
             </header>
 
             <div className="relative z-30 mt-4">
-              <p className="mb-1 font-mono text-[8px] tracking-[0.22em] text-[#bdbdbd]">MADE FOR THE LONG WAY</p>
+              <p className="mb-1 font-mono text-[8px] tracking-[0.22em] text-[#bdbdbd]">MUMBAI'S EVERYDAY UNIFORM</p>
               <h1 className="font-bebas text-[51px] leading-[0.78] tracking-[-0.025em] text-white">
-                MOVE
+                DRESS
                 <br />
-                WITH
+                LIKE
                 <br />
-                <span className="text-[#cbff16]">PURPOSE.</span>
+                <span className="text-[#f7c318]">YOU MEAN IT.</span>
               </h1>
             </div>
 
             <div className="relative z-30 mt-3 flex items-start justify-between">
               <p className="max-w-[128px] text-[9px] font-medium leading-[1.45] text-[#d0d0d0]">
-                Utility pieces for city miles, trail days and every move in between.
+                Shirts, jeans, tees and footwear for every day, every plan, every version of you.
               </p>
               <div className="om-stamp mr-1 bg-[#f4f2eb] px-1.5 py-1 font-mono text-[7px] leading-[1.45] text-black">
                 1,500+<br />
-                OBJECTS<br />
-                TO MOVE
+                MEN'S<br />
+                STYLES
               </div>
             </div>
 
@@ -185,13 +185,13 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
 
             <div className="relative z-30 mt-auto">
               <div className="mb-2 flex items-center justify-between border-y border-white/20 py-1.5 font-mono text-[7px] tracking-[0.12em] text-[#d7d7d7]">
-                <span>CITY / TRAIL / DAILY</span>
-                <span className="text-[#cbff16]">01 — 01</span>
+                <span>SHIRTS / JEANS / FOOTWEAR</span>
+                <span className="text-[#f7c318]">01 — 01</span>
               </div>
               <button
                 type="button"
                 onClick={() => navigate('home')}
-                className="flex w-full items-center justify-between border-2 border-black bg-[#cbff16] px-3 py-2.5 font-bebas text-base tracking-wide text-black shadow-[4px_4px_0_#8b45ff] transition-transform active:translate-x-0.5 active:translate-y-0.5"
+                className="flex w-full items-center justify-between border-2 border-black bg-[#f7c318] px-3 py-2.5 font-bebas text-base tracking-wide text-black shadow-[4px_4px_0_#d9432e] transition-transform active:translate-x-0.5 active:translate-y-0.5"
               >
                 EXPLORE THE CATALOGUE
                 <ArrowUpRight className="h-5 w-5" strokeWidth={2.8} />
@@ -206,7 +206,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                   type="button"
                   onClick={() => setCurrentProduct(null)}
                   aria-label="Back to products"
-                  className="text-white transition-colors hover:text-[#cbff16]"
+                  className="text-white transition-colors hover:text-[#f7c318]"
                 >
                   <ArrowLeft className="h-4 w-4" />
                 </button>
@@ -214,7 +214,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                 <button
                   type="button"
                   aria-label="Open menu"
-                  className="text-white transition-colors hover:text-[#cbff16]"
+                  className="text-white transition-colors hover:text-[#f7c318]"
                 >
                   <Menu className="h-4 w-4" />
                 </button>
@@ -227,7 +227,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
               <button
                 type="button"
                 aria-label={currentProduct ? 'Share product' : 'Contact Oh Man'}
-                className="text-white transition-colors hover:text-[#cbff16]"
+                className="text-white transition-colors hover:text-[#f7c318]"
               >
                 {currentProduct ? (
                   <Share2 className="h-4 w-4" />
@@ -244,7 +244,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
               {currentProduct ? (
                 <div className="pb-24">
                   <div className="relative h-[330px] overflow-hidden border-b border-black bg-[#151515]">
-                    <div className="absolute inset-y-0 right-0 w-[54%] skew-x-[-11deg] bg-[#cbff16]" />
+                    <div className="absolute inset-y-0 right-0 w-[54%] skew-x-[-11deg] bg-[#f7c318]" />
                     <div className="absolute left-4 top-3 z-10 max-w-[210px]">
                       <h1 className="font-bebas text-[42px] leading-[0.86] tracking-[-0.02em] text-white">
                         {currentProduct.name}
@@ -253,7 +253,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                         ₹{currentProduct.price.toLocaleString()}
                       </p>
                       {currentProduct.tag && (
-                        <span className="mt-2 inline-flex border border-[#cbff16] bg-[#161616] px-2 py-1 font-mono text-[8px] text-[#cbff16]">
+                        <span className="mt-2 inline-flex border border-[#f7c318] bg-[#161616] px-2 py-1 font-mono text-[8px] text-[#f7c318]">
                           ★ {currentProduct.tag}
                         </span>
                       )}
@@ -276,7 +276,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                         onClick={() => openProduct(product)}
                         className={`h-12 border bg-[#d4d4d4] p-1 ${
                           product.id === currentProduct.id
-                            ? 'border-[#cbff16]'
+                            ? 'border-[#f7c318]'
                             : 'border-[#333]'
                         }`}
                       >
@@ -308,7 +308,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                   <div className="absolute bottom-0 left-0 right-0 z-30 flex gap-2 border-t border-[#242424] bg-[#090909] p-2">
                     <a
                       href={`tel:${businessSettings.phone}`}
-                      className="flex-1 border border-black bg-[#cbff16] py-2.5 text-center font-bebas text-sm text-black"
+                      className="flex-1 border border-black bg-[#f7c318] py-2.5 text-center font-bebas text-sm text-black"
                     >
                       ENQUIRE NOW
                     </a>
@@ -316,7 +316,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                       href={`https://wa.me/${businessSettings.whatsapp.replace(/\D/g, '')}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="flex flex-1 items-center justify-center gap-2 border border-black bg-[#8b45ff] py-2.5 font-bebas text-sm text-white"
+                      className="flex flex-1 items-center justify-center gap-2 border border-black bg-[#d9432e] py-2.5 font-bebas text-sm text-white"
                     >
                       WHATSAPP <MessageCircle className="h-3.5 w-3.5" />
                     </a>
@@ -327,11 +327,11 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                   {activeTab === 'home' && (
                     <div className="space-y-4 px-3 pb-5 pt-2">
                       <div>
-                        <p className="mb-1 font-mono text-[8px] tracking-[0.18em] text-[#cbff16]">ISSUE 01 / 1500 OBJECTS</p>
+                        <p className="mb-1 font-mono text-[8px] tracking-[0.18em] text-[#f7c318]">ISSUE 01 / 1500 OBJECTS</p>
                         <h1 className="font-bebas text-[34px] leading-[0.86] tracking-[-0.01em] text-white">
                           THE DAILY
                           <br />
-                          <span className="text-[#cbff16]">UNIFORM.</span>
+                          <span className="text-[#f7c318]">UNIFORM.</span>
                         </h1>
                       </div>
 
@@ -341,7 +341,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                         className="flex h-9 w-full items-center justify-between border border-[#222] bg-[#f1f1f1] pl-3 text-left font-mono text-[9px] text-[#777]"
                       >
                         SEARCH PRODUCTS...
-                        <span className="flex h-full w-11 items-center justify-center bg-[#cbff16] text-black">
+                        <span className="flex h-full w-11 items-center justify-center bg-[#f7c318] text-black">
                           <SlidersHorizontal className="h-4 w-4" />
                         </span>
                       </button>
@@ -395,7 +395,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                       <h1 className="font-bebas text-[34px] leading-none text-white">
                         SHOP BY
                         <br />
-                        <span className="text-[#cbff16]">CATEGORY</span>
+                        <span className="text-[#f7c318]">CATEGORY</span>
                       </h1>
                       <div className="grid grid-cols-2 gap-2">
                         {categories.map((category, index) => {
@@ -435,7 +435,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                             onClick={() => setSelectedCategory(category)}
                             className={`whitespace-nowrap px-3 py-1.5 font-bebas text-[10px] ${
                               selectedCategory === category
-                                ? 'bg-[#cbff16] text-black'
+                                ? 'bg-[#f7c318] text-black'
                                 : 'border border-[#333] bg-[#171717] text-white'
                             }`}
                           >
@@ -449,7 +449,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                           onChange={(event) => setSearchQuery(event.target.value)}
                           placeholder="SEARCH PRODUCTS..."
                           aria-label="Search products"
-                          className="h-9 w-full border border-[#333] bg-[#f2f2f2] px-3 pr-10 font-mono text-[9px] text-black outline-none focus:border-[#cbff16]"
+                          className="h-9 w-full border border-[#333] bg-[#f2f2f2] px-3 pr-10 font-mono text-[9px] text-black outline-none focus:border-[#f7c318]"
                         />
                         <Search className="absolute right-3 top-2.5 h-4 w-4 text-black" />
                       </div>
@@ -474,7 +474,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                           </h1>
                           <p className="mt-2 text-[10px] text-[#c8c8c8]">We’re here to help.</p>
                         </div>
-                        <div className="mt-1 flex h-16 w-16 items-center justify-center bg-[#8b45ff] text-black">
+                        <div className="mt-1 flex h-16 w-16 items-center justify-center bg-[#d9432e] text-black">
                           <ArrowUpRight className="h-11 w-11" strokeWidth={2.8} />
                         </div>
                       </div>
@@ -513,7 +513,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                               type="button"
                               key={index}
                               aria-label={['Instagram', 'Facebook', 'YouTube'][index]}
-                              className="flex items-center justify-center py-2 text-white hover:text-[#cbff16]"
+                              className="flex items-center justify-center py-2 text-white hover:text-[#f7c318]"
                             >
                               <Icon className="h-4 w-4" />
                             </button>
@@ -527,19 +527,19 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                     <div className="space-y-4 p-4">
                       <div className="border border-[#303030] bg-[#151515] p-4">
                         <div className="flex items-center gap-3">
-                          <div className="flex h-12 w-12 items-center justify-center bg-[#cbff16] font-bebas text-xl text-black">
+                          <div className="flex h-12 w-12 items-center justify-center bg-[#f7c318] font-bebas text-xl text-black">
                             OM
                           </div>
                           <div>
                             <h1 className="font-bebas text-2xl text-white">OH MAN MEMBER</h1>
-                            <p className="font-mono text-[8px] text-[#cbff16]">ADVENTURE CLUB / 2026</p>
+                            <p className="font-mono text-[8px] text-[#f7c318]">ADVENTURE CLUB / 2026</p>
                           </div>
                         </div>
                       </div>
                       <div className="border border-[#303030] bg-[#151515] p-4">
                         <div className="flex items-center justify-between">
                           <span className="font-bebas text-sm text-white">SAVED OBJECTS</span>
-                          <span className="font-mono text-xs text-[#cbff16]">{wishlist.length}</span>
+                          <span className="font-mono text-xs text-[#f7c318]">{wishlist.length}</span>
                         </div>
                         <div className="mt-3 space-y-2">
                           {wishlist.length ? (
@@ -553,7 +553,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                                   className="flex w-full items-center justify-between border-t border-[#2a2a2a] pt-2 text-left"
                                 >
                                   <span className="font-bebas text-xs text-white">{product.name}</span>
-                                  <span className="font-mono text-[9px] text-[#cbff16]">
+                                  <span className="font-mono text-[9px] text-[#f7c318]">
                                     ₹{product.price.toLocaleString()}
                                   </span>
                                 </button>
@@ -587,7 +587,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                     key={tab}
                     onClick={() => navigate(tab)}
                     className={`flex flex-col items-center justify-center gap-0.5 transition-colors ${
-                      activeTab === tab ? 'bg-[#cbff16] text-black' : 'text-[#a5a5a5]'
+                      activeTab === tab ? 'bg-[#f7c318] text-black' : 'text-[#a5a5a5]'
                     }`}
                   >
                     <Icon className="h-4 w-4" strokeWidth={1.8} />
@@ -635,7 +635,7 @@ function ProductGrid({
                 product={product}
                 className="transition-transform duration-300 group-hover:scale-105"
               />
-              <span className="absolute left-0 top-0 h-full w-1 bg-[#cbff16]" />
+              <span className="absolute left-0 top-0 h-full w-1 bg-[#f7c318]" />
               <span
                 role="button"
                 tabIndex={0}
@@ -663,7 +663,7 @@ function ProductGrid({
                 <span className="font-mono text-[10px] font-bold">
                   ₹{product.price.toLocaleString()}
                 </span>
-                <span className="flex h-5 w-5 items-center justify-center bg-[#cbff16] text-base leading-none">
+                <span className="flex h-5 w-5 items-center justify-center bg-[#f7c318] text-base leading-none">
                   +
                 </span>
               </div>
@@ -701,7 +701,7 @@ function ContactRow({
           <span className="block truncate font-mono text-[8px] text-[#333]">{value}</span>
         </div>
       </div>
-      <span className="flex h-8 w-8 flex-none items-center justify-center bg-[#cbff16] text-black">
+      <span className="flex h-8 w-8 flex-none items-center justify-center bg-[#f7c318] text-black">
         <ArrowUpRight className="h-4 w-4" />
       </span>
     </>

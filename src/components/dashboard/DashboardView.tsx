@@ -45,6 +45,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
   const [productSearch, setProductSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('ALL');
+  const [isLoggedOut, setIsLoggedOut] = useState(false);
 
   // Add Product Form State
   const [newProdName, setNewProdName] = useState('');
@@ -88,6 +89,84 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     const matchesSearch = p.name.toLowerCase().includes(productSearch.toLowerCase()) || p.category.toLowerCase().includes(productSearch.toLowerCase());
     return matchesCat && matchesSearch;
   });
+
+  if (isLoggedOut) {
+    const heroStyle = products.find(product => product.category === 'T-Shirts') ?? products[0];
+    const secondStyle = products.find(product => product.category === 'Shoes') ?? products[1];
+
+    return (
+      <div className="relative flex h-full min-h-[560px] overflow-hidden bg-[#f4f0e8] text-black">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-2 bg-[#F7C318]" />
+        <div className="pointer-events-none absolute bottom-0 right-0 h-[46%] w-[42%] bg-[#F7C318]" />
+        <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full border-[48px] border-[#D9432E] opacity-95" />
+
+        <div className="relative z-10 grid h-full w-full grid-cols-1 lg:grid-cols-[1.05fr_.95fr]">
+          <section className="flex min-h-0 flex-col justify-between p-6 sm:p-10 xl:p-14">
+            <div className="flex items-center justify-between border-b border-black/20 pb-4">
+              <div>
+                <div className="ohman-wordmark text-[34px] leading-none">OH MAN</div>
+                <p className="mt-1 font-mono text-[8px] tracking-[0.18em] text-[#6f675c]">MAZGAON / MUMBAI / EST. 2013</p>
+              </div>
+              <span className="rounded-full border border-black/25 px-3 py-1.5 font-mono text-[8px] tracking-[0.12em]">
+                CATALOGUE SYSTEM
+              </span>
+            </div>
+
+            <div className="my-auto max-w-[680px] py-8">
+              <p className="mb-3 font-mono text-[10px] font-medium tracking-[0.2em] text-[#D9432E]">WELCOME BACK, ADMIN</p>
+              <h1 className="font-bebas text-[56px] leading-[0.84] tracking-[-0.02em] sm:text-[76px] xl:text-[94px]">
+                YOUR STORE.
+                <br />
+                <span className="text-[#D9432E]">ONE CONTROL</span>
+                <br />
+                ROOM.
+              </h1>
+              <p className="mt-5 max-w-md text-sm leading-relaxed text-[#5e574e]">
+                Manage every product, category, campaign and customer enquiry from one focused dashboard.
+              </p>
+
+              <button
+                type="button"
+                onClick={() => setIsLoggedOut(false)}
+                className="mt-7 inline-flex items-center gap-3 border-2 border-black bg-[#F7C318] px-6 py-3 font-bebas text-lg tracking-wide shadow-[5px_5px_0_#000] transition-transform hover:-translate-y-0.5 active:translate-x-1 active:translate-y-1 active:shadow-none"
+              >
+                ENTER DASHBOARD
+                <ArrowUpRight className="h-5 w-5" strokeWidth={2.5} />
+              </button>
+            </div>
+
+            <div className="grid max-w-xl grid-cols-3 border-y border-black/20 py-4">
+              {[
+                ['1,500+', 'PRODUCTS'],
+                ['06', 'CATEGORIES'],
+                ['428', 'ENQUIRIES'],
+              ].map(([value, label]) => (
+                <div key={label} className="border-r border-black/20 px-3 first:pl-0 last:border-r-0">
+                  <p className="font-bebas text-2xl leading-none">{value}</p>
+                  <p className="mt-1 font-mono text-[7px] tracking-[0.14em] text-[#746d63]">{label}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="relative hidden min-h-0 overflow-hidden border-l-2 border-black bg-[#111] lg:block">
+            <div className="absolute left-6 top-6 z-20 border border-white/25 bg-black px-3 py-2 font-mono text-[8px] tracking-[0.14em] text-white">
+              OH MAN / COLLECTION 2026
+            </div>
+            <div className="absolute bottom-10 left-8 top-20 w-[48%] rotate-[-4deg] overflow-hidden border-2 border-black bg-white shadow-[9px_9px_0_#D9432E]">
+              {heroStyle && <img src={heroStyle.images[0]} alt={heroStyle.name} className="h-full w-full object-cover" />}
+              <span className="absolute bottom-3 left-3 bg-black px-2 py-1 font-bebas text-sm text-white">NEW SEASON</span>
+            </div>
+            <div className="absolute bottom-20 right-5 top-32 w-[46%] rotate-[5deg] overflow-hidden border-2 border-black bg-[#F7C318] shadow-[9px_9px_0_#f4f0e8]">
+              {secondStyle && <img src={secondStyle.images[0]} alt={secondStyle.name} className="h-full w-full object-cover" />}
+              <span className="absolute right-3 top-3 bg-[#F7C318] px-2 py-1 font-bebas text-sm text-black">1,500+ STYLES</span>
+            </div>
+            <p className="absolute bottom-4 right-5 z-20 font-bebas text-2xl tracking-wide text-white">DRESS LIKE YOU MEAN IT.</p>
+          </section>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-full min-h-0 overflow-hidden bg-[#0B0B0B] font-sans text-white">
@@ -155,7 +234,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
         {/* Footer Logout */}
         <div className="pt-4 border-t border-[#262626]">
-          <button className="w-full flex items-center space-x-2 text-accentDanger font-bebas text-sm hover:underline">
+          <button
+            type="button"
+            onClick={() => setIsLoggedOut(true)}
+            className="w-full flex items-center space-x-2 text-accentDanger font-bebas text-sm hover:underline"
+          >
             <LogOut className="w-4 h-4" />
             <span>LOGOUT</span>
           </button>

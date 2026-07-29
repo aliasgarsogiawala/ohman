@@ -24,6 +24,7 @@ import {
   UsersRound,
   Wifi,
   Play,
+  X,
 } from 'lucide-react';
 import { BusinessSettings, Category, Product } from '../../types';
 
@@ -66,6 +67,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
   const [wishlist, setWishlist] = useState<string[]>([]);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const scrollRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -82,6 +84,15 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
       scrollRef.current.scrollTop = 0;
     }
   }, [activeTab, currentProduct, showIntro]);
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsMenuOpen(false);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [isMenuOpen]);
 
   const filteredProducts = useMemo(
     () =>
@@ -103,12 +114,14 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
   const heroProduct = products.find((product) => product.category === 'T-Shirts') ?? products[0];
 
   const openProduct = (product: Product) => {
+    setIsMenuOpen(false);
     setShowIntro(false);
     setCurrentProduct(product);
     onProductSelect?.(product.id);
   };
 
   const navigate = (tab: TabType) => {
+    setIsMenuOpen(false);
     setShowIntro(false);
     setCurrentProduct(null);
     setActiveTab(tab);
@@ -135,6 +148,84 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
             <BatteryFull className="h-3.5 w-3.5" strokeWidth={2.6} />
           </div>
         </div>
+
+        {isMenuOpen && (
+          <div className="absolute inset-x-0 bottom-0 top-7 z-40">
+            <button
+              type="button"
+              aria-label="Close menu"
+              onClick={() => setIsMenuOpen(false)}
+              className="absolute inset-0 bg-black/70 backdrop-blur-[2px]"
+            />
+            <aside
+              role="dialog"
+              aria-modal="true"
+              aria-label="Main menu"
+              className="absolute bottom-0 left-0 top-0 flex w-[82%] flex-col bg-[#f6f3ed] text-black shadow-[12px_0_0_#f7c318]"
+            >
+              <div className="flex items-start justify-between border-b border-black/15 px-4 py-4">
+                <div>
+                  <div className="ohman-wordmark text-[28px] leading-none">OH MAN</div>
+                  <p className="mt-1 font-mono text-[7px] tracking-[0.16em] text-[#6f6a62]">MENSWEAR / MAZGAON</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsMenuOpen(false)}
+                  aria-label="Close menu"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-black text-white"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              <nav className="px-3 py-4">
+                {(
+                  [
+                    ['home', Home, 'HOME', 'Latest drops & featured styles'],
+                    ['categories', Grid3X3, 'CATEGORIES', 'Browse the full range'],
+                    ['search', Search, 'SEARCH', 'Find any product quickly'],
+                    ['contact', MessageCircle, 'ENQUIRE', 'Talk to the Oh Man team'],
+                    ['profile', User, 'PROFILE', 'Saved styles & preferences'],
+                  ] as const
+                ).map(([tab, Icon, label, helper], index) => (
+                  <button
+                    type="button"
+                    key={tab}
+                    onClick={() => navigate(tab)}
+                    className={`group flex w-full items-center gap-3 border-b border-black/10 px-2 py-3 text-left ${
+                      activeTab === tab ? 'bg-[#f7c318]' : 'hover:bg-white'
+                    }`}
+                  >
+                    <span className="flex h-9 w-9 items-center justify-center rounded-full border border-black/15 bg-white">
+                      <Icon className="h-4 w-4" strokeWidth={1.8} />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-bebas text-base leading-none tracking-wide">{label}</span>
+                      <span className="mt-1 block truncate text-[8px] text-[#716b62]">{helper}</span>
+                    </span>
+                    <span className="font-mono text-[8px] text-[#8a847b]">0{index + 1}</span>
+                  </button>
+                ))}
+              </nav>
+
+              <div className="mt-auto p-4">
+                <div className="rounded-lg bg-black p-4 text-white">
+                  <p className="font-mono text-[7px] tracking-[0.15em] text-[#f7c318]">NEED HELP CHOOSING?</p>
+                  <p className="mt-1 font-bebas text-xl leading-none">TALK TO US.</p>
+                  <a
+                    href={`https://wa.me/${businessSettings.whatsapp.replace(/\D/g, '')}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-3 flex items-center justify-between rounded bg-[#f7c318] px-3 py-2 font-bebas text-xs text-black"
+                  >
+                    WHATSAPP OH MAN
+                    <ArrowUpRight className="h-4 w-4" />
+                  </a>
+                </div>
+              </div>
+            </aside>
+          </div>
+        )}
 
         {showIntro ? (
           <section className="mobile-scroll min-h-0 flex-1 overflow-y-auto bg-[#f6f3ed] text-black">
@@ -273,7 +364,9 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
               ) : (
                 <button
                   type="button"
+                  onClick={() => setIsMenuOpen(true)}
                   aria-label="Open menu"
+                  aria-expanded={isMenuOpen}
                   className="text-white transition-colors hover:text-[#f7c318]"
                 >
                   <Menu className="h-4 w-4" />
@@ -286,6 +379,9 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
 
               <button
                 type="button"
+                onClick={() => {
+                  if (!currentProduct) navigate('contact');
+                }}
                 aria-label={currentProduct ? 'Share product' : 'Contact Oh Man'}
                 className="text-white transition-colors hover:text-[#f7c318]"
               >

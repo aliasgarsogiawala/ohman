@@ -49,7 +49,7 @@ const ProductImage = ({
   <img
     src={product.images[0]}
     alt={product.name}
-    className={`h-full w-full object-contain grayscale contrast-125 ${className}`}
+    className={`h-full w-full object-contain ${className}`}
   />
 );
 
@@ -137,66 +137,126 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
         </div>
 
         {showIntro ? (
-          <section className="hero-noise relative flex min-h-0 flex-1 flex-col overflow-hidden bg-[#090909] px-4 pb-4 pt-3">
-            <div className="pointer-events-none absolute -right-8 top-12 h-32 w-36 hero-stripes opacity-45" />
-            <div className="pointer-events-none absolute -left-6 top-[43%] h-28 w-28 rotate-45 border-[18px] border-[#d9432e] opacity-90" />
-            <div className="pointer-events-none absolute right-[-26px] top-[24%] h-[310px] w-[126px] bg-[#f7c318]" />
-            <div className="pointer-events-none absolute bottom-0 left-0 h-36 w-full cross-grid opacity-40" />
-            <div className="pointer-events-none absolute bottom-[98px] left-0 h-px w-full bg-white/25" />
-
-            <header className="relative z-30 flex items-start justify-between border-b border-white/20 pb-2">
-              <div className="font-mono text-[8px] tracking-[0.13em] text-[#f7c318]">
-                OH MAN / MENSWEAR
-                <br />
-                MAZGAON — EST. 2013
+          <section className="mobile-scroll min-h-0 flex-1 overflow-y-auto bg-[#f6f3ed] text-black">
+            <header className="flex items-center justify-between px-4 pb-2 pt-3">
+              <div>
+                <div className="ohman-wordmark text-[25px] leading-none">OH MAN</div>
+                <p className="mt-1 font-mono text-[7px] tracking-[0.16em] text-[#6f6a62]">
+                  MENSWEAR / MAZGAON
+                </p>
               </div>
-              <div className="flex h-8 w-8 items-center justify-center border border-[#f7c318] font-bebas text-xs text-[#f7c318]">
-                OM
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => navigate('contact')}
+                  aria-label="Contact Oh Man"
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-[#d8d2c8] bg-white"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigate('profile')}
+                  aria-label="Open profile"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-black text-white"
+                >
+                  <User className="h-4 w-4" />
+                </button>
               </div>
             </header>
 
-            <div className="relative z-30 mt-4">
-              <p className="mb-1 font-mono text-[8px] tracking-[0.22em] text-[#bdbdbd]">MUMBAI'S EVERYDAY UNIFORM</p>
-              <h1 className="font-bebas text-[51px] leading-[0.78] tracking-[-0.025em] text-white">
-                DRESS
-                <br />
-                LIKE
-                <br />
-                <span className="text-[#f7c318]">YOU MEAN IT.</span>
-              </h1>
+            <div className="px-4">
+              <button
+                type="button"
+                onClick={() => navigate('search')}
+                className="flex h-10 w-full items-center gap-2 rounded-lg border border-[#ddd7cd] bg-white px-3 text-left text-[10px] text-[#827c73] shadow-[0_2px_10px_rgba(22,18,10,.04)]"
+              >
+                <Search className="h-4 w-4 text-black" />
+                Search 1,500+ styles
+              </button>
             </div>
 
-            <div className="relative z-30 mt-3 flex items-start justify-between">
-              <p className="max-w-[128px] text-[9px] font-medium leading-[1.45] text-[#d0d0d0]">
-                Shirts, jeans, tees and footwear for every day, every plan, every version of you.
-              </p>
-              <div className="om-stamp mr-1 bg-[#f4f2eb] px-1.5 py-1 font-mono text-[7px] leading-[1.45] text-black">
-                1,500+<br />
-                MEN'S<br />
-                STYLES
-              </div>
+            <div className="mt-4 flex gap-3 overflow-x-auto px-4 pb-1 scrollbar-none">
+              {([
+                ['T-SHIRTS', Shirt],
+                ['SHIRTS', Shirt],
+                ['JEANS', SlidersHorizontal],
+                ['SHOES', Footprints],
+                ['MORE', Grid3X3],
+              ] as const).map(([label, Icon]) => (
+                <button
+                  type="button"
+                  key={label}
+                  onClick={() => navigate('categories')}
+                  className="flex w-[58px] flex-none flex-col items-center gap-1.5"
+                >
+                  <span className="flex h-14 w-14 items-center justify-center rounded-full border border-[#ded8cf] bg-white">
+                    <Icon className="h-5 w-5" strokeWidth={1.6} />
+                  </span>
+                  <span className="font-bebas text-[9px] tracking-[0.08em]">{label}</span>
+                </button>
+              ))}
             </div>
 
             {heroProduct && (
-              <div className="pointer-events-none absolute bottom-[78px] right-[-22px] z-20 h-[274px] w-[298px] -rotate-[11deg] drop-shadow-[0_28px_13px_rgba(0,0,0,.8)]">
-                <ProductImage product={heroProduct} className="brightness-[1.18] contrast-150" />
-              </div>
-            )}
-
-            <div className="relative z-30 mt-auto">
-              <div className="mb-2 flex items-center justify-between border-y border-white/20 py-1.5 font-mono text-[7px] tracking-[0.12em] text-[#d7d7d7]">
-                <span>SHIRTS / JEANS / FOOTWEAR</span>
-                <span className="text-[#f7c318]">01 — 01</span>
-              </div>
               <button
                 type="button"
-                onClick={() => navigate('home')}
-                className="flex w-full items-center justify-between border-2 border-black bg-[#f7c318] px-3 py-2.5 font-bebas text-base tracking-wide text-black shadow-[4px_4px_0_#d9432e] transition-transform active:translate-x-0.5 active:translate-y-0.5"
+                onClick={() => openProduct(heroProduct)}
+                className="relative mx-4 mt-4 block h-[230px] w-[calc(100%_-_2rem)] overflow-hidden rounded-xl bg-[#f7c318] text-left"
               >
-                EXPLORE THE CATALOGUE
-                <ArrowUpRight className="h-5 w-5" strokeWidth={2.8} />
+                <div className="relative z-20 max-w-[52%] p-4">
+                  <span className="inline-flex rounded-full bg-black px-2 py-1 font-mono text-[7px] tracking-[0.1em] text-white">
+                    NEW COLLECTION
+                  </span>
+                  <h1 className="mt-3 font-bebas text-[38px] leading-[0.86] tracking-[-0.01em]">
+                    YOUR NEXT
+                    <br />
+                    FAVOURITE
+                    <br />
+                    FIT.
+                  </h1>
+                  <span className="mt-4 inline-flex items-center gap-1 border-b border-black pb-0.5 font-bebas text-[11px] tracking-wide">
+                    DISCOVER NOW <ArrowUpRight className="h-3 w-3" />
+                  </span>
+                </div>
+                <div className="absolute -bottom-2 -right-5 h-[220px] w-[215px]">
+                  <ProductImage product={heroProduct} className="drop-shadow-[0_18px_12px_rgba(0,0,0,.18)]" />
+                </div>
+                <span className="absolute right-3 top-3 z-20 font-mono text-[7px] tracking-[0.12em]">EST. 2013</span>
               </button>
-            </div>
+            )}
+
+            <section className="px-4 pb-4 pt-5">
+              <div className="mb-2.5 flex items-end justify-between">
+                <div>
+                  <p className="font-mono text-[7px] tracking-[0.14em] text-[#8b857c]">CURATED FOR YOU</p>
+                  <h2 className="font-bebas text-[20px] leading-none">FRESH DROPS</h2>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => navigate('home')}
+                  className="font-bebas text-[9px] tracking-wide underline underline-offset-4"
+                >
+                  VIEW ALL
+                </button>
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                {featuredProducts.slice(0, 3).map((product) => (
+                  <button
+                    type="button"
+                    key={product.id}
+                    onClick={() => openProduct(product)}
+                    className="min-w-0 text-left"
+                  >
+                    <div className="h-[104px] overflow-hidden rounded-lg bg-white">
+                      <ProductImage product={product} />
+                    </div>
+                    <p className="mt-1.5 truncate text-[8px] font-semibold">{product.name}</p>
+                    <p className="mt-0.5 font-mono text-[8px] text-[#6f6a62]">₹{product.price.toLocaleString()}</p>
+                  </button>
+                ))}
+              </div>
+            </section>
           </section>
         ) : (
           <>

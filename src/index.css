@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -15,6 +15,7 @@
   body {
     @apply m-0 bg-[#0B0B0B] font-sans text-white selection:bg-[#D9FF3F] selection:text-black;
     min-width: 320px;
+    background-image: radial-gradient(circle at 78% 12%, rgba(217, 255, 63, 0.08), transparent 24rem);
   }
 
   button,
@@ -68,6 +69,10 @@
   letter-spacing: 0.05em;
 }
 
+.font-mono {
+  font-family: 'DM Mono', monospace;
+}
+
 .scrollbar-none {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -90,6 +95,36 @@
     rgba(255, 255, 255, 0.32) 11px,
     rgba(255, 255, 255, 0.32) 17px
   );
+}
+
+/* Oh Man: imperfectly precise, deliberately loud. */
+.om-shell::before {
+  position: fixed;
+  z-index: 60;
+  top: 0;
+  right: 10px;
+  width: 62px;
+  height: 3px;
+  background: #d9ff3f;
+  content: '';
+}
+
+.om-shell main h2 {
+  letter-spacing: 0.08em;
+}
+
+.om-stamp {
+  border: 2px solid #0b0b0b;
+  box-shadow: 3px 3px 0 #0b0b0b;
+  transform: rotate(-3deg);
+}
+
+.om-cut {
+  clip-path: polygon(0 0, 100% 0, 100% 84%, 86% 100%, 0 100%);
+}
+
+.om-rule {
+  background: repeating-linear-gradient(90deg, #d9ff3f 0 16px, transparent 16px 21px);
 }
 
 .cross-grid {

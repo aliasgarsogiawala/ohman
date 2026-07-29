@@ -52,28 +52,28 @@ export function App() {
     return (
       <div className="flex h-screen flex-col items-center justify-center space-y-4 bg-[#0B0B0B]">
         <div className="flex h-16 w-16 items-center justify-center border-2 border-black bg-[#D9FF3F] font-bebas text-3xl text-black shadow-[4px_4px_0px_#000] animate-bounce">
-          GZ
+          OM
         </div>
         <span className="font-bebas text-lg tracking-[0.18em] text-white animate-pulse">
-          LOADING THE RANGE...
+          LOADING OH MAN...
         </span>
       </div>
     );
   }
 
   return (
-    <div className="flex h-[100dvh] flex-col overflow-hidden bg-[#0B0B0B]">
-      <header className="z-50 flex h-11 flex-shrink-0 items-center justify-between border-b border-[#303030] bg-[#0c0c0c] px-3 sm:px-4">
+    <div className="flex h-[100dvh] flex-col overflow-hidden bg-[#0B0B0B] om-shell">
+      <header className="z-50 flex h-12 flex-shrink-0 items-center justify-between border-b-2 border-black bg-[#f4f2eb] px-3 text-black sm:px-4">
         <div className="flex items-center gap-2">
-          <span className="flex h-6 w-6 items-center justify-center bg-[#D9FF3F] font-bebas text-[11px] text-black">
-            GZ
+          <span className="flex h-7 w-7 items-center justify-center border border-black bg-[#D9FF3F] font-bebas text-[12px] text-black shadow-[2px_2px_0_#000]">
+            OM
           </span>
-          <span className="hidden font-bebas text-sm tracking-[0.12em] text-white sm:inline">
-            GEAR ZONE / CATALOGUE SYSTEM
+          <span className="hidden font-bebas text-base tracking-[0.1em] text-black sm:inline">
+            OH MAN. / PRODUCT ARCHIVE
           </span>
         </div>
 
-        <div className="flex items-center gap-0.5 border border-[#303030] bg-black p-0.5">
+          <div className="flex items-center gap-0.5 border-2 border-black bg-black p-0.5 shadow-[2px_2px_0_#000]">
           <button
             onClick={() => setViewMode('split')}
             className={`hidden items-center gap-1 px-2 py-1 font-bebas text-[10px] tracking-wider transition-colors lg:flex ${

@@ -1,15 +1,15 @@
 import { Product, Category, BusinessSettings } from '../types';
 
 export const initialCategories: Category[] = [
-  { id: 'cat-1', name: 'Shoes', iconName: 'Footprints', productCount: 42, description: 'High-performance street and trail footwear' },
-  { id: 'cat-2', name: 'Trek Bags', iconName: 'Backpack', productCount: 28, description: 'Rugged ergonomic backpacks for expedition' },
-  { id: 'cat-3', name: 'Travel Bags', iconName: 'Luggage', productCount: 19, description: 'Heavy-duty duffels and weekenders' },
-  { id: 'cat-4', name: 'T-Shirts', iconName: 'Shirt', productCount: 65, description: 'Heavyweight oversized streetwear tops' },
-  { id: 'cat-5', name: 'Corsets', iconName: 'Layers', productCount: 14, description: 'Tactical and technical structured vests' },
-  { id: 'cat-6', name: 'Accessories', iconName: 'Hat', productCount: 37, description: 'Headwear, straps, and utility gear' },
+  { id: 'cat-1', name: 'Shoes', iconName: 'Footprints', productCount: 284, description: 'Built-up soles, trail grip and daily movement.' },
+  { id: 'cat-2', name: 'Trek Bags', iconName: 'Backpack', productCount: 312, description: 'Rugged carry systems for the long way around.' },
+  { id: 'cat-3', name: 'Travel Bags', iconName: 'Luggage', productCount: 228, description: 'Hard-wearing duffels, weekender and transit bags.' },
+  { id: 'cat-4', name: 'T-Shirts', iconName: 'Shirt', productCount: 356, description: 'Heavyweight oversized layers with a point of view.' },
+  { id: 'cat-5', name: 'Corsets', iconName: 'Layers', productCount: 126, description: 'Utility vests and technical structure.' },
+  { id: 'cat-6', name: 'Accessories', iconName: 'Hat', productCount: 194, description: 'Small objects that do the heavy lifting.' },
 ];
 
-export const initialProducts: Product[] = [
+const heroProducts: Product[] = [
   {
     id: 'prod-1',
     name: 'Summit Pro 40L',
@@ -312,15 +312,37 @@ export const initialProducts: Product[] = [
   }
 ];
 
+// The first entries are curated for the mobile experience. The remainder gives
+// the dashboard a realistic 1,500-SKU client-demo catalogue without making the
+// first screen repetitive.
+const collectionNames = ['Field', 'Static', 'Midnight', 'Concrete', 'Signal', 'After Hours', 'North', 'Off Grid'];
+export const initialProducts: Product[] = [
+  ...heroProducts,
+  ...Array.from({ length: 1500 - heroProducts.length }, (_, index) => {
+    const source = heroProducts[index % heroProducts.length];
+    const sequence = String(index + heroProducts.length + 1).padStart(4, '0');
+    const collection = collectionNames[index % collectionNames.length];
+    return {
+      ...source,
+      id: `om-${sequence}`,
+      name: `${collection} ${source.name}`,
+      price: source.price + ((index % 6) * 100),
+      featured: false,
+      createdAt: `2026-07-${String((index % 28) + 1).padStart(2, '0')}`,
+      tag: index % 17 === 0 ? 'NEW DROP' : undefined,
+    };
+  }),
+];
+
 export const demoOrders = [
-  { id: 'GZ-1048', customer: 'Arjun Mehta', item: 'Summit Pro 40L', total: 3499, status: 'PAID', date: '28 Jul 2026' },
-  { id: 'GZ-1047', customer: 'Naina Kapoor', item: 'Velocity Runner 2', total: 3299, status: 'PACKED', date: '28 Jul 2026' },
-  { id: 'GZ-1046', customer: 'Rohan Shah', item: 'Transit Sling 8L', total: 1299, status: 'SHIPPED', date: '27 Jul 2026' },
-  { id: 'GZ-1045', customer: 'Mira Desai', item: 'Heavyweight Logo Tee', total: 1099, status: 'DELIVERED', date: '27 Jul 2026' },
-  { id: 'GZ-1044', customer: 'Kabir Rao', item: 'Expedition Duffel 80L', total: 3899, status: 'PAID', date: '26 Jul 2026' },
-  { id: 'GZ-1043', customer: 'Ishita Sen', item: 'Utility Chest Rig', total: 1899, status: 'PACKED', date: '26 Jul 2026' },
-  { id: 'GZ-1042', customer: 'Dev Malhotra', item: 'Terra Grip Trail', total: 4199, status: 'SHIPPED', date: '25 Jul 2026' },
-  { id: 'GZ-1041', customer: 'Anika Jain', item: 'Metro Weekender', total: 3199, status: 'DELIVERED', date: '24 Jul 2026' },
+  { id: 'OM-1048', customer: 'Arjun Mehta', item: 'Summit Pro 40L', total: 3499, status: 'PAID', date: '28 Jul 2026' },
+  { id: 'OM-1047', customer: 'Naina Kapoor', item: 'Velocity Runner 2', total: 3299, status: 'PACKED', date: '28 Jul 2026' },
+  { id: 'OM-1046', customer: 'Rohan Shah', item: 'Transit Sling 8L', total: 1299, status: 'SHIPPED', date: '27 Jul 2026' },
+  { id: 'OM-1045', customer: 'Mira Desai', item: 'Heavyweight Logo Tee', total: 1099, status: 'DELIVERED', date: '27 Jul 2026' },
+  { id: 'OM-1044', customer: 'Kabir Rao', item: 'Expedition Duffel 80L', total: 3899, status: 'PAID', date: '26 Jul 2026' },
+  { id: 'OM-1043', customer: 'Ishita Sen', item: 'Utility Chest Rig', total: 1899, status: 'PACKED', date: '26 Jul 2026' },
+  { id: 'OM-1042', customer: 'Dev Malhotra', item: 'Terra Grip Trail', total: 4199, status: 'SHIPPED', date: '25 Jul 2026' },
+  { id: 'OM-1041', customer: 'Anika Jain', item: 'Metro Weekender', total: 3199, status: 'DELIVERED', date: '24 Jul 2026' },
 ];
 
 export const demoContacts = [
@@ -360,15 +382,15 @@ export const demoBanners = [
 ];
 
 export const initialBusinessSettings: BusinessSettings = {
-  name: 'GEAR ZONE.',
-  tagline: 'GEAR THAT MOVES YOU.',
+  name: 'OH MAN.',
+  tagline: 'MOVE LIKE YOU MEAN IT.',
   phone: '+91 98765 43210',
   whatsapp: '+91 98765 43210',
-  email: 'hello@gearzone.in',
-  website: 'https://gearzone.in',
-  address: '123, Adventure Street, Mumbai, India - 400001',
-  instagram: 'gearzone.offcl',
-  facebook: 'gearzone.official',
-  youtube: 'gearzonetv',
+  email: 'hello@ohman.in',
+  website: 'https://ohman.in',
+  address: '47, Studio Lane, Bandra West, Mumbai, India - 400050',
+  instagram: 'ohman.world',
+  facebook: 'ohman.world',
+  youtube: 'ohmantv',
   currency: '₹'
 };

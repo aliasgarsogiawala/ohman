@@ -93,15 +93,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
   return (
     <div className="flex h-full min-h-0 overflow-hidden bg-[#0B0B0B] font-sans text-white">
-      <aside className="z-20 hidden w-52 flex-none flex-col justify-between border-r border-[#292929] bg-[#0B0B0B] p-3 md:flex">
+      <aside className="z-20 hidden w-52 flex-none flex-col justify-between border-r-2 border-[#292929] bg-[#0B0B0B] p-3 md:flex">
         <div>
-          <div className="flex items-start justify-between border-b border-[#262626] pb-5 pt-2">
+          <div className="flex items-start justify-between border-b-2 border-[#262626] pb-5 pt-2">
             <h1 className="font-bebas text-[25px] leading-[0.82] tracking-wide text-white">
-              GEAR
+              OH
               <br />
-              ZONE.
+              MAN.
             </h1>
-            <span className="pt-1 font-mono text-sm leading-3 text-[#565656]">⋮</span>
+            <span className="om-stamp mt-1 bg-[#d9ff3f] px-1 font-mono text-[7px] leading-3 text-black">OM<br/>SYS</span>
           </div>
 
           <nav className="mt-5 space-y-1">
@@ -175,11 +175,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       {/* MAIN CONTENT AREA */}
       <main className="flex min-w-0 flex-1 flex-col overflow-hidden bg-[#0B0B0B]">
         {/* Top Navbar */}
-        <header className="z-10 flex h-14 flex-none items-center justify-between border-b border-[#292929] bg-[#0B0B0B] px-4 lg:px-5">
+        <header className="z-10 flex h-14 flex-none items-center justify-between border-b-2 border-[#292929] bg-[#0B0B0B] px-4 lg:px-5">
           <div className="flex items-center space-x-4">
             <h2 className="font-bebas text-[26px] uppercase tracking-wider text-white">
               {activeTab}
             </h2>
+            <span className="hidden border border-[#363636] px-2 py-1 font-mono text-[8px] text-textGray sm:inline">CATALOGUE / ISSUE 01</span>
           </div>
 
           <div className="flex items-center space-x-3">
@@ -198,20 +199,20 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <div className="space-y-5">
               {/* Stat Cards Grid */}
               <div className="grid grid-cols-2 gap-2 xl:grid-cols-4 xl:gap-3">
-                <div className="flex items-center justify-between border border-[#303030] bg-[#111] p-3">
+                <div className="flex items-center justify-between border-2 border-[#303030] bg-[#111] p-3 shadow-[3px_3px_0_#1d1d1d]">
                   <div>
                     <span className="text-[10px] font-mono text-textGray uppercase block">TOTAL PRODUCTS</span>
-                    <span className="font-bebas text-[34px] font-bold text-white">245</span>
+                    <span className="font-bebas text-[34px] font-bold text-white">{products.length.toLocaleString()}</span>
                   </div>
                   <div className="flex h-9 w-9 items-center justify-center text-[#D9FF3F]">
                     <Package className="w-6 h-6" />
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between border border-[#303030] bg-[#111] p-3">
+                <div className="flex items-center justify-between border-2 border-[#303030] bg-[#111] p-3 shadow-[3px_3px_0_#1d1d1d]">
                   <div>
                     <span className="text-[10px] font-mono text-textGray uppercase block">CATEGORIES</span>
-                    <span className="font-bebas text-[34px] font-bold text-white">18</span>
+                    <span className="font-bebas text-[34px] font-bold text-white">06</span>
                   </div>
                   <div className="flex h-9 w-9 items-center justify-center text-[#D9FF3F]">
                     <Grid className="w-6 h-6" />

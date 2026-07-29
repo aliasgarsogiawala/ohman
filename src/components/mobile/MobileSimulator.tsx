@@ -125,7 +125,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
   return (
     <div className="flex h-full items-center justify-center">
       <div
-        className="mobile-shell relative flex w-[390px] max-w-[calc(100vw-20px)] flex-col overflow-hidden rounded-[26px] border-[5px] border-[#252525] bg-[#090909] shadow-[0_24px_70px_rgba(0,0,0,.55)]"
+        className="mobile-shell relative flex w-[390px] max-w-[calc(100vw-20px)] flex-col overflow-hidden rounded-[26px] border-[5px] border-[#252525] bg-[#090909] shadow-[8px_8px_0_#D9FF3F,0_24px_70px_rgba(0,0,0,.55)]"
         style={{ height: 'min(800px, calc(100dvh - 76px))', minHeight: 570 }}
       >
         <div className="relative z-50 flex h-7 flex-none items-center justify-between bg-[#090909] px-4 text-[10px] font-semibold text-white">
@@ -146,27 +146,26 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
 
             <div className="relative z-30 flex items-start justify-between">
               <h1 className="font-bebas text-[54px] leading-[0.83] tracking-[-0.02em] text-white">
-                GEAR
+                OH
                 <br />
-                THAT
+                MAN.
                 <br />
-                MOVES
+                MOVE
                 <br />
-                YOU.
+                LOUD.
               </h1>
-              <div className="mt-1 text-right font-mono text-sm leading-4 text-[#4a4a4a]">
-                +&nbsp;&nbsp;+
-                <br />
-                +&nbsp;&nbsp;+
+              <div className="om-stamp mt-1 bg-[#f4f2eb] px-1.5 py-1 text-right font-mono text-[8px] leading-3 text-black">
+                EST. 2026<br />
+                / OM-001 /
               </div>
             </div>
 
             <p className="relative z-30 mt-5 max-w-[154px] text-[10px] font-medium leading-[1.35] text-[#c5c5c5]">
-              Premium essentials,
+              Objects for motion,
               <br />
-              built for adventure,
+              built with intent,
               <br />
-              designed for you.
+              made for your day.
             </p>
 
             {heroProduct && (
@@ -178,7 +177,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
             <button
               type="button"
               onClick={() => navigate('home')}
-              className="relative z-30 mt-auto flex w-fit items-center gap-2 border border-black bg-[#cbff16] px-3 py-2 font-bebas text-sm tracking-wide text-black shadow-[3px_3px_0_#fff]"
+              className="relative z-30 mt-auto flex w-fit items-center gap-2 border-2 border-black bg-[#cbff16] px-3 py-2 font-bebas text-sm tracking-wide text-black shadow-[4px_4px_0_#f4f2eb]"
             >
               EXPLORE NOW
               <ArrowUpRight className="h-4 w-4" strokeWidth={2.7} />
@@ -319,10 +318,11 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                   {activeTab === 'home' && (
                     <div className="space-y-4 px-3 pb-5 pt-2">
                       <div>
+                        <p className="mb-1 font-mono text-[8px] tracking-[0.18em] text-[#cbff16]">ISSUE 01 / 1500 OBJECTS</p>
                         <h1 className="font-bebas text-[34px] leading-[0.86] tracking-[-0.01em] text-white">
-                          DISCOVER
+                          THE DAILY
                           <br />
-                          <span className="text-[#cbff16]">OUR RANGE</span>
+                          <span className="text-[#cbff16]">UNIFORM.</span>
                         </h1>
                       </div>
 
@@ -519,17 +519,17 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                       <div className="border border-[#303030] bg-[#151515] p-4">
                         <div className="flex items-center gap-3">
                           <div className="flex h-12 w-12 items-center justify-center bg-[#cbff16] font-bebas text-xl text-black">
-                            GZ
+                            OM
                           </div>
                           <div>
-                            <h1 className="font-bebas text-2xl text-white">GEAR MEMBER</h1>
+                            <h1 className="font-bebas text-2xl text-white">OH MAN MEMBER</h1>
                             <p className="font-mono text-[8px] text-[#cbff16]">ADVENTURE CLUB / 2026</p>
                           </div>
                         </div>
                       </div>
                       <div className="border border-[#303030] bg-[#151515] p-4">
                         <div className="flex items-center justify-between">
-                          <span className="font-bebas text-sm text-white">SAVED GEAR</span>
+                          <span className="font-bebas text-sm text-white">SAVED OBJECTS</span>
                           <span className="font-mono text-xs text-[#cbff16]">{wishlist.length}</span>
                         </div>
                         <div className="mt-3 space-y-2">
@@ -664,7 +664,7 @@ function ProductGrid({
         {!products.length && (
           <div className="col-span-2 flex min-h-36 flex-col items-center justify-center border border-dashed border-[#333] text-[#777]">
             <PackageSearch className="mb-2 h-7 w-7" />
-            <span className="font-mono text-[9px]">NO GEAR FOUND</span>
+            <span className="font-mono text-[9px]">NO OBJECTS FOUND</span>
           </div>
         )}
       </div>

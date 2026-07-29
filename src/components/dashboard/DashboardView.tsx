@@ -15,7 +15,9 @@ import {
   Eye,
   ArrowUpRight,
   Calendar,
-  MessageCircle
+  MessageCircle,
+  Moon,
+  Sun
 } from 'lucide-react';
 import { Product, Category, BusinessSettings } from '../../types';
 import { demoBanners, demoContacts } from '../../data/mockData';
@@ -46,6 +48,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [productSearch, setProductSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('ALL');
   const [isLoggedOut, setIsLoggedOut] = useState(false);
+  const [logoutTheme, setLogoutTheme] = useState<'light' | 'dark'>('light');
 
   // Add Product Form State
   const [newProdName, setNewProdName] = useState('');
@@ -93,77 +96,81 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   if (isLoggedOut) {
     const heroStyle = products.find(product => product.category === 'T-Shirts') ?? products[0];
     const secondStyle = products.find(product => product.category === 'Shoes') ?? products[1];
+    const showcaseStyles = [heroStyle, secondStyle, products[12], products[4]].filter(Boolean) as Product[];
+    const isDark = logoutTheme === 'dark';
 
     return (
-      <div className="relative flex h-full min-h-[560px] overflow-hidden bg-[#f4f0e8] text-black">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-2 bg-[#F7C318]" />
-        <div className="pointer-events-none absolute bottom-0 right-0 h-[46%] w-[42%] bg-[#F7C318]" />
-        <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full border-[48px] border-[#D9432E] opacity-95" />
+      <div className={`flex h-full min-h-[560px] flex-col overflow-y-auto transition-colors duration-300 ${isDark ? 'bg-[#0d0d0d] text-white' : 'bg-[#faf9f6] text-black'}`}>
+        <div className="flex h-8 flex-none items-center justify-center bg-[#F7C318] font-mono text-[8px] font-bold tracking-[0.18em] text-black">
+          OH MAN / MAZGAON / CATALOGUE CONTROL
+        </div>
 
-        <div className="relative z-10 grid h-full w-full grid-cols-1 lg:grid-cols-[1.05fr_.95fr]">
-          <section className="flex min-h-0 flex-col justify-between p-6 sm:p-10 xl:p-14">
-            <div className="flex items-center justify-between border-b border-black/20 pb-4">
-              <div>
-                <div className="ohman-wordmark text-[34px] leading-none">OH MAN</div>
-                <p className="mt-1 font-mono text-[8px] tracking-[0.18em] text-[#6f675c]">MAZGAON / MUMBAI / EST. 2013</p>
-              </div>
-              <span className="rounded-full border border-black/25 px-3 py-1.5 font-mono text-[8px] tracking-[0.12em]">
-                CATALOGUE SYSTEM
-              </span>
-            </div>
+        <header className={`relative flex h-20 flex-none items-center justify-between border-b px-5 lg:px-10 ${isDark ? 'border-white/10' : 'border-black/10'}`}>
+          <span className="font-mono text-[8px] tracking-[0.15em] opacity-55">EST. 2013 / MUMBAI</span>
+          <div className="absolute left-1/2 -translate-x-1/2 text-center">
+            <div className="ohman-wordmark text-[34px] leading-none">OH MAN</div>
+            <p className="mt-1 font-mono text-[7px] tracking-[0.22em] opacity-50">ADMIN EXPERIENCE</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setLogoutTheme(theme => theme === 'light' ? 'dark' : 'light')}
+              aria-label={`Switch to ${isDark ? 'light' : 'dark'} theme`}
+              className={`flex h-10 items-center gap-2 rounded-full border px-3 font-mono text-[8px] ${isDark ? 'border-white/20 bg-white text-black' : 'border-black/15 bg-black text-white'}`}
+            >
+              {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              {isDark ? 'LIGHT' : 'DARK'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsLoggedOut(false)}
+              className="hidden items-center gap-2 rounded-full bg-[#D9432E] px-4 py-2.5 font-bebas text-sm text-white sm:flex"
+            >
+              ENTER DASHBOARD <ArrowUpRight className="h-4 w-4" />
+            </button>
+          </div>
+        </header>
 
-            <div className="my-auto max-w-[680px] py-8">
-              <p className="mb-3 font-mono text-[10px] font-medium tracking-[0.2em] text-[#D9432E]">WELCOME BACK, ADMIN</p>
-              <h1 className="font-bebas text-[56px] leading-[0.84] tracking-[-0.02em] sm:text-[76px] xl:text-[94px]">
-                YOUR STORE.
-                <br />
-                <span className="text-[#D9432E]">ONE CONTROL</span>
-                <br />
-                ROOM.
-              </h1>
-              <p className="mt-5 max-w-md text-sm leading-relaxed text-[#5e574e]">
-                Manage every product, category, campaign and customer enquiry from one focused dashboard.
-              </p>
+        <main className="mx-auto flex w-full max-w-[1500px] flex-1 flex-col px-5 py-8 lg:px-10 xl:py-12">
+          <section className="mx-auto max-w-4xl text-center">
+            <p className="font-mono text-[9px] font-bold tracking-[0.22em] text-[#D9432E]">WELCOME BACK, ADMIN</p>
+            <h1 className="mt-4 font-bebas text-[58px] leading-[0.86] tracking-[-0.02em] sm:text-[76px] xl:text-[92px]">
+              RUN THE WHOLE STORE.
+              <br />
+              <span className="text-[#F7C318]">FROM ONE PLACE.</span>
+            </h1>
+            <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed opacity-60">
+              Products, campaigns, categories and customer enquiries—beautifully organised and ready for action.
+            </p>
+          </section>
 
-              <button
-                type="button"
-                onClick={() => setIsLoggedOut(false)}
-                className="mt-7 inline-flex items-center gap-3 border-2 border-black bg-[#F7C318] px-6 py-3 font-bebas text-lg tracking-wide shadow-[5px_5px_0_#000] transition-transform hover:-translate-y-0.5 active:translate-x-1 active:translate-y-1 active:shadow-none"
-              >
-                ENTER DASHBOARD
-                <ArrowUpRight className="h-5 w-5" strokeWidth={2.5} />
-              </button>
-            </div>
+          <section className="mx-auto mt-8 grid w-full max-w-5xl grid-cols-2 gap-3 sm:grid-cols-4">
+            {showcaseStyles.map((product, index) => (
+              <article key={`${product.id}-${index}`} className={`group relative aspect-[.82] overflow-hidden rounded-2xl ${isDark ? 'bg-[#1a1a1a]' : 'bg-[#eee9e1]'}`}>
+                <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent px-3 pb-3 pt-12 text-white">
+                  <p className="truncate font-bebas text-lg">{product.name}</p>
+                  <p className="font-mono text-[8px] text-[#F7C318]">₹{product.price.toLocaleString()}</p>
+                </div>
+                <span className="absolute left-2 top-2 rounded-full bg-white px-2 py-1 font-mono text-[7px] font-bold text-black">0{index + 1}</span>
+              </article>
+            ))}
+          </section>
 
-            <div className="grid max-w-xl grid-cols-3 border-y border-black/20 py-4">
-              {[
-                ['1,500+', 'PRODUCTS'],
-                ['06', 'CATEGORIES'],
-                ['428', 'ENQUIRIES'],
-              ].map(([value, label]) => (
-                <div key={label} className="border-r border-black/20 px-3 first:pl-0 last:border-r-0">
-                  <p className="font-bebas text-2xl leading-none">{value}</p>
-                  <p className="mt-1 font-mono text-[7px] tracking-[0.14em] text-[#746d63]">{label}</p>
+          <div className={`mx-auto mt-8 flex w-full max-w-5xl flex-col items-center justify-between gap-5 border-y py-5 sm:flex-row ${isDark ? 'border-white/10' : 'border-black/10'}`}>
+            <div className="grid w-full grid-cols-3 text-center sm:max-w-lg">
+              {[[products.length.toLocaleString(), 'PRODUCTS'], [String(categories.length).padStart(2, '0'), 'CATEGORIES'], ['428', 'ENQUIRIES']].map(([value, label]) => (
+                <div key={label} className="border-r border-current/10 last:border-0">
+                  <p className="font-bebas text-3xl leading-none">{value}</p>
+                  <p className="mt-1 font-mono text-[7px] tracking-[0.15em] opacity-50">{label}</p>
                 </div>
               ))}
             </div>
-          </section>
-
-          <section className="relative hidden min-h-0 overflow-hidden border-l-2 border-black bg-[#111] lg:block">
-            <div className="absolute left-6 top-6 z-20 border border-white/25 bg-black px-3 py-2 font-mono text-[8px] tracking-[0.14em] text-white">
-              OH MAN / COLLECTION 2026
-            </div>
-            <div className="absolute bottom-10 left-8 top-20 w-[48%] rotate-[-4deg] overflow-hidden border-2 border-black bg-white shadow-[9px_9px_0_#D9432E]">
-              {heroStyle && <img src={heroStyle.images[0]} alt={heroStyle.name} className="h-full w-full object-cover" />}
-              <span className="absolute bottom-3 left-3 bg-black px-2 py-1 font-bebas text-sm text-white">NEW SEASON</span>
-            </div>
-            <div className="absolute bottom-20 right-5 top-32 w-[46%] rotate-[5deg] overflow-hidden border-2 border-black bg-[#F7C318] shadow-[9px_9px_0_#f4f0e8]">
-              {secondStyle && <img src={secondStyle.images[0]} alt={secondStyle.name} className="h-full w-full object-cover" />}
-              <span className="absolute right-3 top-3 bg-[#F7C318] px-2 py-1 font-bebas text-sm text-black">1,500+ STYLES</span>
-            </div>
-            <p className="absolute bottom-4 right-5 z-20 font-bebas text-2xl tracking-wide text-white">DRESS LIKE YOU MEAN IT.</p>
-          </section>
-        </div>
+            <button type="button" onClick={() => setIsLoggedOut(false)} className="flex items-center gap-3 rounded-full bg-[#F7C318] px-7 py-3 font-bebas text-lg text-black shadow-[4px_4px_0_#D9432E]">
+              OPEN CONTROL ROOM <ArrowUpRight className="h-5 w-5" />
+            </button>
+          </div>
+        </main>
       </div>
     );
   }
@@ -248,8 +255,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       {/* MAIN CONTENT AREA */}
       <main className="flex min-w-0 flex-1 flex-col overflow-hidden bg-[#0B0B0B]">
         {/* Top Navbar */}
-        <header className="z-10 flex h-14 flex-none items-center justify-between border-b-2 border-[#292929] bg-[#0B0B0B] px-4 lg:px-5">
-          <div className="flex items-center space-x-4">
+        <header className="relative z-10 flex h-14 flex-none items-center justify-end border-b-2 border-[#292929] bg-[#0B0B0B] px-4 lg:px-5">
+          <div className="absolute left-1/2 flex -translate-x-1/2 items-center space-x-3 text-center">
             <h2 className="font-bebas text-[26px] uppercase tracking-wider text-white">
               {activeTab}
             </h2>
@@ -509,35 +516,35 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
           {/* VIEW: CATEGORIES GRID */}
           {activeTab === 'categories' && (
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {categories.map(cat => (
-                <div key={cat.id} className="flex min-h-52 flex-col justify-between space-y-4 border border-[#303030] bg-[#141414] p-4">
-                  <div className="flex justify-between items-start">
-                    <div className="w-12 h-12 bg-[#222] border border-[#333] flex items-center justify-center text-[#F7C318]">
-                      <Grid className="w-6 h-6" />
-                    </div>
-                    <span className="font-mono text-xs text-textGray">{cat.productCount} PRODUCTS</span>
-                  </div>
-                  <div>
-                    <h3 className="font-bebas text-2xl text-white">{cat.name}</h3>
-                    <p className="text-xs text-textGray font-sans">{cat.description}</p>
-                    <div className="mt-4 h-1.5 overflow-hidden bg-[#282828]">
-                      <div
-                        className="h-full bg-[#F7C318]"
-                        style={{ width: `${Math.min(100, 28 + cat.productCount)}%` }}
-                      />
-                    </div>
-                    <div className="mt-1 flex justify-between font-mono text-[9px] text-[#777]">
-                      <span>{products.filter(product => product.category === cat.name).length} IN CATALOGUE</span>
-                      <span>{cat.productCount} TOTAL</span>
-                    </div>
-                  </div>
-                  <div className="pt-2 border-t border-[#262626] flex justify-between">
-                    <button className="text-xs font-mono text-[#F7C318] hover:underline">EDIT</button>
-                    <button className="text-xs font-mono text-accentDanger hover:underline">DELETE</button>
-                  </div>
-                </div>
-              ))}
+            <div className="space-y-5">
+              <div className="text-center">
+                <p className="font-mono text-[9px] tracking-[0.18em] text-[#F7C318]">VISUAL CATALOGUE</p>
+                <h2 className="mt-1 font-bebas text-4xl text-white">SHOP CATEGORIES</h2>
+                <p className="mx-auto mt-1 max-w-lg text-xs text-textGray">Every category now has a visual cover so the catalogue feels real at a glance.</p>
+              </div>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                {categories.map((cat, index) => {
+                  const categoryItems = products.filter(product => product.category === cat.name);
+                  const cover = categoryItems[0] ?? products[index % products.length];
+                  return (
+                    <article key={cat.id} className="group overflow-hidden rounded-xl border border-[#303030] bg-[#141414]">
+                      <div className="relative h-48 overflow-hidden bg-[#ece7de]">
+                        {cover && <img src={cover.images[0]} alt={cat.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-transparent" />
+                        <span className="absolute right-3 top-3 rounded-full bg-[#F7C318] px-2.5 py-1 font-mono text-[8px] font-bold text-black">{cat.productCount} STYLES</span>
+                        <h3 className="absolute inset-x-0 bottom-4 text-center font-bebas text-3xl tracking-wide text-white">{cat.name}</h3>
+                      </div>
+                      <div className="p-4 text-center">
+                        <p className="mx-auto min-h-8 max-w-sm text-xs leading-relaxed text-textGray">{cat.description}</p>
+                        <div className="mt-4 flex items-center justify-center gap-5 border-t border-[#2a2a2a] pt-3 font-mono text-[9px]">
+                          <button className="text-[#F7C318] hover:underline">EDIT CATEGORY</button>
+                          <span className="text-[#777]">{categoryItems.length} LIVE</span>
+                        </div>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
             </div>
           )}
 

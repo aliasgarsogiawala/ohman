@@ -3,9 +3,7 @@ import {
   ArrowLeft,
   ArrowUpRight,
   AtSign,
-  Backpack,
   BatteryFull,
-  Footprints,
   Grid3X3,
   Heart,
   Home,
@@ -18,7 +16,6 @@ import {
   Phone,
   Search,
   Share2,
-  Shirt,
   Signal,
   SlidersHorizontal,
   Sun,
@@ -39,8 +36,6 @@ interface MobileSimulatorProps {
 }
 
 type TabType = 'home' | 'categories' | 'search' | 'contact' | 'profile';
-
-const categoryIcons = [Footprints, Backpack, PackageSearch, Shirt, SlidersHorizontal, Grid3X3];
 
 const ProductImage = ({
   product,
@@ -557,7 +552,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                         </div>
                         <div className="grid grid-cols-3 gap-1.5">
                           {categories.slice(0, 6).map((category, index) => {
-                            const Icon = categoryIcons[index % categoryIcons.length];
+                            const cover = products.find(product => product.category === category.name) ?? products[index];
                             return (
                               <button
                                 type="button"
@@ -566,10 +561,11 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                                   setSelectedCategory(category.name);
                                   navigate('search');
                                 }}
-                                className="flex h-[82px] flex-col items-center justify-center border border-black bg-[#f0f0f0] text-black transition-transform active:translate-y-0.5"
+                                className="relative h-[96px] overflow-hidden border border-black bg-[#f0f0f0] text-black transition-transform active:translate-y-0.5"
                               >
-                                <Icon className="h-8 w-8" strokeWidth={1.5} />
-                                <span className="mt-2 font-bebas text-[10px] tracking-wide">
+                                {cover && <ProductImage product={cover} className="object-cover" />}
+                                <span className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                                <span className="absolute inset-x-0 bottom-2 text-center font-bebas text-[11px] tracking-wide text-white">
                                   {category.name}
                                 </span>
                               </button>
@@ -590,14 +586,14 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
 
                   {activeTab === 'categories' && (
                     <div className="space-y-4 p-3">
-                      <h1 className="font-bebas text-[34px] leading-none text-white">
+                      <h1 className="text-center font-bebas text-[34px] leading-none text-white">
                         SHOP BY
                         <br />
                         <span className="text-[#f7c318]">CATEGORY</span>
                       </h1>
                       <div className="grid grid-cols-2 gap-2">
                         {categories.map((category, index) => {
-                          const Icon = categoryIcons[index % categoryIcons.length];
+                          const cover = products.find(product => product.category === category.name) ?? products[index];
                           return (
                             <button
                               type="button"
@@ -606,15 +602,14 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                                 setSelectedCategory(category.name);
                                 navigate('search');
                               }}
-                              className="flex aspect-[1.25] flex-col items-start justify-between border border-black bg-[#ededed] p-3 text-left text-black"
+                              className="relative aspect-[1.05] overflow-hidden rounded-lg border border-black bg-[#ededed] text-left text-black"
                             >
-                              <div className="flex w-full items-start justify-between">
-                                <Icon className="h-8 w-8" strokeWidth={1.5} />
-                                <ArrowUpRight className="h-4 w-4" />
-                              </div>
-                              <div>
-                                <h2 className="font-bebas text-lg">{category.name}</h2>
-                                <p className="font-mono text-[8px]">{category.productCount} PRODUCTS</p>
+                              {cover && <ProductImage product={cover} className="object-cover" />}
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/5 to-transparent" />
+                              <ArrowUpRight className="absolute right-2 top-2 h-5 w-5 rounded-full bg-white p-1 text-black" />
+                              <div className="absolute inset-x-0 bottom-3 text-center text-white">
+                                <h2 className="font-bebas text-xl">{category.name}</h2>
+                                <p className="font-mono text-[7px] text-[#f7c318]">{category.productCount} PRODUCTS</p>
                               </div>
                             </button>
                           );

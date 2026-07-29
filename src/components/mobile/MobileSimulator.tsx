@@ -13,6 +13,7 @@ import {
   MapPin,
   Menu,
   MessageCircle,
+  Moon,
   PackageSearch,
   Phone,
   Search,
@@ -20,6 +21,7 @@ import {
   Shirt,
   Signal,
   SlidersHorizontal,
+  Sun,
   User,
   UsersRound,
   Wifi,
@@ -68,6 +70,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [landingTheme, setLandingTheme] = useState<'light' | 'dark'>('light');
   const scrollRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -112,6 +115,9 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
 
   const featuredProducts = products.filter((product) => product.featured);
   const heroProduct = products.find((product) => product.category === 'T-Shirts') ?? products[0];
+  const landingProducts = products
+    .filter((product) => product.category === 'T-Shirts' || product.category === 'Shoes')
+    .slice(0, 6);
 
   const openProduct = (product: Product) => {
     setIsMenuOpen(false);
@@ -122,7 +128,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
 
   const navigate = (tab: TabType) => {
     setIsMenuOpen(false);
-    setShowIntro(false);
+    setShowIntro(tab === 'home');
     setCurrentProduct(null);
     setActiveTab(tab);
   };
@@ -140,7 +146,9 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
         className="mobile-shell relative flex w-[390px] max-w-[calc(100vw-20px)] flex-col overflow-hidden rounded-[26px] border-[5px] border-[#252525] bg-[#090909] shadow-[8px_8px_0_#F7C318,0_24px_70px_rgba(0,0,0,.55)]"
         style={{ height: 'min(800px, calc(100dvh - 76px))', minHeight: 570 }}
       >
-        <div className="relative z-50 flex h-7 flex-none items-center justify-between bg-[#090909] px-4 text-[10px] font-semibold text-white">
+        <div className={`relative z-50 flex h-7 flex-none items-center justify-between px-4 text-[10px] font-semibold transition-colors ${
+          showIntro && landingTheme === 'light' ? 'bg-[#faf9f6] text-black' : 'bg-[#090909] text-white'
+        }`}>
           <span>9:41</span>
           <div className="flex items-center gap-1">
             <Signal className="h-3 w-3" strokeWidth={2.6} />
@@ -161,7 +169,9 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
               role="dialog"
               aria-modal="true"
               aria-label="Main menu"
-              className="absolute bottom-0 left-0 top-0 flex w-[82%] flex-col bg-[#f6f3ed] text-black shadow-[12px_0_0_#f7c318]"
+              className={`absolute bottom-0 left-0 top-0 flex w-[82%] flex-col shadow-[12px_0_0_#f7c318] ${
+                landingTheme === 'dark' ? 'bg-[#111] text-white' : 'bg-[#f6f3ed] text-black'
+              }`}
             >
               <div className="flex items-start justify-between border-b border-black/15 px-4 py-4">
                 <div>
@@ -228,126 +238,158 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
         )}
 
         {showIntro ? (
-          <section className="mobile-scroll min-h-0 flex-1 overflow-y-auto bg-[#f6f3ed] text-black">
-            <header className="flex items-center justify-between px-4 pb-2 pt-3">
-              <div>
-                <div className="ohman-wordmark text-[25px] leading-none">OH MAN</div>
-                <p className="mt-1 font-mono text-[7px] tracking-[0.16em] text-[#6f6a62]">
-                  MENSWEAR / MAZGAON
-                </p>
+          <section className={`mobile-scroll flex min-h-0 flex-1 flex-col overflow-y-auto transition-colors duration-300 ${
+            landingTheme === 'dark' ? 'bg-[#0c0c0c] text-white' : 'bg-[#faf9f6] text-black'
+          }`}>
+            <div className="flex h-7 flex-none items-center justify-center bg-[#f7c318] font-mono text-[7px] font-bold tracking-[0.15em] text-black">
+              NEW DROPS IN STORE • MAZGAON • OPEN 10AM–9PM
+            </div>
+
+            <header className={`flex h-14 flex-none items-center justify-between border-b px-4 ${
+              landingTheme === 'dark' ? 'border-white/10' : 'border-black/10'
+            }`}>
+              <button
+                type="button"
+                onClick={() => setIsMenuOpen(true)}
+                aria-label="Open menu"
+                className="flex h-9 w-9 items-center justify-start"
+              >
+                <Menu className="h-5 w-5" />
+              </button>
+              <div className="text-center">
+                <div className="ohman-wordmark text-[24px] leading-none">OH MAN</div>
+                <p className="mt-1 font-mono text-[6px] tracking-[0.2em] opacity-55">MENSWEAR / MUMBAI</p>
               </div>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => navigate('contact')}
-                  aria-label="Contact Oh Man"
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-[#d8d2c8] bg-white"
-                >
-                  <MessageCircle className="h-4 w-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigate('profile')}
-                  aria-label="Open profile"
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-black text-white"
-                >
-                  <User className="h-4 w-4" />
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={() => setLandingTheme(theme => theme === 'light' ? 'dark' : 'light')}
+                aria-label={`Switch to ${landingTheme === 'light' ? 'dark' : 'light'} theme`}
+                className={`flex h-9 w-9 items-center justify-center rounded-full border ${
+                  landingTheme === 'dark' ? 'border-white/20 bg-white text-black' : 'border-black/15 bg-black text-white'
+                }`}
+              >
+                {landingTheme === 'light' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+              </button>
             </header>
 
-            <div className="px-4">
+            <div className="px-4 pt-3">
               <button
                 type="button"
                 onClick={() => navigate('search')}
-                className="flex h-10 w-full items-center gap-2 rounded-lg border border-[#ddd7cd] bg-white px-3 text-left text-[10px] text-[#827c73] shadow-[0_2px_10px_rgba(22,18,10,.04)]"
+                className={`flex h-10 w-full items-center gap-2 rounded-full border px-4 text-left text-[9px] ${
+                  landingTheme === 'dark'
+                    ? 'border-white/15 bg-[#181818] text-[#aaa]'
+                    : 'border-black/10 bg-white text-[#777] shadow-[0_4px_16px_rgba(0,0,0,.05)]'
+                }`}
               >
-                <Search className="h-4 w-4 text-black" />
-                Search 1,500+ styles
+                <Search className="h-4 w-4" />
+                What are you looking for?
               </button>
             </div>
 
-            <div className="mt-4 flex gap-3 overflow-x-auto px-4 pb-1 scrollbar-none">
-              {([
-                ['T-SHIRTS', Shirt],
-                ['SHIRTS', Shirt],
-                ['JEANS', SlidersHorizontal],
-                ['SHOES', Footprints],
-                ['MORE', Grid3X3],
-              ] as const).map(([label, Icon]) => (
-                <button
-                  type="button"
-                  key={label}
-                  onClick={() => navigate('categories')}
-                  className="flex w-[58px] flex-none flex-col items-center gap-1.5"
-                >
-                  <span className="flex h-14 w-14 items-center justify-center rounded-full border border-[#ded8cf] bg-white">
-                    <Icon className="h-5 w-5" strokeWidth={1.6} />
-                  </span>
-                  <span className="font-bebas text-[9px] tracking-[0.08em]">{label}</span>
-                </button>
-              ))}
-            </div>
+            <section className="pt-4">
+              <div className="mb-2 flex items-end justify-between px-4">
+                <h2 className="font-bebas text-lg tracking-wide">SHOP CATEGORIES</h2>
+                <button type="button" onClick={() => navigate('categories')} className="font-mono text-[7px] underline underline-offset-4">VIEW ALL</button>
+              </div>
+              <div className="flex gap-3 overflow-x-auto px-4 pb-2 scrollbar-none">
+                {[
+                  ['T-SHIRTS', landingProducts[0]],
+                  ['SHIRTS', landingProducts[1]],
+                  ['JEANS', landingProducts[2]],
+                  ['SNEAKERS', landingProducts[3]],
+                  ['ACCESSORIES', landingProducts[4]],
+                ].map(([label, product]) => (
+                  <button
+                    type="button"
+                    key={label as string}
+                    onClick={() => navigate('categories')}
+                    className="w-[68px] flex-none text-center"
+                  >
+                    <span className={`block h-[68px] overflow-hidden rounded-full border-2 ${
+                      landingTheme === 'dark' ? 'border-[#333] bg-[#181818]' : 'border-white bg-[#eee9e0] shadow-sm'
+                    }`}>
+                      {product && <ProductImage product={product as Product} />}
+                    </span>
+                    <span className="mt-1.5 block font-bebas text-[8px] tracking-[0.08em]">{label as string}</span>
+                  </button>
+                ))}
+              </div>
+            </section>
 
             {heroProduct && (
               <button
                 type="button"
                 onClick={() => openProduct(heroProduct)}
-                className="relative mx-4 mt-4 block h-[230px] w-[calc(100%_-_2rem)] overflow-hidden rounded-xl bg-[#f7c318] text-left"
+                className={`relative mx-4 mt-3 block h-[248px] w-[calc(100%_-_2rem)] overflow-hidden rounded-2xl text-left ${
+                  landingTheme === 'dark' ? 'bg-[#1c1c1c]' : 'bg-[#e9e2d6]'
+                }`}
               >
-                <div className="relative z-20 max-w-[52%] p-4">
-                  <span className="inline-flex rounded-full bg-black px-2 py-1 font-mono text-[7px] tracking-[0.1em] text-white">
-                    NEW COLLECTION
-                  </span>
-                  <h1 className="mt-3 font-bebas text-[38px] leading-[0.86] tracking-[-0.01em]">
-                    YOUR NEXT
+                <div className="absolute inset-y-0 right-0 w-[58%] bg-[#f7c318]" />
+                <div className="relative z-20 flex h-full max-w-[52%] flex-col p-4">
+                  <span className="font-mono text-[7px] font-bold tracking-[0.16em] text-[#D9432E]">OH MAN ORIGINALS</span>
+                  <h1 className="mt-3 font-bebas text-[39px] leading-[0.84] tracking-[-0.015em]">
+                    EVERYDAY
                     <br />
-                    FAVOURITE
+                    LOOKS.
                     <br />
-                    FIT.
+                    BETTER.
                   </h1>
-                  <span className="mt-4 inline-flex items-center gap-1 border-b border-black pb-0.5 font-bebas text-[11px] tracking-wide">
-                    DISCOVER NOW <ArrowUpRight className="h-3 w-3" />
+                  <p className="mt-3 max-w-[128px] text-[8px] leading-relaxed opacity-65">Fresh casualwear made for Mumbai days and after-hours plans.</p>
+                  <span className={`mt-auto inline-flex w-fit items-center gap-1 border-b pb-0.5 font-bebas text-[10px] tracking-wide ${
+                    landingTheme === 'dark' ? 'border-white' : 'border-black'
+                  }`}>
+                    EXPLORE COLLECTION <ArrowUpRight className="h-3 w-3" />
                   </span>
                 </div>
-                <div className="absolute -bottom-2 -right-5 h-[220px] w-[215px]">
-                  <ProductImage product={heroProduct} className="drop-shadow-[0_18px_12px_rgba(0,0,0,.18)]" />
+                <div className="absolute -bottom-2 -right-3 h-[228px] w-[220px]">
+                  <ProductImage product={heroProduct} className="drop-shadow-[0_20px_12px_rgba(0,0,0,.2)]" />
                 </div>
-                <span className="absolute right-3 top-3 z-20 font-mono text-[7px] tracking-[0.12em]">EST. 2013</span>
               </button>
             )}
 
             <section className="px-4 pb-4 pt-5">
-              <div className="mb-2.5 flex items-end justify-between">
+              <div className="mb-3 flex items-end justify-between">
                 <div>
-                  <p className="font-mono text-[7px] tracking-[0.14em] text-[#8b857c]">CURATED FOR YOU</p>
-                  <h2 className="font-bebas text-[20px] leading-none">FRESH DROPS</h2>
+                  <p className="font-mono text-[7px] tracking-[0.14em] text-[#D9432E]">JUST LANDED</p>
+                  <h2 className="font-bebas text-[21px] leading-none">NEW & TRENDING</h2>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => navigate('home')}
-                  className="font-bebas text-[9px] tracking-wide underline underline-offset-4"
-                >
-                  VIEW ALL
-                </button>
+                <button type="button" onClick={() => navigate('search')} className="font-mono text-[7px] underline underline-offset-4">SEE ALL</button>
               </div>
-              <div className="grid grid-cols-3 gap-2">
-                {featuredProducts.slice(0, 3).map((product) => (
-                  <button
-                    type="button"
-                    key={product.id}
-                    onClick={() => openProduct(product)}
-                    className="min-w-0 text-left"
-                  >
-                    <div className="h-[104px] overflow-hidden rounded-lg bg-white">
+              <div className="grid grid-cols-2 gap-3">
+                {(landingProducts.length ? landingProducts : featuredProducts).slice(0, 4).map((product) => (
+                  <button type="button" key={product.id} onClick={() => openProduct(product)} className="min-w-0 text-left">
+                    <div className={`relative h-[164px] overflow-hidden rounded-xl ${
+                      landingTheme === 'dark' ? 'bg-[#181818]' : 'bg-[#f0ece5]'
+                    }`}>
                       <ProductImage product={product} />
+                      <span className="absolute left-2 top-2 rounded-full bg-[#f7c318] px-2 py-1 font-mono text-[6px] font-bold text-black">NEW</span>
                     </div>
-                    <p className="mt-1.5 truncate text-[8px] font-semibold">{product.name}</p>
-                    <p className="mt-0.5 font-mono text-[8px] text-[#6f6a62]">₹{product.price.toLocaleString()}</p>
+                    <p className="mt-2 truncate text-[9px] font-semibold">{product.name}</p>
+                    <p className="mt-0.5 font-mono text-[8px] opacity-60">₹{product.price.toLocaleString()}</p>
                   </button>
                 ))}
               </div>
             </section>
+
+            <nav className={`sticky bottom-0 mt-auto grid h-14 flex-none grid-cols-5 border-t backdrop-blur-xl ${
+              landingTheme === 'dark' ? 'border-white/10 bg-black/95' : 'border-black/10 bg-white/95'
+            }`}>
+              {(
+                [
+                  ['home', Home, 'HOME'],
+                  ['categories', Grid3X3, 'CATEGORIES'],
+                  ['search', Search, 'SEARCH'],
+                  ['contact', MessageCircle, 'ENQUIRE'],
+                  ['profile', User, 'PROFILE'],
+                ] as const
+              ).map(([tab, Icon, label]) => (
+                <button type="button" key={tab} onClick={() => navigate(tab)} className={`flex flex-col items-center justify-center gap-0.5 ${tab === 'home' ? 'text-[#D9432E]' : 'opacity-55'}`}>
+                  <Icon className="h-4 w-4" strokeWidth={1.8} />
+                  <span className="font-bebas text-[7px] tracking-wide">{label}</span>
+                </button>
+              ))}
+            </nav>
           </section>
         ) : (
           <>

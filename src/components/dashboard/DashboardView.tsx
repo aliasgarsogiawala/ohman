@@ -17,7 +17,11 @@ import {
   Calendar,
   MessageCircle,
   Moon,
-  Sun
+  Sun,
+  EyeOff,
+  LockKeyhole,
+  Mail,
+  ShieldCheck
 } from 'lucide-react';
 import { Product, Category, BusinessSettings } from '../../types';
 import { demoBanners, demoContacts } from '../../data/mockData';
@@ -47,8 +51,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
   const [productSearch, setProductSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('ALL');
-  const [isLoggedOut, setIsLoggedOut] = useState(false);
+  const [isLoggedOut, setIsLoggedOut] = useState(true);
   const [logoutTheme, setLogoutTheme] = useState<'light' | 'dark'>('light');
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
 
   // Add Product Form State
   const [newProdName, setNewProdName] = useState('');
@@ -94,83 +100,171 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   });
 
   if (isLoggedOut) {
-    const heroStyle = products.find(product => product.category === 'T-Shirts') ?? products[0];
-    const secondStyle = products.find(product => product.category === 'Shoes') ?? products[1];
-    const showcaseStyles = [heroStyle, secondStyle, products[12], products[4]].filter(Boolean) as Product[];
+    const heroStyle = products.find(product => product.category === 'Shoes') ?? products[0];
     const isDark = logoutTheme === 'dark';
 
     return (
-      <div className={`flex h-full min-h-[560px] flex-col overflow-y-auto transition-colors duration-300 ${isDark ? 'bg-[#0d0d0d] text-white' : 'bg-[#faf9f6] text-black'}`}>
-        <div className="flex h-8 flex-none items-center justify-center bg-[#F7C318] font-mono text-[8px] font-bold tracking-[0.18em] text-black">
-          OH MAN / MAZGAON / CATALOGUE CONTROL
-        </div>
+      <div className={`relative h-full min-h-[560px] overflow-y-auto transition-colors duration-500 ${isDark ? 'bg-[#0b0b0b] text-white' : 'bg-[#f3f0e8] text-[#111]'}`}>
+        <div className="pointer-events-none absolute inset-0 opacity-[0.025] bg-grid-pattern" aria-hidden="true" />
 
-        <header className={`relative flex h-20 flex-none items-center justify-between border-b px-5 lg:px-10 ${isDark ? 'border-white/10' : 'border-black/10'}`}>
-          <span className="font-mono text-[8px] tracking-[0.15em] opacity-55">EST. 2013 / MUMBAI</span>
-          <div className="absolute left-1/2 -translate-x-1/2 text-center">
-            <div className="ohman-wordmark text-[34px] leading-none">OH MAN</div>
-            <p className="mt-1 font-mono text-[7px] tracking-[0.22em] opacity-50">ADMIN EXPERIENCE</p>
-          </div>
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setLogoutTheme(theme => theme === 'light' ? 'dark' : 'light')}
-              aria-label={`Switch to ${isDark ? 'light' : 'dark'} theme`}
-              className={`flex h-10 items-center gap-2 rounded-full border px-3 font-mono text-[8px] ${isDark ? 'border-white/20 bg-white text-black' : 'border-black/15 bg-black text-white'}`}
-            >
-              {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-              {isDark ? 'LIGHT' : 'DARK'}
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsLoggedOut(false)}
-              className="hidden items-center gap-2 rounded-full bg-[#D9432E] px-4 py-2.5 font-bebas text-sm text-white sm:flex"
-            >
-              ENTER DASHBOARD <ArrowUpRight className="h-4 w-4" />
-            </button>
-          </div>
-        </header>
+        <div className="relative grid min-h-full lg:grid-cols-[minmax(390px,0.92fr)_minmax(500px,1.08fr)]">
+          <section className="relative hidden min-h-[620px] overflow-hidden border-r border-black/20 bg-black text-white lg:block">
+            <img
+              src={heroStyle.images[0]}
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover opacity-70 grayscale-[25%] contrast-110"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/15 to-black/90" />
+            <div className="absolute inset-x-0 top-0 h-1 bg-[#F7C318]" />
 
-        <main className="mx-auto flex w-full max-w-[1500px] flex-1 flex-col px-5 py-8 lg:px-10 xl:py-12">
-          <section className="mx-auto max-w-4xl text-center">
-            <p className="font-mono text-[9px] font-bold tracking-[0.22em] text-[#D9432E]">WELCOME BACK, ADMIN</p>
-            <h1 className="mt-4 font-bebas text-[58px] leading-[0.86] tracking-[-0.02em] sm:text-[76px] xl:text-[92px]">
-              RUN THE WHOLE STORE.
-              <br />
-              <span className="text-[#F7C318]">FROM ONE PLACE.</span>
-            </h1>
-            <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed opacity-60">
-              Products, campaigns, categories and customer enquiries—beautifully organised and ready for action.
-            </p>
-          </section>
-
-          <section className="mx-auto mt-8 grid w-full max-w-5xl grid-cols-2 gap-3 sm:grid-cols-4">
-            {showcaseStyles.map((product, index) => (
-              <article key={`${product.id}-${index}`} className={`group relative aspect-[.82] overflow-hidden rounded-2xl ${isDark ? 'bg-[#1a1a1a]' : 'bg-[#eee9e1]'}`}>
-                <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent px-3 pb-3 pt-12 text-white">
-                  <p className="truncate font-bebas text-lg">{product.name}</p>
-                  <p className="font-mono text-[8px] text-[#F7C318]">₹{product.price.toLocaleString()}</p>
+            <div className="relative flex h-full min-h-[620px] flex-col justify-between p-8 xl:p-12">
+              <div className="flex items-start justify-between">
+                <div>
+                  <div className="ohman-wordmark text-[42px] leading-none text-white">OH MAN</div>
+                  <p className="mt-2 font-mono text-[8px] tracking-[0.24em] text-white/60">MAZGAON / MUMBAI</p>
                 </div>
-                <span className="absolute left-2 top-2 rounded-full bg-white px-2 py-1 font-mono text-[7px] font-bold text-black">0{index + 1}</span>
-              </article>
-            ))}
-          </section>
+                <span className="border border-white/40 bg-black/30 px-3 py-2 font-mono text-[8px] tracking-[0.18em] backdrop-blur-md">
+                  ADMIN / 01
+                </span>
+              </div>
 
-          <div className={`mx-auto mt-8 flex w-full max-w-5xl flex-col items-center justify-between gap-5 border-y py-5 sm:flex-row ${isDark ? 'border-white/10' : 'border-black/10'}`}>
-            <div className="grid w-full grid-cols-3 text-center sm:max-w-lg">
-              {[[products.length.toLocaleString(), 'PRODUCTS'], [String(categories.length).padStart(2, '0'), 'CATEGORIES'], ['428', 'ENQUIRIES']].map(([value, label]) => (
-                <div key={label} className="border-r border-current/10 last:border-0">
-                  <p className="font-bebas text-3xl leading-none">{value}</p>
-                  <p className="mt-1 font-mono text-[7px] tracking-[0.15em] opacity-50">{label}</p>
+              <div className="max-w-lg">
+                <span className="inline-flex items-center gap-2 bg-[#F7C318] px-3 py-1.5 font-mono text-[8px] font-bold tracking-[0.14em] text-black">
+                  <span className="h-1.5 w-1.5 rounded-full bg-black" />
+                  PRIVATE CONTROL ROOM
+                </span>
+                <h1 className="mt-5 font-bebas text-[72px] leading-[0.84] tracking-[-0.025em] xl:text-[92px]">
+                  THE STORE,
+                  <br />
+                  <span className="text-[#F7C318]">UNDER CONTROL.</span>
+                </h1>
+                <div className="mt-7 flex items-center gap-4 border-t border-white/25 pt-5">
+                  <p className="max-w-sm text-xs leading-relaxed text-white/65">
+                    One sharp workspace for products, campaigns and every customer conversation.
+                  </p>
+                  <ArrowUpRight className="h-6 w-6 flex-none text-[#F7C318]" />
                 </div>
-              ))}
+              </div>
             </div>
-            <button type="button" onClick={() => setIsLoggedOut(false)} className="flex items-center gap-3 rounded-full bg-[#F7C318] px-7 py-3 font-bebas text-lg text-black shadow-[4px_4px_0_#D9432E]">
-              OPEN CONTROL ROOM <ArrowUpRight className="h-5 w-5" />
-            </button>
-          </div>
-        </main>
+          </section>
+
+          <main className="relative flex min-h-[560px] flex-col px-5 py-5 sm:px-10 sm:py-8 xl:px-20">
+            <header className="flex items-center justify-between">
+              <div className="lg:hidden">
+                <div className="ohman-wordmark text-[30px] leading-none">OH MAN</div>
+                <p className="mt-1 font-mono text-[7px] tracking-[0.2em] opacity-50">ADMIN SYSTEM</p>
+              </div>
+              <span className="hidden items-center gap-2 font-mono text-[8px] tracking-[0.14em] opacity-55 sm:flex lg:ml-auto">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#41B883]" />
+                SECURE SESSION
+              </span>
+              <button
+                type="button"
+                onClick={() => setLogoutTheme(theme => theme === 'light' ? 'dark' : 'light')}
+                aria-label={`Switch to ${isDark ? 'light' : 'dark'} theme`}
+                className={`ml-auto flex h-10 w-10 items-center justify-center rounded-full border transition-all hover:-translate-y-0.5 sm:ml-5 ${isDark ? 'border-white/15 bg-white text-black' : 'border-black/15 bg-black text-white'}`}
+              >
+                {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              </button>
+            </header>
+
+            <div className="mx-auto flex w-full max-w-[470px] flex-1 flex-col justify-center py-10 sm:py-14">
+              <div className="mb-9">
+                <p className="font-mono text-[9px] font-bold tracking-[0.2em] text-[#D9432E]">AUTHORISED ACCESS ONLY</p>
+                <h2 className="mt-3 font-bebas text-[52px] leading-[0.9] tracking-[-0.01em] sm:text-[64px]">WELCOME BACK.</h2>
+                <p className={`mt-4 max-w-sm text-sm leading-relaxed ${isDark ? 'text-white/50' : 'text-black/55'}`}>
+                  Sign in to manage the OH MAN catalogue and customer enquiries.
+                </p>
+              </div>
+
+              <form
+                className="space-y-5"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  setIsLoggedOut(false);
+                }}
+              >
+                <label className="block">
+                  <span className="mb-2 block font-mono text-[9px] font-bold tracking-[0.14em]">EMAIL ADDRESS</span>
+                  <span className={`flex h-14 items-center border px-4 transition-colors focus-within:border-[#F7C318] focus-within:ring-2 focus-within:ring-[#F7C318]/20 ${isDark ? 'border-white/15 bg-white/[0.04]' : 'border-black/15 bg-white/55'}`}>
+                    <Mail className="mr-3 h-[18px] w-[18px] opacity-40" />
+                    <input
+                      type="email"
+                      required
+                      defaultValue="admin@ohman.in"
+                      autoComplete="email"
+                      className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:opacity-35"
+                      placeholder="you@ohman.in"
+                    />
+                  </span>
+                </label>
+
+                <label className="block">
+                  <span className="mb-2 block font-mono text-[9px] font-bold tracking-[0.14em]">PASSWORD</span>
+                  <span className={`flex h-14 items-center border px-4 transition-colors focus-within:border-[#F7C318] focus-within:ring-2 focus-within:ring-[#F7C318]/20 ${isDark ? 'border-white/15 bg-white/[0.04]' : 'border-black/15 bg-white/55'}`}>
+                    <LockKeyhole className="mr-3 h-[18px] w-[18px] opacity-40" />
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      required
+                      defaultValue="ohmanadmin"
+                      autoComplete="current-password"
+                      className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:opacity-35"
+                      placeholder="Enter your password"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(value => !value)}
+                      className="ml-3 p-1 opacity-40 transition-opacity hover:opacity-100"
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    >
+                      {showPassword ? <EyeOff className="h-[18px] w-[18px]" /> : <Eye className="h-[18px] w-[18px]" />}
+                    </button>
+                  </span>
+                </label>
+
+                <div className="flex items-center justify-between gap-4">
+                  <label className="flex cursor-pointer items-center gap-2.5 text-xs opacity-65">
+                    <input
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={event => setRememberMe(event.target.checked)}
+                      className="sr-only"
+                    />
+                    <span className={`flex h-4 w-4 items-center justify-center border ${rememberMe ? 'border-[#F7C318] bg-[#F7C318]' : isDark ? 'border-white/30' : 'border-black/30'}`}>
+                      {rememberMe && <span className="h-1.5 w-1.5 bg-black" />}
+                    </span>
+                    Remember me
+                  </label>
+                  <button type="button" className="font-mono text-[9px] font-bold tracking-[0.08em] underline decoration-[#F7C318] decoration-2 underline-offset-4">
+                    FORGOT PASSWORD?
+                  </button>
+                </div>
+
+                <button
+                  type="submit"
+                  className="group flex h-14 w-full items-center justify-between bg-[#F7C318] px-5 text-left text-black shadow-[5px_5px_0_#D9432E] transition-transform hover:-translate-y-0.5 active:translate-x-1 active:translate-y-1 active:shadow-none"
+                >
+                  <span className="font-bebas text-xl tracking-[0.08em]">ENTER DASHBOARD</span>
+                  <span className="flex h-8 w-8 items-center justify-center bg-black text-white transition-transform group-hover:rotate-[-4deg]">
+                    <ArrowUpRight className="h-4 w-4" />
+                  </span>
+                </button>
+              </form>
+
+              <div className={`mt-8 flex items-start gap-3 border-t pt-5 ${isDark ? 'border-white/10' : 'border-black/10'}`}>
+                <ShieldCheck className="mt-0.5 h-4 w-4 flex-none text-[#41B883]" />
+                <p className={`font-mono text-[8px] leading-relaxed tracking-[0.06em] ${isDark ? 'text-white/35' : 'text-black/40'}`}>
+                  ENCRYPTED ADMIN ACCESS · ACTIVITY MONITORED · OH MAN SYSTEMS
+                </p>
+              </div>
+            </div>
+
+            <footer className={`flex items-center justify-between border-t pt-4 font-mono text-[7px] tracking-[0.12em] ${isDark ? 'border-white/10 text-white/30' : 'border-black/10 text-black/35'}`}>
+              <span>© 2026 OH MAN.</span>
+              <span>EST. 2013 / MUMBAI</span>
+            </footer>
+          </main>
+        </div>
       </div>
     );
   }

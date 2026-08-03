@@ -3,6 +3,7 @@ import {
   ArrowLeft,
   ArrowUpRight,
   AtSign,
+  BadgePercent,
   BatteryFull,
   Grid3X3,
   Heart,
@@ -40,6 +41,16 @@ interface MobileSimulatorProps {
 }
 
 type TabType = 'home' | 'categories' | 'search' | 'contact' | 'profile';
+type OfferFilter = 'ALL' | 'UNDER_999' | 'FEATURED' | 'NEW';
+
+const SUBCATEGORIES: Record<string, string[]> = {
+  Shoes: ['Sneakers', 'Running', 'Loafers', 'Everyday'],
+  'Trek Bags': ['Daypacks', '40L Packs', 'Expedition', 'Rain Ready'],
+  'Travel Bags': ['Duffels', 'Weekenders', 'Cabin Bags', 'Organisers'],
+  'T-Shirts': ['Oversized', 'Graphic Tees', 'Core Basics', 'Performance'],
+  Corsets: ['Utility Vests', 'Layering', 'Streetwear', 'Structured'],
+  Accessories: ['Caps', 'Belts', 'Wallets', 'Travel Gear'],
+};
 
 const ProductImage = ({
   product,
@@ -65,6 +76,8 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
   const [activeTab, setActiveTab] = useState<TabType>('home');
   const [showIntro, setShowIntro] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('ALL');
+  const [selectedSubcategory, setSelectedSubcategory] = useState('');
+  const [offerFilter, setOfferFilter] = useState<OfferFilter>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
   const [wishlist, setWishlist] = useState<string[]>([]);
@@ -107,13 +120,19 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
           selectedCategory === 'ALL' ||
           product.category.toLowerCase() === selectedCategory.toLowerCase();
         const query = searchQuery.toLowerCase();
+        const matchesOffer =
+          offerFilter === 'ALL' ||
+          (offerFilter === 'UNDER_999' && product.price <= 999) ||
+          (offerFilter === 'FEATURED' && product.featured) ||
+          (offerFilter === 'NEW' && product.createdAt >= '2026-07-20');
         return (
           matchesCategory &&
+          matchesOffer &&
           (product.name.toLowerCase().includes(query) ||
             product.category.toLowerCase().includes(query))
         );
       }),
-    [products, searchQuery, selectedCategory],
+    [offerFilter, products, searchQuery, selectedCategory],
   );
 
   const featuredProducts = products.filter((product) => product.featured);
@@ -122,6 +141,10 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
     .filter((product) => product.category === 'T-Shirts' || product.category === 'Shoes')
     .slice(0, 6);
   const isDark = landingTheme === 'dark';
+  const activeCollectionLabel =
+    selectedSubcategory ||
+    ({ UNDER_999: 'UNDER ₹999', FEATURED: 'FEATURED PICKS', NEW: 'NEW ARRIVALS' } as Partial<Record<OfferFilter, string>>)[offerFilter] ||
+    (selectedCategory === 'ALL' ? 'ALL PRODUCTS' : selectedCategory);
 
   const openProduct = (product: Product) => {
     setIsMenuOpen(false);
@@ -135,6 +158,20 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
     setShowIntro(tab === 'home');
     setCurrentProduct(null);
     setActiveTab(tab);
+  };
+
+  const browseCategory = (category: string, subcategory = '') => {
+    setSelectedCategory(category);
+    setSelectedSubcategory(subcategory);
+    setOfferFilter('ALL');
+    navigate('search');
+  };
+
+  const browseOffer = (offer: Exclude<OfferFilter, 'ALL'>) => {
+    setSelectedCategory('ALL');
+    setSelectedSubcategory('');
+    setOfferFilter(offer);
+    navigate('search');
   };
 
   const toggleWishlist = (id: string, event?: React.MouseEvent) => {
@@ -424,7 +461,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                 {categories.slice(0, 4).map((category, index) => {
                   const cover = products.find(product => product.category === category.name) ?? products[index];
                   return (
-                  <button type="button" key={category.id} onClick={() => { setSelectedCategory(category.name); navigate('search'); }} className="relative h-[112px] overflow-hidden bg-[#161616] text-left text-white">
+                  <button type="button" key={category.id} onClick={() => browseCategory(category.name)} className="relative h-[112px] overflow-hidden bg-[#161616] text-left text-white">
                     {cover && <img src={cover.images[0]} alt="" className="h-full w-full object-cover opacity-65 grayscale" />}
                     <span className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent" />
                     <span className="absolute bottom-2.5 left-3 font-bebas text-base tracking-wide">{category.name}</span>
@@ -630,10 +667,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                               <button
                                 type="button"
                                 key={category.id}
-                                onClick={() => {
-                                  setSelectedCategory(category.name);
-                                  navigate('search');
-                                }}
+                                onClick={() => browseCategory(category.name)}
                                 className="relative h-[96px] overflow-hidden border border-black bg-[#f0f0f0] text-black transition-transform active:translate-y-0.5"
                               >
                                 {cover && <ProductImage product={cover} className="object-cover" />}
@@ -663,36 +697,87 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                       <div className="border-b border-current/10 pb-3 text-center">
                         <p className="font-mono text-[9px] tracking-[0.16em] text-[#a98200]">CURATED FOR OH MAN</p>
                         <h1 className="mt-2 font-bebas text-[34px] leading-none">
-                        BROWSE
-                        <br />
-                        <span className="text-[#a98200]">CATEGORIES</span>
+                          BROWSE
+                          <br />
+                          <span className="text-[#a98200]">CATEGORIES</span>
                         </h1>
                       </div>
-                      <div className="grid grid-cols-2 gap-2">
+
+                      <section>
+                        <div className="mb-2 flex items-center justify-between">
+                          <div>
+                            <p className="font-mono text-[9px] tracking-[0.14em] text-[#a98200]">MEMBER PRICES</p>
+                            <h2 className="font-bebas text-lg">OFFERS FOR YOU</h2>
+                          </div>
+                          <BadgePercent className="h-5 w-5 text-[#a98200]" />
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => browseOffer('FEATURED')}
+                          className="group relative flex min-h-[118px] w-full overflow-hidden bg-[#f7c318] p-4 text-left text-black"
+                        >
+                          <span className="absolute -right-8 -top-12 h-36 w-36 rounded-full border-[22px] border-black/10 transition-transform duration-500 group-hover:scale-110" />
+                          <span className="relative flex flex-1 flex-col">
+                            <span className="font-mono text-[9px] font-bold tracking-[0.14em]">OH MAN MEMBER EDIT</span>
+                            <strong className="mt-2 max-w-[230px] font-bebas text-[25px] leading-[0.9]">UP TO 30% OFF FEATURED PICKS</strong>
+                            <span className="mt-3 flex items-center gap-1 font-mono text-[9px] font-bold">EXPLORE OFFER <ArrowUpRight className="h-3.5 w-3.5" /></span>
+                          </span>
+                        </button>
+
+                        <div className="mt-2 grid grid-cols-2 gap-2">
+                          <button type="button" onClick={() => browseOffer('UNDER_999')} className={`border p-3 text-left ${isDark ? 'border-white/15 bg-[#151515]' : 'border-black/10 bg-white'}`}>
+                            <span className="font-mono text-[9px] text-[#a98200]">SMART FINDS</span>
+                            <strong className="mt-1 block font-bebas text-base">UNDER ₹999</strong>
+                            <span className="mt-3 flex items-center justify-between font-mono text-[9px] opacity-55">SHOP NOW <ArrowUpRight className="h-3.5 w-3.5" /></span>
+                          </button>
+                          <button type="button" onClick={() => browseOffer('NEW')} className="border border-black bg-black p-3 text-left text-white">
+                            <span className="font-mono text-[9px] text-[#f7c318]">JUST DROPPED</span>
+                            <strong className="mt-1 block font-bebas text-base">NEW ARRIVALS</strong>
+                            <span className="mt-3 flex items-center justify-between font-mono text-[9px] text-white/55">VIEW EDIT <ArrowUpRight className="h-3.5 w-3.5" /></span>
+                          </button>
+                        </div>
+                      </section>
+
+                      <section>
+                        <div className="mb-2 border-b border-current/10 pb-2">
+                          <p className="font-mono text-[9px] tracking-[0.14em] text-[#a98200]">SHOP BY DEPARTMENT</p>
+                          <h2 className="mt-1 font-bebas text-lg">CATEGORIES & SUBCATEGORIES</h2>
+                        </div>
+                        <div className="space-y-2">
                         {categories.map((category, index) => {
                           const cover = products.find(product => product.category === category.name) ?? products[index];
+                          const subcategories = SUBCATEGORIES[category.name] ?? ['New In', 'Essentials', 'Premium', 'All Styles'];
                           return (
-                            <button
-                              type="button"
-                              key={category.id}
-                              onClick={() => {
-                                setSelectedCategory(category.name);
-                                navigate('search');
-                              }}
-                              className="relative aspect-[.9] overflow-hidden border border-black/10 bg-[#ededed] text-left text-black"
-                            >
-                              {cover && <ProductImage product={cover} className="object-cover" />}
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/5 to-transparent" />
-                              <ArrowUpRight className="absolute right-2 top-2 h-6 w-6 bg-[#f7c318] p-1.5 text-black" />
-                              <div className="absolute inset-x-0 bottom-3 text-center text-white">
-                                <h2 className="font-bebas text-xl">{category.name}</h2>
-                                <p className="font-mono text-[9px] text-[#f7c318]">{category.productCount} PRODUCTS</p>
+                            <article key={category.id} className={`overflow-hidden border ${isDark ? 'border-white/10 bg-[#151515]' : 'border-black/10 bg-white'}`}>
+                              <button type="button" onClick={() => browseCategory(category.name)} className="relative h-[112px] w-full overflow-hidden text-left text-white">
+                                {cover && <ProductImage product={cover} className="object-cover grayscale-[20%]" />}
+                                <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/30 to-transparent" />
+                                <div className="absolute inset-y-0 left-0 flex flex-col justify-center px-4">
+                                  <h3 className="font-bebas text-xl">{category.name}</h3>
+                                  <p className="mt-1 font-mono text-[9px] text-[#f7c318]">{category.productCount} PRODUCTS</p>
+                                </div>
+                                <ArrowUpRight className="absolute right-3 top-3 h-6 w-6 bg-[#f7c318] p-1.5 text-black" />
+                              </button>
+                              <div className="grid grid-cols-2 gap-1.5 p-2">
+                                {subcategories.map(subcategory => (
+                                  <button
+                                    type="button"
+                                    key={subcategory}
+                                    onClick={() => browseCategory(category.name, subcategory)}
+                                    className={`flex min-h-9 items-center justify-between border px-2 text-left text-[10px] font-semibold ${isDark ? 'border-white/10 bg-black/20 text-white' : 'border-black/10 bg-[#fffdf5] text-black'}`}
+                                  >
+                                    <span>{subcategory}</span>
+                                    <span className="text-[#a98200]">→</span>
+                                  </button>
+                                ))}
                               </div>
-                            </button>
+                            </article>
                           );
                         })}
+                        </div>
+                      </section>
                       </div>
-                    </div>
                   )}
 
                   {activeTab === 'search' && (
@@ -706,7 +791,11 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                           <button
                             type="button"
                             key={category}
-                            onClick={() => setSelectedCategory(category)}
+                            onClick={() => {
+                              setSelectedCategory(category);
+                              setSelectedSubcategory('');
+                              setOfferFilter('ALL');
+                            }}
                             className={`whitespace-nowrap px-3 py-1.5 font-bebas text-[12px] ${
                               selectedCategory === category
                                 ? 'bg-[#f7c318] text-black'
@@ -717,6 +806,12 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                           </button>
                         ))}
                       </div>
+                      {(selectedSubcategory || offerFilter !== 'ALL') && (
+                        <div className="flex items-center justify-between bg-[#f7c318] px-3 py-2 text-black">
+                          <span className="font-mono text-[9px] font-bold tracking-[0.08em]">SHOWING / {activeCollectionLabel}</span>
+                          <button type="button" onClick={() => { setSelectedCategory('ALL'); setSelectedSubcategory(''); setOfferFilter('ALL'); }} className="font-mono text-[9px] underline underline-offset-2">CLEAR</button>
+                        </div>
+                      )}
                       <div className="relative">
                         <input
                           value={searchQuery}
@@ -728,7 +823,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                         <Search className="absolute right-3 top-2.5 h-4 w-4 text-black" />
                       </div>
                       <ProductGrid
-                        title={selectedCategory === 'ALL' ? 'ALL PRODUCTS' : selectedCategory}
+                        title={activeCollectionLabel}
                         products={filteredProducts}
                         wishlist={wishlist}
                         onProductClick={openProduct}

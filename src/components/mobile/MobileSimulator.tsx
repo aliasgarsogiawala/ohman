@@ -113,6 +113,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
   const landingProducts = products
     .filter((product) => product.category === 'T-Shirts' || product.category === 'Shoes')
     .slice(0, 6);
+  const isDark = landingTheme === 'dark';
 
   const openProduct = (product: Product) => {
     setIsMenuOpen(false);
@@ -138,11 +139,11 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
   return (
     <div className="flex h-full items-center justify-center">
       <div
-        className="mobile-shell relative flex w-[390px] max-w-[calc(100vw-20px)] flex-col overflow-hidden rounded-[26px] border-[5px] border-[#252525] bg-[#090909] shadow-[8px_8px_0_#F7C318,0_24px_70px_rgba(0,0,0,.55)]"
+        className="mobile-shell relative flex w-[390px] max-w-[calc(100vw-20px)] flex-col overflow-hidden rounded-[25px] border-[4px] border-[#141414] bg-[#090909] shadow-[7px_7px_0_#F7C318,0_24px_70px_rgba(0,0,0,.5)]"
         style={{ height: 'min(800px, calc(100dvh - 76px))', minHeight: 570 }}
       >
         <div className={`relative z-50 flex h-7 flex-none items-center justify-between px-4 text-[10px] font-semibold transition-colors ${
-          showIntro && landingTheme === 'light' ? 'bg-[#faf9f6] text-black' : 'bg-[#090909] text-white'
+          isDark ? 'bg-[#090909] text-white' : 'bg-[#fffdf5] text-black'
         }`}>
           <span>9:41</span>
           <div className="flex items-center gap-1">
@@ -171,7 +172,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
               <div className="flex items-start justify-between border-b border-black/15 px-4 py-4">
                 <div>
                   <div className="ohman-wordmark text-[28px] leading-none">OH MAN</div>
-                  <p className="mt-1 font-mono text-[7px] tracking-[0.16em] text-[#6f6a62]">MENSWEAR / MAZGAON</p>
+                  <p className={`mt-1 font-mono text-[7px] tracking-[0.16em] ${isDark ? 'text-white/45' : 'text-black/45'}`}>MENSWEAR / MAZGAON</p>
                 </div>
                 <button
                   type="button"
@@ -190,15 +191,17 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                     ['categories', Grid3X3, 'CATEGORIES', 'Browse the full range'],
                     ['search', Search, 'SEARCH', 'Find any product quickly'],
                     ['contact', MessageCircle, 'ENQUIRE', 'Talk to the Oh Man team'],
-                    ['profile', User, 'PROFILE', 'Saved styles & preferences'],
+                    ['profile', Heart, 'SAVED', 'Products you want to revisit'],
                   ] as const
                 ).map(([tab, Icon, label, helper], index) => (
                   <button
                     type="button"
                     key={tab}
                     onClick={() => navigate(tab)}
-                    className={`group flex w-full items-center gap-3 border-b border-black/10 px-2 py-3 text-left ${
-                      activeTab === tab ? 'bg-[#f7c318]' : 'hover:bg-white'
+                    className={`group flex w-full items-center gap-3 border-b px-2 py-3 text-left ${
+                      isDark ? 'border-white/10' : 'border-black/10'
+                    } ${
+                      activeTab === tab ? 'bg-[#f7c318] text-black' : isDark ? 'hover:bg-white/5' : 'hover:bg-white'
                     }`}
                   >
                     <span className="flex h-9 w-9 items-center justify-center rounded-full border border-black/15 bg-white">
@@ -206,7 +209,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block font-bebas text-base leading-none tracking-wide">{label}</span>
-                      <span className="mt-1 block truncate text-[8px] text-[#716b62]">{helper}</span>
+                      <span className="mt-1 block truncate text-[8px] opacity-50">{helper}</span>
                     </span>
                     <span className="font-mono text-[8px] text-[#8a847b]">0{index + 1}</span>
                   </button>
@@ -234,14 +237,14 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
 
         {showIntro ? (
           <section className={`mobile-scroll flex min-h-0 flex-1 flex-col overflow-y-auto transition-colors duration-300 ${
-            landingTheme === 'dark' ? 'bg-[#0c0c0c] text-white' : 'bg-[#faf9f6] text-black'
+            isDark ? 'bg-[#0c0c0c] text-white' : 'bg-[#fffdf5] text-black'
           }`}>
-            <div className="flex h-7 flex-none items-center justify-center bg-[#f7c318] font-mono text-[7px] font-bold tracking-[0.15em] text-black">
-              NEW DROPS IN STORE • MAZGAON • OPEN 10AM–9PM
+            <div className="flex h-6 flex-none items-center justify-center bg-[#f7c318] font-mono text-[6px] font-bold tracking-[0.18em] text-black">
+              NEW SEASON / MAZGAON / OPEN 10AM–9PM
             </div>
 
-            <header className={`flex h-14 flex-none items-center justify-between border-b px-4 ${
-              landingTheme === 'dark' ? 'border-white/10' : 'border-black/10'
+            <header className={`flex h-[58px] flex-none items-center justify-between border-b px-4 ${
+              isDark ? 'border-white/10' : 'border-black/10'
             }`}>
               <button
                 type="button"
@@ -259,116 +262,93 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                 type="button"
                 onClick={() => setLandingTheme(theme => theme === 'light' ? 'dark' : 'light')}
                 aria-label={`Switch to ${landingTheme === 'light' ? 'dark' : 'light'} theme`}
-                className={`flex h-9 w-9 items-center justify-center rounded-full border ${
-                  landingTheme === 'dark' ? 'border-white/20 bg-white text-black' : 'border-black/15 bg-black text-white'
+                className={`flex h-8 w-8 items-center justify-center border ${
+                  isDark ? 'border-white/20 bg-[#f7c318] text-black' : 'border-black bg-black text-white'
                 }`}
               >
-                {landingTheme === 'light' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+                {!isDark ? <Moon className="h-3.5 w-3.5" /> : <Sun className="h-3.5 w-3.5" />}
               </button>
             </header>
 
-            <div className="px-4 pt-3">
+            <div className="px-4 pt-4">
               <button
                 type="button"
                 onClick={() => navigate('search')}
-                className={`flex h-10 w-full items-center gap-2 rounded-full border px-4 text-left text-[9px] ${
-                  landingTheme === 'dark'
-                    ? 'border-white/15 bg-[#181818] text-[#aaa]'
-                    : 'border-black/10 bg-white text-[#777] shadow-[0_4px_16px_rgba(0,0,0,.05)]'
+                className={`flex h-10 w-full items-center gap-2 border px-3 text-left font-mono text-[8px] tracking-[0.04em] ${
+                  isDark
+                    ? 'border-white/15 bg-[#151515] text-white/50'
+                    : 'border-black/15 bg-white text-black/45'
                 }`}
               >
-                <Search className="h-4 w-4" />
-                What are you looking for?
+                <Search className="h-3.5 w-3.5" />
+                SEARCH THE COLLECTION
               </button>
             </div>
-
-            <section className="pt-4">
-              <div className="mb-2 flex items-end justify-between px-4">
-                <h2 className="font-bebas text-lg tracking-wide">SHOP CATEGORIES</h2>
-                <button type="button" onClick={() => navigate('categories')} className="font-mono text-[7px] underline underline-offset-4">VIEW ALL</button>
-              </div>
-              <div className="flex gap-3 overflow-x-auto px-4 pb-2 scrollbar-none">
-                {[
-                  ['T-SHIRTS', landingProducts[0]],
-                  ['SHIRTS', landingProducts[1]],
-                  ['JEANS', landingProducts[2]],
-                  ['SNEAKERS', landingProducts[3]],
-                  ['ACCESSORIES', landingProducts[4]],
-                ].map(([label, product]) => (
-                  <button
-                    type="button"
-                    key={label as string}
-                    onClick={() => navigate('categories')}
-                    className="w-[68px] flex-none text-center"
-                  >
-                    <span className={`block h-[68px] overflow-hidden rounded-full border-2 ${
-                      landingTheme === 'dark' ? 'border-[#333] bg-[#181818]' : 'border-white bg-[#eee9e0] shadow-sm'
-                    }`}>
-                      {product && <ProductImage product={product as Product} />}
-                    </span>
-                    <span className="mt-1.5 block font-bebas text-[8px] tracking-[0.08em]">{label as string}</span>
-                  </button>
-                ))}
-              </div>
-            </section>
 
             {heroProduct && (
               <button
                 type="button"
                 onClick={() => openProduct(heroProduct)}
-                className={`relative mx-4 mt-3 block h-[248px] w-[calc(100%_-_2rem)] overflow-hidden rounded-2xl text-left ${
-                  landingTheme === 'dark' ? 'bg-[#1c1c1c]' : 'bg-[#e9e2d6]'
-                }`}
+                className="relative mx-4 mt-3 block h-[244px] w-[calc(100%_-_2rem)] overflow-hidden bg-black text-left text-white"
               >
-                <div className="absolute inset-y-0 right-0 w-[58%] bg-[#f7c318]" />
-                <div className="relative z-20 flex h-full max-w-[52%] flex-col p-4">
-                  <span className="font-mono text-[7px] font-bold tracking-[0.16em] text-[#D9432E]">OH MAN ORIGINALS</span>
-                  <h1 className="mt-3 font-bebas text-[39px] leading-[0.84] tracking-[-0.015em]">
-                    EVERYDAY
+                <img src={heroProduct.images[0]} alt="" className="absolute inset-0 h-full w-full object-cover opacity-70 grayscale" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black via-black/65 to-black/10" />
+                <div className="absolute left-0 top-0 h-full w-1.5 bg-[#f7c318]" />
+                <div className="relative z-20 flex h-full max-w-[64%] flex-col p-5">
+                  <span className="w-fit bg-[#f7c318] px-2 py-1 font-mono text-[6px] font-bold tracking-[0.16em] text-black">OH MAN / EDIT 01</span>
+                  <h1 className="mt-4 font-bebas text-[42px] leading-[0.84] tracking-[-0.015em]">
+                    THE DAILY
                     <br />
-                    LOOKS.
-                    <br />
-                    BETTER.
+                    UNIFORM.
                   </h1>
-                  <p className="mt-3 max-w-[128px] text-[8px] leading-relaxed opacity-65">Fresh casualwear made for Mumbai days and after-hours plans.</p>
-                  <span className={`mt-auto inline-flex w-fit items-center gap-1 border-b pb-0.5 font-bebas text-[10px] tracking-wide ${
-                    landingTheme === 'dark' ? 'border-white' : 'border-black'
-                  }`}>
-                    EXPLORE COLLECTION <ArrowUpRight className="h-3 w-3" />
+                  <p className="mt-3 max-w-[148px] text-[8px] leading-relaxed text-white/65">Essential menswear, selected in Mazgaon and built for Mumbai.</p>
+                  <span className="mt-auto inline-flex w-fit items-center gap-1 border-b border-[#f7c318] pb-0.5 font-bebas text-[10px] tracking-wide text-[#f7c318]">
+                    VIEW THE EDIT <ArrowUpRight className="h-3 w-3" />
                   </span>
-                </div>
-                <div className="absolute -bottom-2 -right-3 h-[228px] w-[220px]">
-                  <ProductImage product={heroProduct} className="drop-shadow-[0_20px_12px_rgba(0,0,0,.2)]" />
                 </div>
               </button>
             )}
 
-            <section className="px-4 pb-4 pt-5">
-              <div className="mb-3 flex items-end justify-between">
+            <section className="px-4 pt-5">
+              <div className="mb-2 flex items-end justify-between">
                 <div>
-                  <p className="font-mono text-[7px] tracking-[0.14em] text-[#D9432E]">JUST LANDED</p>
-                  <h2 className="font-bebas text-[21px] leading-none">NEW & TRENDING</h2>
+                  <p className="font-mono text-[6px] tracking-[0.15em] text-[#a98200]">CURATED DEPARTMENTS</p>
+                  <h2 className="font-bebas text-[20px] leading-none">BROWSE CATEGORIES</h2>
                 </div>
+                <button type="button" onClick={() => navigate('categories')} className="font-mono text-[7px] underline underline-offset-4">VIEW ALL</button>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {categories.slice(0, 4).map((category, index) => {
+                  const cover = products.find(product => product.category === category.name) ?? products[index];
+                  return (
+                  <button type="button" key={category.id} onClick={() => { setSelectedCategory(category.name); navigate('search'); }} className="relative h-[112px] overflow-hidden bg-[#161616] text-left text-white">
+                    {cover && <img src={cover.images[0]} alt="" className="h-full w-full object-cover opacity-65 grayscale" />}
+                    <span className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent" />
+                    <span className="absolute bottom-2.5 left-3 font-bebas text-base tracking-wide">{category.name}</span>
+                    <ArrowUpRight className="absolute right-2 top-2 h-5 w-5 bg-[#f7c318] p-1 text-black" />
+                  </button>
+                  );
+                })}
+              </div>
+            </section>
+
+            <section className="px-4 pb-4 pt-5">
+              <div className="mb-2 flex items-end justify-between">
+                <div><p className="font-mono text-[6px] tracking-[0.15em] text-[#a98200]">NEW ARRIVALS</p><h2 className="font-bebas text-[20px] leading-none">LATEST OBJECTS</h2></div>
                 <button type="button" onClick={() => navigate('search')} className="font-mono text-[7px] underline underline-offset-4">SEE ALL</button>
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                {(landingProducts.length ? landingProducts : featuredProducts).slice(0, 4).map((product) => (
-                  <button type="button" key={product.id} onClick={() => openProduct(product)} className="min-w-0 text-left">
-                    <div className={`relative h-[164px] overflow-hidden rounded-xl ${
-                      landingTheme === 'dark' ? 'bg-[#181818]' : 'bg-[#f0ece5]'
-                    }`}>
-                      <ProductImage product={product} />
-                      <span className="absolute left-2 top-2 rounded-full bg-[#f7c318] px-2 py-1 font-mono text-[6px] font-bold text-black">NEW</span>
-                    </div>
-                    <p className="mt-2 truncate text-[9px] font-semibold">{product.name}</p>
-                    <p className="mt-0.5 font-mono text-[8px] opacity-60">₹{product.price.toLocaleString()}</p>
+              <div className="grid grid-cols-2 gap-2">
+                {(landingProducts.length ? landingProducts : featuredProducts).slice(0, 4).map(product => (
+                  <button type="button" key={product.id} onClick={() => openProduct(product)} className={`border text-left ${isDark ? 'border-white/10 bg-[#151515]' : 'border-black/10 bg-white'}`}>
+                    <div className={`relative h-[142px] ${isDark ? 'bg-[#222]' : 'bg-[#f0eee7]'}`}><ProductImage product={product} /><span className="absolute left-2 top-2 bg-[#f7c318] px-2 py-1 font-mono text-[6px] font-bold text-black">NEW</span></div>
+                    <div className="p-2"><p className="truncate text-[9px] font-semibold">{product.name}</p><p className="mt-1 font-mono text-[8px] opacity-55">₹{product.price.toLocaleString()}</p></div>
                   </button>
                 ))}
               </div>
             </section>
 
             <nav className={`sticky bottom-0 mt-auto grid h-14 flex-none grid-cols-5 border-t backdrop-blur-xl ${
-              landingTheme === 'dark' ? 'border-white/10 bg-black/95' : 'border-black/10 bg-white/95'
+              isDark ? 'border-white/10 bg-black/95' : 'border-black/10 bg-[#fffdf5]/95'
             }`}>
               {(
                 [
@@ -376,10 +356,11 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                   ['categories', Grid3X3, 'CATEGORIES'],
                   ['search', Search, 'SEARCH'],
                   ['contact', MessageCircle, 'ENQUIRE'],
-                  ['profile', User, 'PROFILE'],
+                  ['profile', Heart, 'SAVED'],
                 ] as const
               ).map(([tab, Icon, label]) => (
-                <button type="button" key={tab} onClick={() => navigate(tab)} className={`flex flex-col items-center justify-center gap-0.5 ${tab === 'home' ? 'text-[#D9432E]' : 'opacity-55'}`}>
+                <button type="button" key={tab} onClick={() => navigate(tab)} className={`relative flex flex-col items-center justify-center gap-0.5 ${tab === 'home' ? isDark ? 'text-white' : 'text-black' : 'opacity-45'}`}>
+                  {tab === 'home' && <span className="absolute top-0 h-0.5 w-7 bg-[#f7c318]" />}
                   <Icon className="h-4 w-4" strokeWidth={1.8} />
                   <span className="font-bebas text-[7px] tracking-wide">{label}</span>
                 </button>
@@ -388,13 +369,13 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
           </section>
         ) : (
           <>
-            <div className="flex h-11 flex-none items-center justify-between border-b border-[#202020] bg-[#090909] px-4">
+            <div className={`flex h-12 flex-none items-center justify-between border-b px-4 ${isDark ? 'border-white/10 bg-[#090909]' : 'border-black/10 bg-[#fffdf5]'}`}>
               {currentProduct ? (
                 <button
                   type="button"
                   onClick={() => setCurrentProduct(null)}
                   aria-label="Back to products"
-                  className="text-white transition-colors hover:text-[#f7c318]"
+                  className={`transition-colors hover:text-[#a98200] ${isDark ? 'text-white' : 'text-black'}`}
                 >
                   <ArrowLeft className="h-4 w-4" />
                 </button>
@@ -404,13 +385,13 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                   onClick={() => setIsMenuOpen(true)}
                   aria-label="Open menu"
                   aria-expanded={isMenuOpen}
-                  className="text-white transition-colors hover:text-[#f7c318]"
+                  className={`transition-colors hover:text-[#a98200] ${isDark ? 'text-white' : 'text-black'}`}
                 >
                   <Menu className="h-4 w-4" />
                 </button>
               )}
 
-              <span className="font-bebas text-sm tracking-[0.08em] text-white">
+              <span className={`font-bebas text-sm tracking-[0.08em] ${isDark ? 'text-white' : 'text-black'}`}>
                 {currentProduct ? currentProduct.category : businessSettings.name}
               </span>
 
@@ -420,7 +401,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                   if (!currentProduct) navigate('contact');
                 }}
                 aria-label={currentProduct ? 'Share product' : 'Contact Oh Man'}
-                className="text-white transition-colors hover:text-[#f7c318]"
+                className={`transition-colors hover:text-[#a98200] ${isDark ? 'text-white' : 'text-black'}`}
               >
                 {currentProduct ? (
                   <Share2 className="h-4 w-4" />
@@ -432,45 +413,26 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
 
             <main
               ref={scrollRef}
-              className="mobile-scroll relative min-h-0 flex-1 overflow-y-auto bg-[#090909]"
+              className={`mobile-scroll relative min-h-0 flex-1 overflow-y-auto ${isDark ? 'bg-[#090909] text-white' : 'bg-[#fffdf5] text-black'}`}
             >
               {currentProduct ? (
                 <div className="pb-24">
-                  <div className="relative h-[330px] overflow-hidden border-b border-black bg-[#151515]">
-                    <div className="absolute inset-y-0 right-0 w-[54%] skew-x-[-11deg] bg-[#f7c318]" />
-                    <div className="absolute left-4 top-3 z-10 max-w-[210px]">
-                      <h1 className="font-bebas text-[42px] leading-[0.86] tracking-[-0.02em] text-white">
-                        {currentProduct.name}
-                      </h1>
-                      <p className="mt-3 font-mono text-base font-bold text-white">
-                        ₹{currentProduct.price.toLocaleString()}
-                      </p>
-                      {currentProduct.tag && (
-                        <span className="mt-2 inline-flex border border-[#f7c318] bg-[#161616] px-2 py-1 font-mono text-[8px] text-[#f7c318]">
-                          ★ {currentProduct.tag}
-                        </span>
-                      )}
-                    </div>
-                    <div className="absolute bottom-2 right-0 z-10 h-[240px] w-[260px]">
-                      <ProductImage product={currentProduct} className="drop-shadow-[0_20px_10px_rgba(0,0,0,.65)]" />
-                    </div>
-                    <div className="absolute bottom-4 left-[54%] z-20 font-mono text-xs text-black">
-                      +&nbsp;&nbsp;+
-                      <br />
-                      &nbsp;&nbsp;+&nbsp;&nbsp;+
-                    </div>
+                  <div className={`relative h-[320px] overflow-hidden border-b ${isDark ? 'border-white/10 bg-[#171717]' : 'border-black/10 bg-[#efede5]'}`}>
+                    <div className="absolute left-0 top-0 z-10 bg-[#f7c318] px-3 py-2 font-mono text-[7px] font-bold tracking-[0.14em] text-black">OH MAN / PRODUCT</div>
+                    <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#f7c318]" />
+                    <div className="absolute inset-0 p-7 pt-10"><ProductImage product={currentProduct} className="drop-shadow-[0_18px_12px_rgba(0,0,0,.16)]" /></div>
                   </div>
 
-                  <div className="grid grid-cols-5 gap-1 border-b border-[#303030] bg-[#111] p-2">
+                  <div className={`grid grid-cols-5 gap-1 border-b p-2 ${isDark ? 'border-white/10 bg-[#111]' : 'border-black/10 bg-white'}`}>
                     {[...products.slice(0, 4), currentProduct].map((product, index) => (
                       <button
                         key={`${product.id}-${index}`}
                         type="button"
                         onClick={() => openProduct(product)}
-                        className={`h-12 border bg-[#d4d4d4] p-1 ${
+                        className={`h-12 border bg-[#eceae3] p-1 ${
                           product.id === currentProduct.id
-                            ? 'border-[#f7c318]'
-                            : 'border-[#333]'
+                            ? 'border-2 border-[#f7c318]'
+                            : isDark ? 'border-[#333]' : 'border-black/10'
                         }`}
                       >
                         <ProductImage product={product} />
@@ -478,19 +440,27 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                     ))}
                   </div>
 
-                  <div className="space-y-3 p-4">
-                    <div className="border-b border-[#333] pb-3">
-                      <h2 className="font-bebas text-sm tracking-wide text-white">DESCRIPTION</h2>
-                      <p className="mt-1 text-[10px] leading-[1.4] text-[#b9b9b9]">
+                  <div className="space-y-4 p-4">
+                    <div>
+                      <p className="font-mono text-[7px] tracking-[0.14em] text-[#a98200]">{currentProduct.category}</p>
+                      <h1 className={`mt-1 font-bebas text-[35px] leading-[0.9] ${isDark ? 'text-white' : 'text-black'}`}>{currentProduct.name}</h1>
+                      <div className="mt-3 flex items-center justify-between">
+                        <p className="font-mono text-sm font-bold">₹{currentProduct.price.toLocaleString()}</p>
+                        {currentProduct.tag && <span className="bg-[#f7c318] px-2 py-1 font-mono text-[6px] font-bold text-black">{currentProduct.tag}</span>}
+                      </div>
+                    </div>
+                    <div className={`border-t pt-3 ${isDark ? 'border-white/10' : 'border-black/10'}`}>
+                      <h2 className="font-bebas text-sm tracking-wide">DESCRIPTION</h2>
+                      <p className="mt-1 text-[10px] leading-[1.5] opacity-55">
                         {currentProduct.description}
                       </p>
                     </div>
                     <div>
                       <div className="flex items-center justify-between">
-                        <h2 className="font-bebas text-sm tracking-wide text-white">FEATURES</h2>
-                        <span className="font-mono text-base text-white">+</span>
+                        <h2 className="font-bebas text-sm tracking-wide">DETAILS</h2>
+                        <span className="font-mono text-base">+</span>
                       </div>
-                      <ul className="mt-1 space-y-0.5 text-[9px] leading-[1.3] text-[#d0d0d0]">
+                      <ul className="mt-1 space-y-1 text-[9px] leading-[1.3] opacity-65">
                         {currentProduct.features.map((feature) => (
                           <li key={feature}>+&nbsp; {feature}</li>
                         ))}
@@ -498,7 +468,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                     </div>
                   </div>
 
-                  <div className="absolute bottom-0 left-0 right-0 z-30 flex gap-2 border-t border-[#242424] bg-[#090909] p-2">
+                  <div className={`absolute bottom-0 left-0 right-0 z-30 flex gap-2 border-t p-2 ${isDark ? 'border-white/10 bg-[#090909]' : 'border-black/10 bg-[#fffdf5]'}`}>
                     <a
                       href={`tel:${businessSettings.phone}`}
                       className="flex-1 border border-black bg-[#f7c318] py-2.5 text-center font-bebas text-sm text-black"
@@ -509,7 +479,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                       href={`https://wa.me/${businessSettings.whatsapp.replace(/\D/g, '')}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="flex flex-1 items-center justify-center gap-2 border border-black bg-[#d9432e] py-2.5 font-bebas text-sm text-white"
+                      className={`flex flex-1 items-center justify-center gap-2 border py-2.5 font-bebas text-sm ${isDark ? 'border-white bg-white text-black' : 'border-black bg-black text-white'}`}
                     >
                       WHATSAPP <MessageCircle className="h-3.5 w-3.5" />
                     </a>
@@ -521,7 +491,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                     <div className="space-y-4 px-3 pb-5 pt-2">
                       <div>
                         <p className="mb-1 font-mono text-[8px] tracking-[0.18em] text-[#f7c318]">ISSUE 01 / 1500 OBJECTS</p>
-                        <h1 className="font-bebas text-[34px] leading-[0.86] tracking-[-0.01em] text-white">
+                        <h1 className="font-bebas text-[34px] leading-[0.86] tracking-[-0.01em]">
                           THE DAILY
                           <br />
                           <span className="text-[#f7c318]">UNIFORM.</span>
@@ -541,7 +511,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
 
                       <section>
                         <div className="mb-2 flex items-center justify-between">
-                          <h2 className="font-bebas text-sm tracking-wide text-white">CATEGORIES</h2>
+                          <h2 className="font-bebas text-sm tracking-wide">CATEGORIES</h2>
                           <button
                             type="button"
                             onClick={() => navigate('categories')}
@@ -580,17 +550,21 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                         wishlist={wishlist}
                         onProductClick={openProduct}
                         onToggleWishlist={toggleWishlist}
+                        dark={isDark}
                       />
                     </div>
                   )}
 
                   {activeTab === 'categories' && (
                     <div className="space-y-4 p-3">
-                      <h1 className="text-center font-bebas text-[34px] leading-none text-white">
-                        SHOP BY
+                      <div className="border-b border-current/10 pb-3 text-center">
+                        <p className="font-mono text-[7px] tracking-[0.16em] text-[#a98200]">CURATED FOR OH MAN</p>
+                        <h1 className="mt-2 font-bebas text-[34px] leading-none">
+                        BROWSE
                         <br />
-                        <span className="text-[#f7c318]">CATEGORY</span>
-                      </h1>
+                        <span className="text-[#a98200]">CATEGORIES</span>
+                        </h1>
+                      </div>
                       <div className="grid grid-cols-2 gap-2">
                         {categories.map((category, index) => {
                           const cover = products.find(product => product.category === category.name) ?? products[index];
@@ -602,11 +576,11 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                                 setSelectedCategory(category.name);
                                 navigate('search');
                               }}
-                              className="relative aspect-[1.05] overflow-hidden rounded-lg border border-black bg-[#ededed] text-left text-black"
+                              className="relative aspect-[.9] overflow-hidden border border-black/10 bg-[#ededed] text-left text-black"
                             >
                               {cover && <ProductImage product={cover} className="object-cover" />}
                               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/5 to-transparent" />
-                              <ArrowUpRight className="absolute right-2 top-2 h-5 w-5 rounded-full bg-white p-1 text-black" />
+                              <ArrowUpRight className="absolute right-2 top-2 h-6 w-6 bg-[#f7c318] p-1.5 text-black" />
                               <div className="absolute inset-x-0 bottom-3 text-center text-white">
                                 <h2 className="font-bebas text-xl">{category.name}</h2>
                                 <p className="font-mono text-[7px] text-[#f7c318]">{category.productCount} PRODUCTS</p>
@@ -620,6 +594,10 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
 
                   {activeTab === 'search' && (
                     <div className="space-y-3 p-3">
+                      <div className="border-b border-current/10 pb-3">
+                        <p className="font-mono text-[7px] tracking-[0.15em] text-[#a98200]">OH MAN CATALOGUE</p>
+                        <h1 className="mt-1 font-bebas text-[30px] leading-none">FIND YOUR NEXT.</h1>
+                      </div>
                       <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
                         {['ALL', ...categories.map((category) => category.name)].map((category) => (
                           <button
@@ -629,7 +607,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                             className={`whitespace-nowrap px-3 py-1.5 font-bebas text-[10px] ${
                               selectedCategory === category
                                 ? 'bg-[#f7c318] text-black'
-                                : 'border border-[#333] bg-[#171717] text-white'
+                                : isDark ? 'border border-[#333] bg-[#171717] text-white' : 'border border-black/15 bg-white text-black'
                             }`}
                           >
                             {category}
@@ -642,7 +620,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                           onChange={(event) => setSearchQuery(event.target.value)}
                           placeholder="SEARCH PRODUCTS..."
                           aria-label="Search products"
-                          className="h-9 w-full border border-[#333] bg-[#f2f2f2] px-3 pr-10 font-mono text-[9px] text-black outline-none focus:border-[#f7c318]"
+                          className="h-10 w-full border border-black/20 bg-white px-3 pr-10 font-mono text-[9px] text-black outline-none focus:border-[#f7c318]"
                         />
                         <Search className="absolute right-3 top-2.5 h-4 w-4 text-black" />
                       </div>
@@ -652,22 +630,24 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                         wishlist={wishlist}
                         onProductClick={openProduct}
                         onToggleWishlist={toggleWishlist}
+                        dark={isDark}
                       />
                     </div>
                   )}
 
                   {activeTab === 'contact' && (
-                    <div className="hero-noise min-h-full space-y-5 px-4 py-4">
-                      <div className="flex items-start justify-between">
+                    <div className="min-h-full space-y-5 px-4 py-4">
+                      <div className="flex items-start justify-between border-b border-current/10 pb-4">
                         <div>
-                          <h1 className="font-bebas text-[40px] leading-[0.88] text-white">
+                          <p className="font-mono text-[7px] tracking-[0.16em] text-[#a98200]">PERSONAL ASSISTANCE</p>
+                          <h1 className="mt-2 font-bebas text-[40px] leading-[0.88]">
                             GET IN
                             <br />
                             TOUCH
                           </h1>
-                          <p className="mt-2 text-[10px] text-[#c8c8c8]">We’re here to help.</p>
+                          <p className="mt-2 text-[10px] opacity-50">We’re here to help.</p>
                         </div>
-                        <div className="mt-1 flex h-16 w-16 items-center justify-center bg-[#d9432e] text-black">
+                        <div className="mt-1 flex h-16 w-16 items-center justify-center bg-[#f7c318] text-black">
                           <ArrowUpRight className="h-11 w-11" strokeWidth={2.8} />
                         </div>
                       </div>
@@ -698,15 +678,15 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                         />
                       </div>
 
-                      <div className="border border-[#282828] p-3">
-                        <span className="font-bebas text-[10px] text-[#aaa]">FOLLOW US</span>
-                        <div className="mt-2 grid grid-cols-3 divide-x divide-[#333]">
+                      <div className={`border p-3 ${isDark ? 'border-white/10' : 'border-black/10'}`}>
+                        <span className="font-bebas text-[10px] opacity-50">FOLLOW US</span>
+                        <div className="mt-2 grid grid-cols-3 divide-x divide-current/10">
                           {[AtSign, UsersRound, Play].map((Icon, index) => (
                             <button
                               type="button"
                               key={index}
                               aria-label={['Instagram', 'Facebook', 'YouTube'][index]}
-                              className="flex items-center justify-center py-2 text-white hover:text-[#f7c318]"
+                              className="flex items-center justify-center py-2 hover:text-[#a98200]"
                             >
                               <Icon className="h-4 w-4" />
                             </button>
@@ -718,21 +698,21 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
 
                   {activeTab === 'profile' && (
                     <div className="space-y-4 p-4">
-                      <div className="border border-[#303030] bg-[#151515] p-4">
+                      <div className={`border p-4 ${isDark ? 'border-white/10 bg-[#151515]' : 'border-black/10 bg-white'}`}>
                         <div className="flex items-center gap-3">
                           <div className="flex h-12 w-12 items-center justify-center bg-[#f7c318] font-bebas text-xl text-black">
                             OM
                           </div>
                           <div>
-                            <h1 className="font-bebas text-2xl text-white">OH MAN MEMBER</h1>
-                            <p className="font-mono text-[8px] text-[#f7c318]">ADVENTURE CLUB / 2026</p>
+                            <h1 className="font-bebas text-2xl">SAVED PRODUCTS</h1>
+                            <p className="font-mono text-[8px] text-[#a98200]">YOUR PERSONAL SHORTLIST</p>
                           </div>
                         </div>
                       </div>
-                      <div className="border border-[#303030] bg-[#151515] p-4">
+                      <div className={`border p-4 ${isDark ? 'border-white/10 bg-[#151515]' : 'border-black/10 bg-white'}`}>
                         <div className="flex items-center justify-between">
-                          <span className="font-bebas text-sm text-white">SAVED OBJECTS</span>
-                          <span className="font-mono text-xs text-[#f7c318]">{wishlist.length}</span>
+                          <span className="font-bebas text-sm">YOUR SHORTLIST</span>
+                          <span className="bg-[#f7c318] px-2 py-1 font-mono text-[8px] text-black">{wishlist.length} SAVED</span>
                         </div>
                         <div className="mt-3 space-y-2">
                           {wishlist.length ? (
@@ -743,17 +723,17 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                                   type="button"
                                   key={product.id}
                                   onClick={() => openProduct(product)}
-                                  className="flex w-full items-center justify-between border-t border-[#2a2a2a] pt-2 text-left"
+                                  className="flex w-full items-center justify-between border-t border-current/10 pt-2 text-left"
                                 >
-                                  <span className="font-bebas text-xs text-white">{product.name}</span>
-                                  <span className="font-mono text-[9px] text-[#f7c318]">
+                                  <span className="font-bebas text-xs">{product.name}</span>
+                                  <span className="font-mono text-[9px] text-[#a98200]">
                                     ₹{product.price.toLocaleString()}
                                   </span>
                                 </button>
                               ))
                           ) : (
-                            <p className="border-t border-[#2a2a2a] pt-3 font-mono text-[9px] text-[#888]">
-                              NO SAVED PRODUCTS YET
+                            <p className="border-t border-current/10 pt-3 font-mono text-[9px] opacity-45">
+                              SAVE PRODUCTS USING THE HEART ICON
                             </p>
                           )}
                         </div>
@@ -765,14 +745,14 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
             </main>
 
             {!currentProduct && (
-              <nav className="grid h-14 flex-none grid-cols-5 border-t border-[#303030] bg-[#090909]">
+              <nav className={`grid h-14 flex-none grid-cols-5 border-t ${isDark ? 'border-white/10 bg-[#090909]' : 'border-black/10 bg-[#fffdf5]'}`}>
                 {(
                   [
                     ['home', Home, 'HOME'],
                     ['categories', Grid3X3, 'CATEGORIES'],
                     ['search', Search, 'SEARCH'],
-                    ['contact', Phone, 'CONTACT'],
-                    ['profile', User, 'PROFILE'],
+                    ['contact', Phone, 'ENQUIRE'],
+                    ['profile', Heart, 'SAVED'],
                   ] as const
                 ).map(([tab, Icon, label]) => (
                   <button
@@ -780,7 +760,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                     key={tab}
                     onClick={() => navigate(tab)}
                     className={`flex flex-col items-center justify-center gap-0.5 transition-colors ${
-                      activeTab === tab ? 'bg-[#f7c318] text-black' : 'text-[#a5a5a5]'
+                      activeTab === tab ? 'border-t-2 border-[#f7c318]' : 'opacity-40'
                     }`}
                   >
                     <Icon className="h-4 w-4" strokeWidth={1.8} />
@@ -802,18 +782,20 @@ function ProductGrid({
   wishlist,
   onProductClick,
   onToggleWishlist,
+  dark,
 }: {
   title: string;
   products: Product[];
   wishlist: string[];
   onProductClick: (product: Product) => void;
   onToggleWishlist: (id: string, event: React.MouseEvent) => void;
+  dark: boolean;
 }) {
   return (
     <section>
       <div className="mb-2 flex items-center justify-between">
-        <h2 className="font-bebas text-sm tracking-wide text-white">{title}</h2>
-        <span className="font-mono text-[8px] text-[#aaa]">VIEW ALL</span>
+        <h2 className={`font-bebas text-sm tracking-wide ${dark ? 'text-white' : 'text-black'}`}>{title}</h2>
+        <span className="font-mono text-[7px] opacity-45">{products.length} OBJECTS</span>
       </div>
       <div className="grid grid-cols-2 gap-2">
         {products.map((product) => (
@@ -821,9 +803,9 @@ function ProductGrid({
             type="button"
             key={product.id}
             onClick={() => onProductClick(product)}
-            className="group overflow-hidden border border-black bg-[#d8d8d8] text-left text-black"
+            className={`group overflow-hidden border text-left ${dark ? 'border-white/10 bg-[#151515] text-white' : 'border-black/10 bg-white text-black'}`}
           >
-            <div className="relative h-[150px] overflow-hidden bg-[#cfcfcf]">
+            <div className={`relative h-[150px] overflow-hidden ${dark ? 'bg-[#252525]' : 'bg-[#efede7]'}`}>
               <ProductImage
                 product={product}
                 className="transition-transform duration-300 group-hover:scale-105"
@@ -841,7 +823,7 @@ function ProductGrid({
                     onToggleWishlist(product.id, event as unknown as React.MouseEvent);
                   }
                 }}
-                className="absolute right-2 top-2 text-black"
+                className={`absolute right-2 top-2 flex h-7 w-7 items-center justify-center bg-white ${dark ? 'text-black' : 'text-black'}`}
               >
                 <Heart
                   className={`h-4 w-4 ${
@@ -851,13 +833,14 @@ function ProductGrid({
               </span>
             </div>
             <div className="p-2">
-              <h3 className="truncate font-bebas text-sm">{product.name}</h3>
+              <p className="font-mono text-[6px] tracking-[0.1em] text-[#a98200]">{product.category}</p>
+              <h3 className="mt-1 truncate font-bebas text-sm">{product.name}</h3>
               <div className="mt-1 flex items-center justify-between">
                 <span className="font-mono text-[10px] font-bold">
                   ₹{product.price.toLocaleString()}
                 </span>
-                <span className="flex h-5 w-5 items-center justify-center bg-[#f7c318] text-base leading-none">
-                  +
+                <span className="bg-black px-2 py-1 font-bebas text-[7px] tracking-wide text-white">
+                  VIEW
                 </span>
               </div>
             </div>

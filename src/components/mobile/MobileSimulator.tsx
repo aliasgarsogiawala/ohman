@@ -7,6 +7,10 @@ import {
   Grid3X3,
   Heart,
   Home,
+  Eye,
+  EyeOff,
+  LockKeyhole,
+  LogOut,
   Mail,
   MapPin,
   Menu,
@@ -66,6 +70,9 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [landingTheme, setLandingTheme] = useState<'light' | 'dark'>('light');
+  const [isMobileLoggedIn, setIsMobileLoggedIn] = useState(false);
+  const [showMobilePassword, setShowMobilePassword] = useState(false);
+  const [rememberMobileLogin, setRememberMobileLogin] = useState(true);
   const scrollRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -143,7 +150,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
         style={{ height: 'min(800px, calc(100dvh - 76px))', minHeight: 570 }}
       >
         <div className={`relative z-50 flex h-7 flex-none items-center justify-between px-4 text-[10px] font-semibold transition-colors ${
-          isDark ? 'bg-[#090909] text-white' : 'bg-[#fffdf5] text-black'
+          !isMobileLoggedIn || isDark ? 'bg-[#090909] text-white' : 'bg-[#fffdf5] text-black'
         }`}>
           <span>9:41</span>
           <div className="flex items-center gap-1">
@@ -153,6 +160,89 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
           </div>
         </div>
 
+        {!isMobileLoggedIn ? (
+          <section className="mobile-scroll relative flex min-h-0 flex-1 flex-col overflow-y-auto bg-[#090909] text-white">
+            <div className="relative min-h-[244px] overflow-hidden bg-[#f7c318] px-5 pb-6 pt-5 text-black">
+              <div className="absolute -right-14 -top-16 h-44 w-44 rounded-full border-[32px] border-black/10" aria-hidden="true" />
+              <div className="absolute -bottom-16 right-8 h-36 w-36 rotate-12 border-[26px] border-black/10" aria-hidden="true" />
+              <div className="relative flex items-start justify-between">
+                <div>
+                  <div className="ohman-wordmark text-[35px] leading-none">OH MAN</div>
+                  <p className="mt-1.5 font-mono text-[6px] font-bold tracking-[0.2em]">MAZGAON / MUMBAI</p>
+                </div>
+                <span className="border border-black px-2 py-1.5 font-mono text-[6px] font-bold tracking-[0.12em]">ADMIN / MOBILE</span>
+              </div>
+              <div className="relative mt-12">
+                <p className="font-mono text-[7px] font-bold tracking-[0.16em]">PRIVATE CATALOGUE ACCESS</p>
+                <h1 className="mt-3 font-bebas text-[49px] leading-[0.82] tracking-[-0.02em]">
+                  WELCOME
+                  <br />
+                  BACK.
+                </h1>
+              </div>
+            </div>
+
+            <form
+              className="flex flex-1 flex-col px-5 pb-5 pt-6"
+              onSubmit={(event) => {
+                event.preventDefault();
+                setIsMobileLoggedIn(true);
+                setShowIntro(true);
+                setActiveTab('home');
+              }}
+            >
+              <div>
+                <p className="font-mono text-[7px] tracking-[0.14em] text-[#f7c318]">SIGN IN TO CONTINUE</p>
+                <p className="mt-2 max-w-[270px] text-[9px] leading-relaxed text-white/45">
+                  Access products, saved styles and customer enquiry tools.
+                </p>
+              </div>
+
+              <div className="mt-6 space-y-4">
+                <label className="block">
+                  <span className="mb-2 block font-mono text-[7px] font-bold tracking-[0.14em] text-white/60">EMAIL ADDRESS</span>
+                  <span className="flex h-12 items-center border border-white/15 bg-white/[0.04] px-3 focus-within:border-[#f7c318]">
+                    <Mail className="mr-3 h-4 w-4 text-[#f7c318]" />
+                    <input type="email" required defaultValue="admin@ohman.in" autoComplete="email" className="min-w-0 flex-1 bg-transparent text-[10px] text-white outline-none placeholder:text-white/25" placeholder="you@ohman.in" />
+                  </span>
+                </label>
+
+                <label className="block">
+                  <span className="mb-2 block font-mono text-[7px] font-bold tracking-[0.14em] text-white/60">PASSWORD</span>
+                  <span className="flex h-12 items-center border border-white/15 bg-white/[0.04] px-3 focus-within:border-[#f7c318]">
+                    <LockKeyhole className="mr-3 h-4 w-4 text-[#f7c318]" />
+                    <input type={showMobilePassword ? 'text' : 'password'} required defaultValue="ohman2026" autoComplete="current-password" className="min-w-0 flex-1 bg-transparent text-[10px] text-white outline-none placeholder:text-white/25" placeholder="Enter password" />
+                    <button type="button" onClick={() => setShowMobilePassword(value => !value)} aria-label={showMobilePassword ? 'Hide password' : 'Show password'} className="ml-2 p-1 text-white/40 hover:text-white">
+                      {showMobilePassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </span>
+                </label>
+
+                <div className="flex items-center justify-between">
+                  <label className="flex cursor-pointer items-center gap-2 text-[8px] text-white/50">
+                    <input type="checkbox" checked={rememberMobileLogin} onChange={event => setRememberMobileLogin(event.target.checked)} className="sr-only" />
+                    <span className={`flex h-3.5 w-3.5 items-center justify-center border ${rememberMobileLogin ? 'border-[#f7c318] bg-[#f7c318]' : 'border-white/30'}`}>
+                      {rememberMobileLogin && <span className="h-1.5 w-1.5 bg-black" />}
+                    </span>
+                    Remember me
+                  </label>
+                  <button type="button" className="font-mono text-[7px] text-[#f7c318] underline underline-offset-4">FORGOT PASSWORD?</button>
+                </div>
+              </div>
+
+              <button type="submit" className="group mt-6 flex h-13 w-full items-center justify-between bg-[#f7c318] px-4 py-3 text-black shadow-[4px_4px_0_#fff] transition-transform active:translate-x-1 active:translate-y-1 active:shadow-none">
+                <span className="font-bebas text-base tracking-[0.08em]">ENTER CATALOGUE</span>
+                <span className="flex h-7 w-7 items-center justify-center bg-black text-white"><ArrowUpRight className="h-4 w-4" /></span>
+              </button>
+
+              <div className="mt-auto flex items-center justify-between border-t border-white/10 pt-4 font-mono text-[6px] tracking-[0.11em] text-white/25">
+                <span>SECURE ACCESS</span>
+                <span>OH MAN / 2026</span>
+              </div>
+            </form>
+          </section>
+        ) : (
+          <>
         {isMenuOpen && (
           <div className="absolute inset-x-0 bottom-0 top-7 z-40">
             <button
@@ -230,6 +320,20 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                     <ArrowUpRight className="h-4 w-4" />
                   </a>
                 </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setCurrentProduct(null);
+                    setShowIntro(true);
+                    setActiveTab('home');
+                    setIsMobileLoggedIn(false);
+                  }}
+                  className={`mt-3 flex w-full items-center justify-between border px-3 py-2.5 font-bebas text-xs ${isDark ? 'border-white/15 text-white' : 'border-black/15 text-black'}`}
+                >
+                  LOG OUT
+                  <LogOut className="h-3.5 w-3.5" />
+                </button>
               </div>
             </aside>
           </div>
@@ -769,6 +873,8 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                 ))}
               </nav>
             )}
+          </>
+        )}
           </>
         )}
       </div>

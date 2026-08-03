@@ -18,9 +18,9 @@ export default {
         accentDanger: '#FF4D6D'
       },
       fontFamily: {
-        display: ['Bebas Neue', 'Cabinet Grotesk', 'sans-serif'],
-        sans: ['Space Grotesk', 'Inter', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace']
+        display: ['Montserrat', 'sans-serif'],
+        sans: ['Hanken Grotesk', 'Inter', 'sans-serif'],
+        mono: ['DM Mono', 'monospace']
       },
       boxShadow: {
         'brutal-lime': '4px 4px 0px #D9FF3F',

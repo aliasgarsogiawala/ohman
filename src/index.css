@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Hanken+Grotesk:wght@400;500;600;700&family=Montserrat:wght@600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -65,8 +65,9 @@
 }
 
 .font-bebas {
-  font-family: 'Bebas Neue', sans-serif;
-  letter-spacing: 0.05em;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.015em;
 }
 
 .font-mono {
@@ -74,10 +75,9 @@
 }
 
 .ohman-wordmark {
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 900;
-  letter-spacing: -0.08em;
-  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.38);
+  letter-spacing: -0.055em;
 }
 
 .ohman-moustache {

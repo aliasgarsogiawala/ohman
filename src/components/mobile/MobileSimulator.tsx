@@ -163,17 +163,13 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
 
         {!isMobileLoggedIn ? (
           <section className="mobile-scroll relative flex min-h-0 flex-1 flex-col overflow-y-auto bg-[#090909] text-white">
-            <div className={`relative overflow-hidden bg-[#f7c318] px-5 pb-5 pt-4 text-black ${mobileAuthMode === 'signup' ? 'min-h-[202px]' : 'min-h-[226px]'}`}>
-              <div className="absolute -right-14 -top-16 h-44 w-44 rounded-full border-[32px] border-black/10" aria-hidden="true" />
-              <div className="absolute -bottom-20 right-8 h-36 w-36 rotate-12 border-[26px] border-black/10" aria-hidden="true" />
-              <div className="relative flex items-start justify-between">
-                <img src="/ohman-logo.png" alt="OH MAN" className="h-[62px] w-[118px] object-contain" />
-                <span className="border border-black px-2 py-1.5 font-mono text-[8px] font-bold tracking-[0.12em]">MOBILE / 01</span>
-              </div>
-              <div className={`relative ${mobileAuthMode === 'signup' ? 'mt-5' : 'mt-7'}`}>
-                <p className="font-mono text-[8px] font-bold tracking-[0.16em]">OH MAN MEMBER ACCESS</p>
-                <h1 className="mt-2 font-bebas text-[38px] leading-[0.88] tracking-[-0.03em]">
-                  {mobileAuthMode === 'login' ? <>WELCOME<br />BACK.</> : <>JOIN THE<br />INNER CIRCLE.</>}
+            <div className={`auth-hero relative flex items-center justify-center overflow-hidden bg-[#f7c318] px-5 text-center text-black ${mobileAuthMode === 'signup' ? 'min-h-[202px]' : 'min-h-[226px]'}`}>
+              <span className="auth-orbit auth-orbit-one" aria-hidden="true" />
+              <span className="auth-orbit auth-orbit-two" aria-hidden="true" />
+              <div className="auth-hero-content relative flex flex-col items-center">
+                <img src="/ohman-logo.png" alt="OH MAN" className="auth-logo-float h-[92px] w-[178px] object-contain" />
+                <h1 key={mobileAuthMode} className="auth-title-enter mt-3 font-bebas text-[31px] leading-none tracking-[-0.035em]">
+                  {mobileAuthMode === 'login' ? 'WELCOME BACK.' : 'JOIN OH MAN.'}
                 </h1>
               </div>
             </div>
@@ -204,7 +200,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                 )}
                 <label className="block">
                   <span className="mb-1.5 block font-mono text-[10px] font-bold tracking-[0.12em] text-white/65">PASSWORD</span>
-                  <span className={`flex items-center border border-white/15 bg-white/[0.04] px-3 focus-within:border-[#f7c318] ${mobileAuthMode === 'signup' ? 'h-10' : 'h-12'}`}>
+                  <span className={`auth-field flex items-center border border-white/15 bg-white/[0.04] px-3 focus-within:border-[#f7c318] ${mobileAuthMode === 'signup' ? 'h-10' : 'h-12'}`}>
                     <LockKeyhole className="mr-3 h-4 w-4 text-[#f7c318]" />
                     <input type={showMobilePassword ? 'text' : 'password'} required defaultValue={mobileAuthMode === 'login' ? 'ohman2026' : undefined} autoComplete={mobileAuthMode === 'login' ? 'current-password' : 'new-password'} className="min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-white/30" placeholder={mobileAuthMode === 'login' ? 'Enter password' : 'Create a strong password'} />
                     <button type="button" onClick={() => setShowMobilePassword(value => !value)} aria-label={showMobilePassword ? 'Hide password' : 'Show password'} className="ml-2 p-1 text-white/40 hover:text-white">
@@ -225,7 +221,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
                 </div>
               </div>
 
-              <button type="submit" className="group mt-5 flex w-full items-center justify-between bg-[#f7c318] px-4 py-3 text-black shadow-[4px_4px_0_#fff] transition-transform active:translate-x-1 active:translate-y-1 active:shadow-none">
+              <button type="submit" className="auth-cta-shimmer group mt-5 flex w-full items-center justify-between overflow-hidden bg-[#f7c318] px-4 py-3 text-black shadow-[4px_4px_0_#fff] transition-transform active:translate-x-1 active:translate-y-1 active:shadow-none">
                 <span className="font-bebas text-base tracking-[0.04em]">{mobileAuthMode === 'login' ? 'ENTER CATALOGUE' : 'CREATE ACCOUNT'}</span>
                 <span className="flex h-7 w-7 items-center justify-center bg-black text-white"><ArrowUpRight className="h-4 w-4" /></span>
               </button>
@@ -903,7 +899,7 @@ function AuthField({
   return (
     <label className="block">
       <span className="mb-1.5 block font-mono text-[10px] font-bold tracking-[0.12em] text-white/65">{label}</span>
-      <span className="flex h-10 items-center border border-white/15 bg-white/[0.04] px-3 focus-within:border-[#f7c318]">
+      <span className="auth-field flex h-10 items-center border border-white/15 bg-white/[0.04] px-3 focus-within:border-[#f7c318]">
         <Icon className="mr-3 h-4 w-4 text-[#f7c318]" />
         <input
           type={type}

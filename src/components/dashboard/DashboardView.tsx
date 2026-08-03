@@ -21,7 +21,13 @@ import {
   EyeOff,
   LockKeyhole,
   Mail,
-  ShieldCheck
+  ShieldCheck,
+  BadgePercent,
+  Pencil,
+  Copy,
+  Smartphone,
+  ToggleLeft,
+  ToggleRight
 } from 'lucide-react';
 import { Product, Category, BusinessSettings } from '../../types';
 import { demoBanners, demoContacts } from '../../data/mockData';
@@ -36,7 +42,92 @@ interface DashboardViewProps {
   onSelectProductForMobilePreview: (id: string) => void;
 }
 
-type DashboardTab = 'dashboard' | 'products' | 'categories' | 'banners' | 'contacts' | 'settings';
+type DashboardTab = 'dashboard' | 'products' | 'categories' | 'banners' | 'offers' | 'contacts' | 'settings';
+
+type OfferStatus = 'ACTIVE' | 'SCHEDULED' | 'DRAFT';
+
+interface DashboardOffer {
+  id: string;
+  title: string;
+  code: string;
+  discount: string;
+  description: string;
+  audience: string;
+  validFrom: string;
+  validUntil: string;
+  status: OfferStatus;
+  visibleOnMobile: boolean;
+  redemptions: number;
+}
+
+const initialOffers: DashboardOffer[] = [
+  {
+    id: 'offer-01',
+    title: 'The Member Edit',
+    code: 'OHMAN30',
+    discount: 'UP TO 30% OFF',
+    description: 'A sharp selection of member favourites across shirts, polos and everyday layers.',
+    audience: 'All members',
+    validFrom: '01 Aug 2026',
+    validUntil: '15 Aug 2026',
+    status: 'ACTIVE',
+    visibleOnMobile: true,
+    redemptions: 184,
+  },
+  {
+    id: 'offer-02',
+    title: 'Smart Finds',
+    code: 'UNDER999',
+    discount: 'UNDER ₹999',
+    description: 'Easy wardrobe upgrades and accessories picked for value without compromising the look.',
+    audience: 'All visitors',
+    validFrom: '01 Aug 2026',
+    validUntil: '31 Aug 2026',
+    status: 'ACTIVE',
+    visibleOnMobile: true,
+    redemptions: 96,
+  },
+  {
+    id: 'offer-03',
+    title: 'Monsoon Drop',
+    code: 'MONSOON20',
+    discount: '20% OFF',
+    description: 'A scheduled edit of quick-dry layers, utility trousers and rain-ready accessories.',
+    audience: 'Mumbai customers',
+    validFrom: '16 Aug 2026',
+    validUntil: '31 Aug 2026',
+    status: 'SCHEDULED',
+    visibleOnMobile: true,
+    redemptions: 0,
+  },
+  {
+    id: 'offer-04',
+    title: 'First Enquiry',
+    code: 'WELCOME10',
+    discount: '10% OFF',
+    description: 'A private welcome benefit to share after a customer sends their first product enquiry.',
+    audience: 'New enquiries',
+    validFrom: '01 Sep 2026',
+    validUntil: '30 Sep 2026',
+    status: 'DRAFT',
+    visibleOnMobile: false,
+    redemptions: 0,
+  },
+];
+
+const emptyOffer = (): DashboardOffer => ({
+  id: '',
+  title: '',
+  code: '',
+  discount: '',
+  description: '',
+  audience: 'All visitors',
+  validFrom: '03 Aug 2026',
+  validUntil: '31 Aug 2026',
+  status: 'DRAFT',
+  visibleOnMobile: true,
+  redemptions: 0,
+});
 
 export const DashboardView: React.FC<DashboardViewProps> = ({
   products,
@@ -55,6 +146,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [logoutTheme, setLogoutTheme] = useState<'light' | 'dark'>('light');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
+  const [offers, setOffers] = useState<DashboardOffer[]>(initialOffers);
+  const [offerEditor, setOfferEditor] = useState<DashboardOffer | null>(null);
 
   // Add Product Form State
   const [newProdName, setNewProdName] = useState('');
@@ -91,6 +184,31 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     setNewProdDescription('');
     setNewProdFeatures('');
     setNewProdImageUrl('');
+  };
+
+  const handleSaveOffer = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!offerEditor || !offerEditor.title.trim() || !offerEditor.discount.trim()) return;
+
+    if (offerEditor.id) {
+      setOffers(current => current.map(offer => offer.id === offerEditor.id ? offerEditor : offer));
+    } else {
+      setOffers(current => [{ ...offerEditor, id: `offer-${Date.now()}` }, ...current]);
+    }
+    setOfferEditor(null);
+  };
+
+  const duplicateOffer = (offer: DashboardOffer) => {
+    setOffers(current => [
+      {
+        ...offer,
+        id: `offer-${Date.now()}`,
+        title: `${offer.title} Copy`,
+        status: 'DRAFT',
+        redemptions: 0,
+      },
+      ...current,
+    ]);
   };
 
   const filteredProducts = products.filter(p => {
@@ -313,6 +431,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             >
               <Image className="w-5 h-5" />
               <span>BANNERS</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('offers')}
+              className={`w-full flex items-center space-x-3 px-3 py-2 font-bebas text-sm tracking-wider transition-all border ${activeTab === 'offers' ? 'bg-[#F7C318] text-black border-black shadow-[3px_3px_0px_#000] font-bold' : 'text-textGray hover:text-white border-transparent hover:bg-[#171717]'}`}
+            >
+              <BadgePercent className="w-5 h-5" />
+              <span>OFFERS</span>
             </button>
 
             <button
@@ -694,6 +820,121 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           )}
 
+          {activeTab === 'offers' && (
+            <div className="space-y-5">
+              <section className="relative overflow-hidden border border-[#303030] bg-[#141414] p-5">
+                <div className="pointer-events-none absolute -right-10 -top-16 h-52 w-52 rotate-12 border-[28px] border-[#F7C318]/10" />
+                <div className="relative flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <div className="mb-2 flex items-center gap-2 font-mono text-[9px] tracking-[0.18em] text-[#F7C318]">
+                      <BadgePercent className="h-4 w-4" /> MOBILE CATALOGUE CAMPAIGNS
+                    </div>
+                    <h2 className="font-bebas text-4xl leading-none text-white">OFFERS CONTROL ROOM</h2>
+                    <p className="mt-2 max-w-2xl text-xs leading-relaxed text-textGray">
+                      Create promotional edits, schedule their run and decide exactly what appears inside the mobile catalogue.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setOfferEditor(emptyOffer())}
+                    className="flex items-center justify-center gap-2 border border-black bg-[#F7C318] px-5 py-3 font-bebas text-base tracking-wide text-black shadow-[4px_4px_0_#000] transition-transform hover:-translate-y-0.5"
+                  >
+                    <Plus className="h-4 w-4" /> CREATE OFFER
+                  </button>
+                </div>
+              </section>
+
+              <div className="grid grid-cols-2 gap-2 xl:grid-cols-4">
+                {[
+                  ['LIVE OFFERS', offers.filter(offer => offer.status === 'ACTIVE').length.toString(), 'PUBLISHED NOW'],
+                  ['SCHEDULED', offers.filter(offer => offer.status === 'SCHEDULED').length.toString(), 'READY TO GO'],
+                  ['ON MOBILE', offers.filter(offer => offer.visibleOnMobile).length.toString(), 'VISIBLE CAMPAIGNS'],
+                  ['REDEMPTIONS', offers.reduce((total, offer) => total + offer.redemptions, 0).toLocaleString(), 'TOTAL CLAIMS'],
+                ].map(([label, value, helper], index) => (
+                  <div key={label} className={`border p-4 ${index === 0 ? 'border-[#F7C318] bg-[#F7C318] text-black' : 'border-[#303030] bg-[#141414] text-white'}`}>
+                    <span className={`font-mono text-[9px] ${index === 0 ? 'text-black/60' : 'text-textGray'}`}>{label}</span>
+                    <div className="mt-1 flex items-end justify-between gap-2">
+                      <strong className="font-bebas text-4xl leading-none">{value}</strong>
+                      <span className={`font-mono text-[7px] ${index === 0 ? 'text-black/60' : 'text-[#F7C318]'}`}>{helper}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="grid gap-4 xl:grid-cols-2 2xl:grid-cols-3">
+                {offers.map((offer, index) => {
+                  const isLive = offer.status === 'ACTIVE';
+                  return (
+                    <article key={offer.id} className="group overflow-hidden border border-[#303030] bg-[#141414] transition-colors hover:border-[#F7C318]/70">
+                      <div className={`relative min-h-[210px] overflow-hidden p-5 ${index % 3 === 0 ? 'bg-[#F7C318] text-black' : index % 3 === 1 ? 'bg-[#f0eee8] text-black' : 'bg-[#090909] text-white'}`}>
+                        <div className="pointer-events-none absolute -right-9 -top-9 h-32 w-32 rotate-12 border-[18px] border-current opacity-[0.08]" />
+                        <div className="relative flex items-start justify-between gap-4">
+                          <span className={`border px-2 py-1 font-mono text-[8px] font-bold ${isLive ? 'border-black bg-black text-[#F7C318]' : offer.status === 'SCHEDULED' ? 'border-[#F7C318] bg-[#F7C318] text-black' : 'border-current'}`}>
+                            {offer.status}
+                          </span>
+                          <span className="font-mono text-[8px] opacity-60">0{index + 1} / OFFER</span>
+                        </div>
+                        <div className="relative mt-9 max-w-[88%]">
+                          <p className="font-mono text-[8px] font-bold tracking-[0.18em] opacity-60">{offer.title.toUpperCase()}</p>
+                          <h3 className="mt-1 font-bebas text-[46px] leading-[0.86] tracking-[-0.01em]">{offer.discount}</h3>
+                          <p className="mt-3 max-w-md text-[10px] leading-relaxed opacity-70">{offer.description}</p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4 p-4">
+                        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#292929] pb-4">
+                          <div>
+                            <p className="font-mono text-[8px] text-textGray">OFFER CODE</p>
+                            <p className="mt-1 font-bebas text-xl tracking-wider text-white">{offer.code || 'NO CODE'}</p>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-mono text-[8px] text-textGray">AUDIENCE</p>
+                            <p className="mt-1 font-mono text-[9px] text-white">{offer.audience}</p>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3 font-mono text-[8px]">
+                          <div className="border border-[#292929] bg-[#101010] p-3">
+                            <span className="text-textGray">VALID FROM</span>
+                            <p className="mt-1 text-white">{offer.validFrom}</p>
+                          </div>
+                          <div className="border border-[#292929] bg-[#101010] p-3">
+                            <span className="text-textGray">VALID UNTIL</span>
+                            <p className="mt-1 text-white">{offer.validUntil}</p>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => setOffers(current => current.map(item => item.id === offer.id ? { ...item, visibleOnMobile: !item.visibleOnMobile } : item))}
+                          className="flex w-full items-center justify-between border border-[#303030] bg-[#101010] px-3 py-2.5 text-left"
+                        >
+                          <span className="flex items-center gap-2 font-mono text-[9px] text-white"><Smartphone className="h-4 w-4 text-[#F7C318]" /> SHOW IN MOBILE CATALOGUE</span>
+                          {offer.visibleOnMobile ? <ToggleRight className="h-6 w-6 text-[#F7C318]" /> : <ToggleLeft className="h-6 w-6 text-[#666]" />}
+                        </button>
+
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-1">
+                            <button type="button" onClick={() => setOfferEditor({ ...offer })} aria-label={`Edit ${offer.title}`} className="flex h-9 w-9 items-center justify-center border border-[#333] bg-[#1d1d1d] text-textGray hover:border-[#F7C318] hover:text-[#F7C318]"><Pencil className="h-4 w-4" /></button>
+                            <button type="button" onClick={() => duplicateOffer(offer)} aria-label={`Duplicate ${offer.title}`} className="flex h-9 w-9 items-center justify-center border border-[#333] bg-[#1d1d1d] text-textGray hover:border-[#F7C318] hover:text-[#F7C318]"><Copy className="h-4 w-4" /></button>
+                            <button type="button" onClick={() => setOffers(current => current.filter(item => item.id !== offer.id))} aria-label={`Delete ${offer.title}`} className="flex h-9 w-9 items-center justify-center border border-[#333] bg-[#1d1d1d] text-textGray hover:border-[#D9432E] hover:text-[#D9432E]"><Trash2 className="h-4 w-4" /></button>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setOffers(current => current.map(item => item.id === offer.id ? { ...item, status: item.status === 'ACTIVE' ? 'DRAFT' : 'ACTIVE' } : item))}
+                            className={`px-4 py-2 font-bebas text-sm tracking-wide ${isLive ? 'border border-[#333] bg-[#1d1d1d] text-white' : 'bg-[#F7C318] text-black'}`}
+                          >
+                            {isLive ? 'UNPUBLISH' : 'PUBLISH NOW'}
+                          </button>
+                        </div>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {activeTab === 'contacts' && (
             <div className="space-y-4">
               <div className="grid gap-3 sm:grid-cols-3">
@@ -848,6 +1089,88 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
         </div>
       </main>
+
+      {/* OFFER EDITOR */}
+      {offerEditor && (
+        <div className="fixed inset-0 z-50 flex items-stretch justify-end bg-black/75 backdrop-blur-sm">
+          <div className="h-full w-full max-w-xl overflow-y-auto border-l border-[#333] bg-[#141414] p-5 shadow-[-12px_0_40px_rgba(0,0,0,.55)]">
+            <div className="flex items-start justify-between border-b border-[#2b2b2b] pb-4">
+              <div>
+                <p className="font-mono text-[8px] tracking-[0.18em] text-[#F7C318]">MOBILE CAMPAIGN EDITOR</p>
+                <h3 className="mt-1 font-bebas text-3xl tracking-wide text-white">{offerEditor.id ? 'EDIT OFFER' : 'CREATE OFFER'}</h3>
+              </div>
+              <button type="button" onClick={() => setOfferEditor(null)} className="flex h-9 w-9 items-center justify-center border border-[#333] bg-[#222] text-textGray hover:text-white">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveOffer} className="mt-5 space-y-4 font-mono text-[10px]">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="block">
+                  <span className="mb-1.5 block text-textGray">CAMPAIGN NAME</span>
+                  <input required value={offerEditor.title} onChange={event => setOfferEditor({ ...offerEditor, title: event.target.value })} placeholder="e.g. Weekend Edit" className="w-full border border-[#333] bg-[#0B0B0B] p-3 text-white outline-none focus:border-[#F7C318]" />
+                </label>
+                <label className="block">
+                  <span className="mb-1.5 block text-textGray">OFFER CODE</span>
+                  <input value={offerEditor.code} onChange={event => setOfferEditor({ ...offerEditor, code: event.target.value.toUpperCase() })} placeholder="OHMAN20" className="w-full border border-[#333] bg-[#0B0B0B] p-3 uppercase text-white outline-none focus:border-[#F7C318]" />
+                </label>
+              </div>
+
+              <label className="block">
+                <span className="mb-1.5 block text-textGray">PROMOTIONAL HEADLINE</span>
+                <input required value={offerEditor.discount} onChange={event => setOfferEditor({ ...offerEditor, discount: event.target.value })} placeholder="UP TO 30% OFF" className="w-full border border-[#333] bg-[#0B0B0B] p-3 font-bebas text-xl tracking-wide text-white outline-none focus:border-[#F7C318]" />
+              </label>
+
+              <label className="block">
+                <span className="mb-1.5 block text-textGray">DESCRIPTION</span>
+                <textarea rows={4} value={offerEditor.description} onChange={event => setOfferEditor({ ...offerEditor, description: event.target.value })} placeholder="Tell customers what is included..." className="w-full resize-none border border-[#333] bg-[#0B0B0B] p-3 leading-relaxed text-white outline-none focus:border-[#F7C318]" />
+              </label>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="block">
+                  <span className="mb-1.5 block text-textGray">AUDIENCE</span>
+                  <select value={offerEditor.audience} onChange={event => setOfferEditor({ ...offerEditor, audience: event.target.value })} className="w-full border border-[#333] bg-[#0B0B0B] p-3 text-white outline-none focus:border-[#F7C318]">
+                    <option>All visitors</option>
+                    <option>All members</option>
+                    <option>New enquiries</option>
+                    <option>Mumbai customers</option>
+                    <option>VIP customers</option>
+                  </select>
+                </label>
+                <label className="block">
+                  <span className="mb-1.5 block text-textGray">STATUS</span>
+                  <select value={offerEditor.status} onChange={event => setOfferEditor({ ...offerEditor, status: event.target.value as OfferStatus })} className="w-full border border-[#333] bg-[#0B0B0B] p-3 text-white outline-none focus:border-[#F7C318]">
+                    <option value="ACTIVE">ACTIVE</option>
+                    <option value="SCHEDULED">SCHEDULED</option>
+                    <option value="DRAFT">DRAFT</option>
+                  </select>
+                </label>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="block">
+                  <span className="mb-1.5 block text-textGray">VALID FROM</span>
+                  <input value={offerEditor.validFrom} onChange={event => setOfferEditor({ ...offerEditor, validFrom: event.target.value })} className="w-full border border-[#333] bg-[#0B0B0B] p-3 text-white outline-none focus:border-[#F7C318]" />
+                </label>
+                <label className="block">
+                  <span className="mb-1.5 block text-textGray">VALID UNTIL</span>
+                  <input value={offerEditor.validUntil} onChange={event => setOfferEditor({ ...offerEditor, validUntil: event.target.value })} className="w-full border border-[#333] bg-[#0B0B0B] p-3 text-white outline-none focus:border-[#F7C318]" />
+                </label>
+              </div>
+
+              <button type="button" onClick={() => setOfferEditor({ ...offerEditor, visibleOnMobile: !offerEditor.visibleOnMobile })} className="flex w-full items-center justify-between border border-[#333] bg-[#101010] p-4 text-white">
+                <span className="flex items-center gap-3"><Smartphone className="h-5 w-5 text-[#F7C318]" /> DISPLAY IN MOBILE CATALOGUE</span>
+                {offerEditor.visibleOnMobile ? <ToggleRight className="h-7 w-7 text-[#F7C318]" /> : <ToggleLeft className="h-7 w-7 text-[#666]" />}
+              </button>
+
+              <div className="flex justify-end gap-2 border-t border-[#292929] pt-5">
+                <button type="button" onClick={() => setOfferEditor(null)} className="border border-[#333] bg-[#222] px-5 py-3 font-bebas text-base text-white">CANCEL</button>
+                <button type="submit" className="border border-black bg-[#F7C318] px-7 py-3 font-bebas text-base font-bold text-black shadow-[3px_3px_0_#000]">SAVE OFFER</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* ADD PRODUCT MODAL / DRAWER */}
       {isAddProductModalOpen && (

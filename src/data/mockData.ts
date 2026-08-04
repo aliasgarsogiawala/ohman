@@ -1,12 +1,12 @@
-import { Product, Category, BusinessSettings } from '../types';
+import { Product, Category, BusinessSettings, Offer } from '../types';
 
 export const initialCategories: Category[] = [
-  { id: 'cat-1', name: 'Shoes', iconName: 'Footprints', productCount: 284, description: 'Built-up soles, trail grip and daily movement.' },
-  { id: 'cat-2', name: 'Trek Bags', iconName: 'Backpack', productCount: 312, description: 'Rugged carry systems for the long way around.' },
-  { id: 'cat-3', name: 'Travel Bags', iconName: 'Luggage', productCount: 228, description: 'Hard-wearing duffels, weekender and transit bags.' },
-  { id: 'cat-4', name: 'T-Shirts', iconName: 'Shirt', productCount: 356, description: 'Heavyweight oversized layers with a point of view.' },
-  { id: 'cat-5', name: 'Corsets', iconName: 'Layers', productCount: 126, description: 'Utility vests and technical structure.' },
-  { id: 'cat-6', name: 'Accessories', iconName: 'Hat', productCount: 194, description: 'Small objects that do the heavy lifting.' },
+  { id: 'cat-1', name: 'Shoes', iconName: 'Footprints', productCount: 284, description: 'Built-up soles, trail grip and daily movement.', subcategories: [{ id: 'shoe-running', name: 'Running' }, { id: 'shoe-sports', name: 'Sports' }, { id: 'shoe-sneakers', name: 'Sneakers' }, { id: 'shoe-casual', name: 'Casual' }] },
+  { id: 'cat-2', name: 'Trek Bags', iconName: 'Backpack', productCount: 312, description: 'Rugged carry systems for the long way around.', subcategories: [{ id: 'trek-daypacks', name: 'Daypacks' }, { id: 'trek-hiking', name: 'Hiking Bags' }, { id: 'trek-expedition', name: 'Expedition Bags' }] },
+  { id: 'cat-3', name: 'Travel Bags', iconName: 'Luggage', productCount: 228, description: 'Hard-wearing duffels, weekender and transit bags.', subcategories: [{ id: 'travel-duffels', name: 'Duffels' }, { id: 'travel-weekenders', name: 'Weekenders' }, { id: 'travel-cabin', name: 'Cabin Bags' }] },
+  { id: 'cat-4', name: 'T-Shirts', iconName: 'Shirt', productCount: 356, description: 'Heavyweight oversized layers with a point of view.', subcategories: [{ id: 'tee-oversized', name: 'Oversized' }, { id: 'tee-graphic', name: 'Graphic Tees' }, { id: 'tee-basics', name: 'Core Basics' }] },
+  { id: 'cat-5', name: 'Corsets', iconName: 'Layers', productCount: 126, description: 'Utility vests and technical structure.', subcategories: [{ id: 'corset-vests', name: 'Utility Vests' }, { id: 'corset-layering', name: 'Layering' }] },
+  { id: 'cat-6', name: 'Accessories', iconName: 'Hat', productCount: 194, description: 'Small objects that do the heavy lifting.', subcategories: [{ id: 'accessories-caps', name: 'Caps' }, { id: 'accessories-belts', name: 'Belts' }, { id: 'accessories-wallets', name: 'Wallets' }] },
 ];
 
 const heroProducts: Product[] = [
@@ -367,6 +367,33 @@ export const demoBanners = [
     copy: 'Modular carry designed for faster departures.',
     accent: '#FFFFFF',
     status: 'DRAFT',
+  },
+];
+
+export const initialOffers: Offer[] = [
+  {
+    id: 'offer-01', title: 'The Member Edit', code: 'OHMAN30', discount: '30% OFF', discountPercent: 30,
+    description: 'A sharp selection of member favourites across everyday carry, footwear and core layers.', audience: 'All members',
+    validFrom: '01 Aug 2026', validUntil: '15 Aug 2026', status: 'ACTIVE', visibleOnMobile: true,
+    productIds: ['prod-1', 'prod-2', 'prod-5', 'prod-6', 'prod-7', 'prod-11'], redemptions: 184,
+  },
+  {
+    id: 'offer-02', title: 'Smart Finds', code: 'UNDER999', discount: 'UNDER ₹999', discountPercent: 0,
+    description: 'Easy wardrobe upgrades and accessories picked for value without compromising the look.', audience: 'All visitors',
+    validFrom: '01 Aug 2026', validUntil: '31 Aug 2026', status: 'ACTIVE', visibleOnMobile: true,
+    productIds: ['prod-7', 'prod-18', 'prod-19'], redemptions: 96,
+  },
+  {
+    id: 'offer-03', title: 'Monsoon Drop', code: 'MONSOON20', discount: '20% OFF', discountPercent: 20,
+    description: 'A scheduled edit of quick-dry layers, utility trousers and rain-ready accessories.', audience: 'Mumbai customers',
+    validFrom: '16 Aug 2026', validUntil: '31 Aug 2026', status: 'SCHEDULED', visibleOnMobile: true,
+    productIds: ['prod-3', 'prod-8', 'prod-14', 'prod-17', 'prod-18'], redemptions: 0,
+  },
+  {
+    id: 'offer-04', title: 'First Enquiry', code: 'WELCOME10', discount: '10% OFF', discountPercent: 10,
+    description: 'A private welcome benefit to share after a customer sends their first product enquiry.', audience: 'New enquiries',
+    validFrom: '01 Sep 2026', validUntil: '30 Sep 2026', status: 'DRAFT', visibleOnMobile: false,
+    productIds: [], redemptions: 0,
   },
 ];
 

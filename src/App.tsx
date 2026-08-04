@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Smartphone, Monitor, Sparkles, RefreshCw } from 'lucide-react';
-import { Product, Category, BusinessSettings } from './types';
+import { Product, Category, BusinessSettings, Offer } from './types';
+import { initialOffers } from './data/mockData';
 import { catalogueService } from './services/catalogueService';
 import { MobileSimulator } from './components/mobile/MobileSimulator';
 import { DashboardView } from './components/dashboard/DashboardView';
@@ -11,6 +12,7 @@ export function App() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [businessSettings, setBusinessSettings] = useState<BusinessSettings | null>(null);
   const [activeMobileProductId, setActiveMobileProductId] = useState<string | undefined>(undefined);
+  const [offers, setOffers] = useState<Offer[]>(initialOffers);
   const [loading, setLoading] = useState(true);
 
   const loadData = async () => {
@@ -120,6 +122,9 @@ export function App() {
                 onDeleteProduct={handleDeleteProduct}
                 onUpdateSettings={handleUpdateSettings}
                 onSelectProductForMobilePreview={(id) => setActiveMobileProductId(id)}
+                offers={offers}
+                onOffersChange={setOffers}
+                onCategoriesChange={setCategories}
               />
             </div>
             <div className="hidden h-full w-[430px] flex-none items-center justify-center overflow-hidden border-l border-black bg-[#111] p-3 bg-grid-pattern lg:flex">
@@ -127,6 +132,7 @@ export function App() {
                 products={products}
                 categories={categories}
                 businessSettings={businessSettings}
+                offers={offers}
                 activeProductId={activeMobileProductId}
                 onProductSelect={(id) => setActiveMobileProductId(id)}
               />
@@ -143,6 +149,9 @@ export function App() {
               onAddProduct={handleAddProduct}
               onDeleteProduct={handleDeleteProduct}
               onUpdateSettings={handleUpdateSettings}
+              offers={offers}
+              onOffersChange={setOffers}
+              onCategoriesChange={setCategories}
               onSelectProductForMobilePreview={(id) => {
                 setActiveMobileProductId(id);
                 setViewMode('mobile');
@@ -157,6 +166,7 @@ export function App() {
               products={products}
               categories={categories}
               businessSettings={businessSettings}
+              offers={offers}
               activeProductId={activeMobileProductId}
               onProductSelect={(id) => setActiveMobileProductId(id)}
             />

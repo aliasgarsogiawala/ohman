@@ -48,7 +48,8 @@ class CatalogueService {
       id: `cat-${Date.now()}`,
       name,
       iconName,
-      productCount: 0
+      productCount: 0,
+      subcategories: []
     };
     this.categories.push(newCat);
     return newCat;

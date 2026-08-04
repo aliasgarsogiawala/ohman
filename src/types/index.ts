@@ -2,6 +2,7 @@ export interface Product {
   id: string;
   name: string;
   category: string;
+  subcategory?: string;
   price: number;
   description: string;
   images: string[];
@@ -18,6 +19,7 @@ export interface Category {
   name: string;
   iconName: string;
   productCount: number;
+  subcategories: Array<{ id: string; name: string }>;
   bannerUrl?: string;
   description?: string;
 }
@@ -35,4 +37,22 @@ export interface BusinessSettings {
   youtube: string;
   currency: string;
   logoUrl?: string;
+}
+
+export type OfferStatus = 'ACTIVE' | 'SCHEDULED' | 'DRAFT';
+
+export interface Offer {
+  id: string;
+  title: string;
+  code: string;
+  discount: string;
+  discountPercent: number;
+  description: string;
+  audience: string;
+  validFrom: string;
+  validUntil: string;
+  status: OfferStatus;
+  visibleOnMobile: boolean;
+  productIds: string[];
+  redemptions: number;
 }

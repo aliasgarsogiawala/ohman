@@ -29,7 +29,7 @@ import {
   ToggleLeft,
   ToggleRight
 } from 'lucide-react';
-import { Product, Category, BusinessSettings } from '../../types';
+import { Product, Category, BusinessSettings, Offer, OfferStatus } from '../../types';
 import { demoBanners, demoContacts } from '../../data/mockData';
 
 interface DashboardViewProps {
@@ -40,92 +40,26 @@ interface DashboardViewProps {
   onDeleteProduct: (id: string) => void;
   onUpdateSettings: (settings: Partial<BusinessSettings>) => void;
   onSelectProductForMobilePreview: (id: string) => void;
+  offers: Offer[];
+  onOffersChange: React.Dispatch<React.SetStateAction<Offer[]>>;
+  onCategoriesChange: React.Dispatch<React.SetStateAction<Category[]>>;
 }
 
 type DashboardTab = 'dashboard' | 'products' | 'categories' | 'banners' | 'offers' | 'contacts' | 'settings';
 
-type OfferStatus = 'ACTIVE' | 'SCHEDULED' | 'DRAFT';
-
-interface DashboardOffer {
-  id: string;
-  title: string;
-  code: string;
-  discount: string;
-  description: string;
-  audience: string;
-  validFrom: string;
-  validUntil: string;
-  status: OfferStatus;
-  visibleOnMobile: boolean;
-  redemptions: number;
-}
-
-const initialOffers: DashboardOffer[] = [
-  {
-    id: 'offer-01',
-    title: 'The Member Edit',
-    code: 'OHMAN30',
-    discount: 'UP TO 30% OFF',
-    description: 'A sharp selection of member favourites across shirts, polos and everyday layers.',
-    audience: 'All members',
-    validFrom: '01 Aug 2026',
-    validUntil: '15 Aug 2026',
-    status: 'ACTIVE',
-    visibleOnMobile: true,
-    redemptions: 184,
-  },
-  {
-    id: 'offer-02',
-    title: 'Smart Finds',
-    code: 'UNDER999',
-    discount: 'UNDER ₹999',
-    description: 'Easy wardrobe upgrades and accessories picked for value without compromising the look.',
-    audience: 'All visitors',
-    validFrom: '01 Aug 2026',
-    validUntil: '31 Aug 2026',
-    status: 'ACTIVE',
-    visibleOnMobile: true,
-    redemptions: 96,
-  },
-  {
-    id: 'offer-03',
-    title: 'Monsoon Drop',
-    code: 'MONSOON20',
-    discount: '20% OFF',
-    description: 'A scheduled edit of quick-dry layers, utility trousers and rain-ready accessories.',
-    audience: 'Mumbai customers',
-    validFrom: '16 Aug 2026',
-    validUntil: '31 Aug 2026',
-    status: 'SCHEDULED',
-    visibleOnMobile: true,
-    redemptions: 0,
-  },
-  {
-    id: 'offer-04',
-    title: 'First Enquiry',
-    code: 'WELCOME10',
-    discount: '10% OFF',
-    description: 'A private welcome benefit to share after a customer sends their first product enquiry.',
-    audience: 'New enquiries',
-    validFrom: '01 Sep 2026',
-    validUntil: '30 Sep 2026',
-    status: 'DRAFT',
-    visibleOnMobile: false,
-    redemptions: 0,
-  },
-];
-
-const emptyOffer = (): DashboardOffer => ({
+const emptyOffer = (): Offer => ({
   id: '',
   title: '',
   code: '',
   discount: '',
+  discountPercent: 0,
   description: '',
   audience: 'All visitors',
   validFrom: '03 Aug 2026',
   validUntil: '31 Aug 2026',
   status: 'DRAFT',
   visibleOnMobile: true,
+  productIds: [],
   redemptions: 0,
 });
 
@@ -136,7 +70,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   onAddProduct,
   onDeleteProduct,
   onUpdateSettings,
-  onSelectProductForMobilePreview
+  onSelectProductForMobilePreview,
+  offers,
+  onOffersChange,
+  onCategoriesChange,
 }) => {
   const [activeTab, setActiveTab] = useState<DashboardTab>('dashboard');
   const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
@@ -146,17 +83,21 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [logoutTheme, setLogoutTheme] = useState<'light' | 'dark'>('light');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
-  const [offers, setOffers] = useState<DashboardOffer[]>(initialOffers);
-  const [offerEditor, setOfferEditor] = useState<DashboardOffer | null>(null);
+  const [offerEditor, setOfferEditor] = useState<Offer | null>(null);
+  const [offerProductSearch, setOfferProductSearch] = useState('');
 
   // Add Product Form State
   const [newProdName, setNewProdName] = useState('');
   const [newProdCategory, setNewProdCategory] = useState(categories[0]?.name || 'Trek Bags');
+  const [newProdSubcategory, setNewProdSubcategory] = useState(categories[0]?.subcategories[0]?.name || '');
+  const [newProdSubcategoryName, setNewProdSubcategoryName] = useState('');
   const [newProdPrice, setNewProdPrice] = useState('');
   const [newProdDescription, setNewProdDescription] = useState('');
   const [newProdFeatures, setNewProdFeatures] = useState('');
   const [newProdImageUrl, setNewProdImageUrl] = useState('');
   const [newProdFeatured, setNewProdFeatured] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
+  const [subcategoryDrafts, setSubcategoryDrafts] = useState<Record<string, string>>({});
 
   // Settings State
   const [settingsForm, setSettingsForm] = useState(businessSettings);
@@ -164,10 +105,19 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const handleCreateProduct = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newProdName || !newProdPrice) return;
+    const createdSubcategory = newProdSubcategory === '__new__' ? newProdSubcategoryName.trim() : '';
+    if (newProdSubcategory === '__new__' && !createdSubcategory) return;
+
+    if (createdSubcategory) {
+      onCategoriesChange(current => current.map(category => category.name === newProdCategory
+        ? { ...category, subcategories: [...category.subcategories, { id: `sub-${Date.now()}`, name: createdSubcategory }] }
+        : category));
+    }
 
     onAddProduct({
       name: newProdName,
       category: newProdCategory,
+      subcategory: createdSubcategory || newProdSubcategory || undefined,
       price: Number(newProdPrice),
       description: newProdDescription || 'No description provided.',
       images: newProdImageUrl ? [newProdImageUrl] : [],
@@ -184,6 +134,29 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     setNewProdDescription('');
     setNewProdFeatures('');
     setNewProdImageUrl('');
+    setNewProdSubcategoryName('');
+  };
+
+  const addCategory = () => {
+    const name = newCategoryName.trim();
+    if (!name || categories.some(category => category.name.toLowerCase() === name.toLowerCase())) return;
+    onCategoriesChange(current => [...current, { id: `cat-${Date.now()}`, name, iconName: 'Grid', productCount: 0, description: 'A new OH MAN product department.', subcategories: [] }]);
+    setNewCategoryName('');
+  };
+
+  const addSubcategory = (categoryId: string) => {
+    const name = subcategoryDrafts[categoryId]?.trim();
+    if (!name) return;
+    onCategoriesChange(current => current.map(category => category.id === categoryId && !category.subcategories.some(subcategory => subcategory.name.toLowerCase() === name.toLowerCase())
+      ? { ...category, subcategories: [...category.subcategories, { id: `sub-${Date.now()}`, name }] }
+      : category));
+    setSubcategoryDrafts(current => ({ ...current, [categoryId]: '' }));
+  };
+
+  const removeSubcategory = (categoryId: string, subcategoryId: string) => {
+    onCategoriesChange(current => current.map(category => category.id === categoryId
+      ? { ...category, subcategories: category.subcategories.filter(subcategory => subcategory.id !== subcategoryId) }
+      : category));
   };
 
   const handleSaveOffer = (event: React.FormEvent) => {
@@ -191,15 +164,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     if (!offerEditor || !offerEditor.title.trim() || !offerEditor.discount.trim()) return;
 
     if (offerEditor.id) {
-      setOffers(current => current.map(offer => offer.id === offerEditor.id ? offerEditor : offer));
+      onOffersChange(current => current.map(offer => offer.id === offerEditor.id ? offerEditor : offer));
     } else {
-      setOffers(current => [{ ...offerEditor, id: `offer-${Date.now()}` }, ...current]);
+      onOffersChange(current => [{ ...offerEditor, id: `offer-${Date.now()}` }, ...current]);
     }
     setOfferEditor(null);
   };
 
-  const duplicateOffer = (offer: DashboardOffer) => {
-    setOffers(current => [
+  const duplicateOffer = (offer: Offer) => {
+    onOffersChange(current => [
       {
         ...offer,
         id: `offer-${Date.now()}`,
@@ -216,6 +189,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     const matchesSearch = p.name.toLowerCase().includes(productSearch.toLowerCase()) || p.category.toLowerCase().includes(productSearch.toLowerCase());
     return matchesCat && matchesSearch;
   });
+  const selectableOfferProducts = products
+    .filter(product => product.status === 'ACTIVE' && `${product.name} ${product.category}`.toLowerCase().includes(offerProductSearch.toLowerCase()))
+    .slice(0, 80);
 
   if (isLoggedOut) {
     const heroStyle = products.find(product => product.category === 'Shoes') ?? products[0];
@@ -741,6 +717,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <p className="font-mono text-[9px] tracking-[0.18em] text-[#F7C318]">VISUAL CATALOGUE</p>
                 <h2 className="mt-1 font-bebas text-4xl text-white">SHOP CATEGORIES</h2>
                 <p className="mx-auto mt-1 max-w-lg text-xs text-textGray">Every category now has a visual cover so the catalogue feels real at a glance.</p>
+                <form onSubmit={(event) => { event.preventDefault(); addCategory(); }} className="mx-auto mt-5 flex max-w-md gap-2">
+                  <input value={newCategoryName} onChange={event => setNewCategoryName(event.target.value)} placeholder="NEW CATEGORY, e.g. BAGS" className="min-w-0 flex-1 border border-[#333] bg-[#0B0B0B] px-3 py-2 font-mono text-[10px] text-white outline-none focus:border-[#F7C318]" />
+                  <button type="submit" className="flex items-center gap-1 bg-[#F7C318] px-3 py-2 font-bebas text-sm text-black"><Plus className="h-4 w-4" /> ADD CATEGORY</button>
+                </form>
               </div>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {categories.map((cat, index) => {
@@ -751,11 +731,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       <div className="relative h-48 overflow-hidden bg-[#ece7de]">
                         {cover && <img src={cover.images[0]} alt={cat.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-transparent" />
-                        <span className="absolute right-3 top-3 rounded-full bg-[#F7C318] px-2.5 py-1 font-mono text-[8px] font-bold text-black">{cat.productCount} STYLES</span>
+                        <span className="absolute right-3 top-3 rounded-full bg-[#F7C318] px-2.5 py-1 font-mono text-[8px] font-bold text-black">{categoryItems.length} STYLES</span>
                         <h3 className="absolute inset-x-0 bottom-4 text-center font-bebas text-3xl tracking-wide text-white">{cat.name}</h3>
                       </div>
                       <div className="p-4 text-center">
                         <p className="mx-auto min-h-8 max-w-sm text-xs leading-relaxed text-textGray">{cat.description}</p>
+                        <div className="mt-4 border-y border-[#2a2a2a] py-3 text-left">
+                          <div className="flex items-center justify-between"><span className="font-mono text-[8px] tracking-[0.14em] text-[#F7C318]">SUBCATEGORIES</span><span className="font-mono text-[8px] text-textGray">{cat.subcategories.length} ACTIVE</span></div>
+                          <div className="mt-2 flex flex-wrap gap-1.5">{cat.subcategories.length ? cat.subcategories.map(subcategory => <span key={subcategory.id} className="flex items-center gap-1 border border-[#3b3b3b] bg-[#101010] px-2 py-1 font-mono text-[8px] text-white">{subcategory.name}<button type="button" onClick={() => removeSubcategory(cat.id, subcategory.id)} aria-label={`Remove ${subcategory.name}`} className="text-textGray hover:text-[#D9432E]"><X className="h-3 w-3" /></button></span>) : <span className="font-mono text-[8px] text-textGray">NO SUBCATEGORIES YET</span>}</div>
+                          <div className="mt-3 flex gap-2"><input value={subcategoryDrafts[cat.id] || ''} onChange={event => setSubcategoryDrafts(current => ({ ...current, [cat.id]: event.target.value }))} onKeyDown={event => { if (event.key === 'Enter') { event.preventDefault(); addSubcategory(cat.id); } }} placeholder={`ADD TO ${cat.name.toUpperCase()}`} className="min-w-0 flex-1 border border-[#333] bg-[#0B0B0B] px-2 py-2 font-mono text-[8px] text-white outline-none focus:border-[#F7C318]" /><button type="button" onClick={() => addSubcategory(cat.id)} className="border border-[#F7C318] px-2 text-[#F7C318] hover:bg-[#F7C318] hover:text-black"><Plus className="h-4 w-4" /></button></div>
+                        </div>
                         <div className="mt-4 flex items-center justify-center gap-5 border-t border-[#2a2a2a] pt-3 font-mono text-[9px]">
                           <button className="text-[#F7C318] hover:underline">EDIT CATEGORY</button>
                           <span className="text-[#777]">{categoryItems.length} LIVE</span>
@@ -836,7 +821,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   </div>
                   <button
                     type="button"
-                    onClick={() => setOfferEditor(emptyOffer())}
+                    onClick={() => { setOfferProductSearch(''); setOfferEditor(emptyOffer()); }}
                     className="flex items-center justify-center gap-2 border border-black bg-[#F7C318] px-5 py-3 font-bebas text-base tracking-wide text-black shadow-[4px_4px_0_#000] transition-transform hover:-translate-y-0.5"
                   >
                     <Plus className="h-4 w-4" /> CREATE OFFER
@@ -895,6 +880,17 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
                         <div className="grid grid-cols-2 gap-3 font-mono text-[8px]">
                           <div className="border border-[#292929] bg-[#101010] p-3">
+                            <span className="text-textGray">DISCOUNT RULE</span>
+                            <p className="mt-1 font-bebas text-lg text-[#F7C318]">{offer.discountPercent ? `${offer.discountPercent}% OFF` : 'PRICE EDIT'}</p>
+                          </div>
+                          <div className="border border-[#292929] bg-[#101010] p-3">
+                            <span className="text-textGray">SELECTED PRODUCTS</span>
+                            <p className="mt-1 font-bebas text-lg text-white">{offer.productIds.length} PIECES</p>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3 font-mono text-[8px]">
+                          <div className="border border-[#292929] bg-[#101010] p-3">
                             <span className="text-textGray">VALID FROM</span>
                             <p className="mt-1 text-white">{offer.validFrom}</p>
                           </div>
@@ -906,7 +902,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
                         <button
                           type="button"
-                          onClick={() => setOffers(current => current.map(item => item.id === offer.id ? { ...item, visibleOnMobile: !item.visibleOnMobile } : item))}
+                          onClick={() => onOffersChange(current => current.map(item => item.id === offer.id ? { ...item, visibleOnMobile: !item.visibleOnMobile } : item))}
                           className="flex w-full items-center justify-between border border-[#303030] bg-[#101010] px-3 py-2.5 text-left"
                         >
                           <span className="flex items-center gap-2 font-mono text-[9px] text-white"><Smartphone className="h-4 w-4 text-[#F7C318]" /> SHOW IN MOBILE CATALOGUE</span>
@@ -915,13 +911,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-1">
-                            <button type="button" onClick={() => setOfferEditor({ ...offer })} aria-label={`Edit ${offer.title}`} className="flex h-9 w-9 items-center justify-center border border-[#333] bg-[#1d1d1d] text-textGray hover:border-[#F7C318] hover:text-[#F7C318]"><Pencil className="h-4 w-4" /></button>
+                            <button type="button" onClick={() => { setOfferProductSearch(''); setOfferEditor({ ...offer }); }} aria-label={`Edit ${offer.title}`} className="flex h-9 w-9 items-center justify-center border border-[#333] bg-[#1d1d1d] text-textGray hover:border-[#F7C318] hover:text-[#F7C318]"><Pencil className="h-4 w-4" /></button>
                             <button type="button" onClick={() => duplicateOffer(offer)} aria-label={`Duplicate ${offer.title}`} className="flex h-9 w-9 items-center justify-center border border-[#333] bg-[#1d1d1d] text-textGray hover:border-[#F7C318] hover:text-[#F7C318]"><Copy className="h-4 w-4" /></button>
-                            <button type="button" onClick={() => setOffers(current => current.filter(item => item.id !== offer.id))} aria-label={`Delete ${offer.title}`} className="flex h-9 w-9 items-center justify-center border border-[#333] bg-[#1d1d1d] text-textGray hover:border-[#D9432E] hover:text-[#D9432E]"><Trash2 className="h-4 w-4" /></button>
+                            <button type="button" onClick={() => onOffersChange(current => current.filter(item => item.id !== offer.id))} aria-label={`Delete ${offer.title}`} className="flex h-9 w-9 items-center justify-center border border-[#333] bg-[#1d1d1d] text-textGray hover:border-[#D9432E] hover:text-[#D9432E]"><Trash2 className="h-4 w-4" /></button>
                           </div>
                           <button
                             type="button"
-                            onClick={() => setOffers(current => current.map(item => item.id === offer.id ? { ...item, status: item.status === 'ACTIVE' ? 'DRAFT' : 'ACTIVE' } : item))}
+                            onClick={() => onOffersChange(current => current.map(item => item.id === offer.id ? { ...item, status: item.status === 'ACTIVE' ? 'DRAFT' : 'ACTIVE' } : item))}
                             className={`px-4 py-2 font-bebas text-sm tracking-wide ${isLive ? 'border border-[#333] bg-[#1d1d1d] text-white' : 'bg-[#F7C318] text-black'}`}
                           >
                             {isLive ? 'UNPUBLISH' : 'PUBLISH NOW'}
@@ -1122,9 +1118,54 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </label>
 
               <label className="block">
+                <span className="mb-1.5 block text-textGray">PERCENTAGE OFF APPLIED TO SELECTED PRODUCTS</span>
+                <div className="flex items-center border border-[#333] bg-[#0B0B0B] focus-within:border-[#F7C318]">
+                  <input
+                    type="number"
+                    min="0"
+                    max="90"
+                    value={offerEditor.discountPercent || ''}
+                    onChange={event => {
+                      const discountPercent = Math.min(90, Math.max(0, Number(event.target.value) || 0));
+                      setOfferEditor({ ...offerEditor, discountPercent, discount: discountPercent ? `${discountPercent}% OFF` : offerEditor.discount });
+                    }}
+                    placeholder="e.g. 20"
+                    className="min-w-0 flex-1 bg-transparent p-3 font-bebas text-xl tracking-wide text-white outline-none"
+                  />
+                  <span className="border-l border-[#333] px-4 py-3 font-bebas text-lg text-[#F7C318]">% OFF</span>
+                </div>
+                <span className="mt-1.5 block text-[8px] leading-relaxed text-textGray">Set this to 20 and every selected item is shown at 20% off in the mobile collection. Leave it at 0 for a price-led campaign such as Under ₹999.</span>
+              </label>
+
+              <label className="block">
                 <span className="mb-1.5 block text-textGray">DESCRIPTION</span>
                 <textarea rows={4} value={offerEditor.description} onChange={event => setOfferEditor({ ...offerEditor, description: event.target.value })} placeholder="Tell customers what is included..." className="w-full resize-none border border-[#333] bg-[#0B0B0B] p-3 leading-relaxed text-white outline-none focus:border-[#F7C318]" />
               </label>
+
+              <section className="border border-[#333] bg-[#101010] p-4">
+                <div className="flex flex-wrap items-end justify-between gap-3">
+                  <div>
+                    <p className="font-mono text-[9px] text-[#F7C318]">OFFER COLLECTION</p>
+                    <h4 className="mt-1 font-bebas text-xl tracking-wide text-white">SELECT PRODUCTS</h4>
+                    <p className="mt-1 text-[8px] leading-relaxed text-textGray">Choose exactly the products that belong to this campaign. They become the mobile collection when the offer is active and published.</p>
+                  </div>
+                  <span className="border border-[#F7C318] bg-[#F7C318] px-2 py-1 font-bebas text-sm text-black">{offerEditor.productIds.length} SELECTED</span>
+                </div>
+                <input value={offerProductSearch} onChange={event => setOfferProductSearch(event.target.value)} placeholder="SEARCH PRODUCTS TO ADD..." className="mt-4 w-full border border-[#333] bg-[#0B0B0B] p-3 text-white outline-none focus:border-[#F7C318]" />
+                <div className="mt-2 max-h-72 space-y-1 overflow-y-auto pr-1">
+                  {selectableOfferProducts.map(product => {
+                    const checked = offerEditor.productIds.includes(product.id);
+                    return (
+                      <label key={product.id} className={`flex cursor-pointer items-center gap-3 border p-2.5 transition-colors ${checked ? 'border-[#F7C318] bg-[#F7C318]/10' : 'border-[#292929] bg-[#141414] hover:border-[#555]'}`}>
+                        <input type="checkbox" checked={checked} onChange={() => setOfferEditor({ ...offerEditor, productIds: checked ? offerEditor.productIds.filter(id => id !== product.id) : [...offerEditor.productIds, product.id] })} className="h-4 w-4 accent-[#F7C318]" />
+                        <img src={product.images[0]} alt="" className="h-9 w-9 border border-[#333] object-cover" />
+                        <span className="min-w-0 flex-1"><strong className="block truncate font-bebas text-sm tracking-wide text-white">{product.name}</strong><span className="font-mono text-[8px] text-textGray">{product.category} / ₹{product.price.toLocaleString()}</span></span>
+                        {offerEditor.discountPercent > 0 && <span className="font-mono text-[8px] text-[#F7C318]">₹{Math.round(product.price * (1 - offerEditor.discountPercent / 100)).toLocaleString()}</span>}
+                      </label>
+                    );
+                  })}
+                </div>
+              </section>
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <label className="block">
@@ -1204,7 +1245,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   <label className="block text-textGray mb-1">CATEGORY</label>
                   <select 
                     value={newProdCategory}
-                    onChange={(e) => setNewProdCategory(e.target.value)}
+                    onChange={(e) => {
+                      const category = e.target.value;
+                      setNewProdCategory(category);
+                      setNewProdSubcategory(categories.find(item => item.name === category)?.subcategories[0]?.name || '');
+                      setNewProdSubcategoryName('');
+                    }}
                     className="w-full bg-[#0B0B0B] border border-[#333] p-2 text-white focus:outline-none focus:border-[#F7C318]"
                   >
                     {categories.map(c => (
@@ -1223,6 +1269,23 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     className="w-full bg-[#0B0B0B] border border-[#333] p-2 text-white focus:outline-none focus:border-[#F7C318]"
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-textGray mb-1">SUBCATEGORY</label>
+                <select
+                  value={newProdSubcategory}
+                  onChange={(e) => { setNewProdSubcategory(e.target.value); setNewProdSubcategoryName(''); }}
+                  className="w-full bg-[#0B0B0B] border border-[#333] p-2 text-white focus:outline-none focus:border-[#F7C318]"
+                >
+                  <option value="">NO SUBCATEGORY</option>
+                  {(categories.find(category => category.name === newProdCategory)?.subcategories ?? []).map(subcategory => (
+                    <option key={subcategory.id} value={subcategory.name}>{subcategory.name}</option>
+                  ))}
+                  <option value="__new__">+ CREATE NEW SUBCATEGORY</option>
+                </select>
+                {newProdSubcategory === '__new__' && <input required value={newProdSubcategoryName} onChange={(e) => setNewProdSubcategoryName(e.target.value)} placeholder={`e.g. ${newProdCategory === 'Shoes' ? 'Running' : 'New range'}`} className="mt-2 w-full bg-[#0B0B0B] border border-[#F7C318] p-2 text-white focus:outline-none" />}
+                <p className="mt-1.5 font-mono text-[9px] text-textGray">Choose an existing subcategory or create one directly while adding this product.</p>
               </div>
 
               <div>

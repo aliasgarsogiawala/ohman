@@ -432,6 +432,18 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <Settings className="w-5 h-5" />
               <span>SETTINGS</span>
             </button>
+
+            <button
+              type="button"
+              onClick={() => setIsLoggedOut(true)}
+              className="mt-3 w-full border border-[#F7C318]/50 bg-[#F7C318]/10 px-3 py-2.5 text-[#F7C318] transition-all hover:bg-[#F7C318] hover:text-black"
+            >
+              <span className="flex items-center space-x-3 font-bebas text-sm tracking-wider">
+                <LockKeyhole className="h-5 w-5" />
+                <span>LOGIN PAGE</span>
+              </span>
+              <span className="mt-1 block pl-8 text-left font-mono text-[7px] tracking-[0.08em] opacity-65">PREVIEW ADMIN ACCESS</span>
+            </button>
           </nav>
         </div>
 

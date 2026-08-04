@@ -2,12 +2,18 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
+  ArrowUpRight,
   Check,
   ChevronDown,
   ChevronRight,
   Grid2X2,
   Heart,
   Home,
+  Eye,
+  EyeOff,
+  LockKeyhole,
+  LogOut,
+  Mail,
   MapPin,
   Menu,
   Minus,
@@ -20,6 +26,7 @@ import {
   SlidersHorizontal,
   Sparkles,
   Truck,
+  User,
   UserRound,
   X,
 } from 'lucide-react';
@@ -103,6 +110,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
   const [detailOpen, setDetailOpen] = useState(false);
   const [deliveryOpen, setDeliveryOpen] = useState(false);
   const [notice, setNotice] = useState('');
+  const [isMobileLoggedIn, setIsMobileLoggedIn] = useState(true);
 
   const featuredProducts = useMemo(
     () => products.filter((product) => product.featured && product.status === 'ACTIVE').slice(0, 8),
@@ -193,6 +201,13 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
           <div className="flex items-center gap-1.5"><span>5G</span><span className="inline-flex h-2.5 w-4 rounded-sm border border-black/70"><span className="m-px w-2.5 rounded-[1px] bg-black" /></span></div>
         </div>
 
+        {!isMobileLoggedIn ? (
+          <MobileAuthScreen onLogin={() => {
+            setIsMobileLoggedIn(true);
+            setActiveTab('home');
+            setCurrentProduct(null);
+          }} />
+        ) : <>
         <div className="flex h-[60px] flex-none items-center justify-between border-b border-black/10 bg-white px-4">
           <button onClick={() => setShowMenu(true)} aria-label="Open menu" className="flex h-10 w-10 items-center justify-start"><Menu className="h-6 w-6" strokeWidth={1.5} /></button>
           <button onClick={() => changeTab('home')} className="flex flex-col items-center leading-none" aria-label="Go to home">
@@ -266,13 +281,103 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({
           </nav>
         )}
 
-        {showMenu && <MenuDrawer categories={displayCategories} onClose={() => setShowMenu(false)} onNavigate={changeTab} onOpenCollection={openCollection} />}
+        {showMenu && <MenuDrawer categories={displayCategories} onClose={() => setShowMenu(false)} onNavigate={changeTab} onOpenCollection={openCollection} onLogout={() => {
+          setShowMenu(false);
+          setShowBag(false);
+          setCurrentProduct(null);
+          setActiveTab('home');
+          setIsMobileLoggedIn(false);
+        }} />}
         {showBag && <BagDrawer products={bagProducts} offers={liveOffers} total={bagTotal} onClose={() => setShowBag(false)} onRemove={(id) => setCart((items) => { const index = items.indexOf(id); return index < 0 ? items : [...items.slice(0, index), ...items.slice(index + 1)]; })} />}
         {notice && <div className="absolute inset-x-4 bottom-20 z-50 flex items-center gap-2 bg-[#191919] px-4 py-3 text-[11px] font-semibold text-white shadow-xl"><Check className="h-4 w-4 text-[#f1c441]" />{notice}</div>}
+        </>}
       </section>
     </div>
   );
 };
+
+function MobileAuthScreen({ onLogin }: { onLogin: () => void }) {
+  const [mode, setMode] = useState<'login' | 'signup'>('login');
+  const [showPassword, setShowPassword] = useState(false);
+  const [remember, setRemember] = useState(true);
+
+  return (
+    <main className="mobile-scroll flex min-h-0 flex-1 flex-col overflow-y-auto bg-[#090909] text-white">
+      <section className="relative flex min-h-[225px] flex-none items-center justify-center overflow-hidden bg-[#f1c441] px-5 text-center text-black">
+        <span className="absolute -right-12 -top-16 h-44 w-44 rounded-full border-[22px] border-black/10" aria-hidden="true" />
+        <span className="absolute -bottom-24 -left-14 h-48 w-48 rotate-12 border-[24px] border-black/[0.07]" aria-hidden="true" />
+        <div className="relative flex flex-col items-center">
+          <img src="/ohman-logo.png" alt="OH MAN" className="h-[92px] w-[178px] object-contain drop-shadow-[3px_3px_0_rgba(255,255,255,.35)]" />
+          <p className="mt-2 font-mono text-[8px] font-bold tracking-[0.22em]">MEMBER ACCESS / MAZGAON</p>
+          <h1 className="mt-2 font-bebas text-[34px] leading-none tracking-[-0.035em]">{mode === 'login' ? 'WELCOME BACK.' : 'JOIN OH MAN.'}</h1>
+        </div>
+      </section>
+
+      <form
+        className="flex flex-1 flex-col px-5 pb-5 pt-5"
+        onSubmit={(event) => {
+          event.preventDefault();
+          onLogin();
+        }}
+      >
+        <div>
+          <p className="font-mono text-[10px] tracking-[0.13em] text-[#f1c441]">{mode === 'login' ? 'SIGN IN TO CONTINUE' : 'CREATE YOUR ACCOUNT'}</p>
+          <p className="mt-1.5 text-[12px] leading-relaxed text-white/50">Save products, discover member offers and enquire directly with the OH MAN team.</p>
+        </div>
+
+        <div className="mt-4 space-y-3">
+          {mode === 'signup' && (
+            <label className="block">
+              <span className="mb-1.5 block font-mono text-[9px] font-bold tracking-[0.12em] text-white/60">FULL NAME</span>
+              <span className="flex h-11 items-center border border-white/15 bg-white/[0.04] px-3 focus-within:border-[#f1c441]">
+                <User className="mr-3 h-4 w-4 text-[#f1c441]" />
+                <input required autoComplete="name" placeholder="Your full name" className="min-w-0 flex-1 bg-transparent text-[13px] text-white outline-none placeholder:text-white/30" />
+              </span>
+            </label>
+          )}
+          <label className="block">
+            <span className="mb-1.5 block font-mono text-[9px] font-bold tracking-[0.12em] text-white/60">EMAIL ADDRESS</span>
+            <span className="flex h-11 items-center border border-white/15 bg-white/[0.04] px-3 focus-within:border-[#f1c441]">
+              <Mail className="mr-3 h-4 w-4 text-[#f1c441]" />
+              <input type="email" required autoComplete="email" defaultValue={mode === 'login' ? 'admin@ohman.in' : ''} placeholder="you@example.com" className="min-w-0 flex-1 bg-transparent text-[13px] text-white outline-none placeholder:text-white/30" />
+            </span>
+          </label>
+          <label className="block">
+            <span className="mb-1.5 block font-mono text-[9px] font-bold tracking-[0.12em] text-white/60">PASSWORD</span>
+            <span className="flex h-11 items-center border border-white/15 bg-white/[0.04] px-3 focus-within:border-[#f1c441]">
+              <LockKeyhole className="mr-3 h-4 w-4 text-[#f1c441]" />
+              <input type={showPassword ? 'text' : 'password'} required autoComplete={mode === 'login' ? 'current-password' : 'new-password'} defaultValue={mode === 'login' ? 'ohman2026' : ''} placeholder={mode === 'login' ? 'Enter password' : 'Create a strong password'} className="min-w-0 flex-1 bg-transparent text-[13px] text-white outline-none placeholder:text-white/30" />
+              <button type="button" onClick={() => setShowPassword(value => !value)} aria-label={showPassword ? 'Hide password' : 'Show password'} className="ml-2 text-white/40 hover:text-white">
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </span>
+          </label>
+        </div>
+
+        <div className="mt-3 flex items-center justify-between">
+          <label className="flex cursor-pointer items-center gap-2 text-[11px] text-white/50">
+            <input type="checkbox" checked={remember} onChange={event => setRemember(event.target.checked)} className="sr-only" />
+            <span className={`flex h-3.5 w-3.5 items-center justify-center border ${remember ? 'border-[#f1c441] bg-[#f1c441]' : 'border-white/30'}`}>{remember && <span className="h-1.5 w-1.5 bg-black" />}</span>
+            {mode === 'login' ? 'Remember me' : 'I agree to the terms'}
+          </label>
+          {mode === 'login' && <button type="button" className="font-mono text-[9px] text-[#f1c441] underline underline-offset-4">FORGOT?</button>}
+        </div>
+
+        <button type="submit" className="mt-5 flex w-full items-center justify-between bg-[#f1c441] px-4 py-3 text-black shadow-[4px_4px_0_#fff] transition-transform active:translate-x-1 active:translate-y-1 active:shadow-none">
+          <span className="font-bebas text-[16px] tracking-wide">{mode === 'login' ? 'ENTER CATALOGUE' : 'CREATE ACCOUNT'}</span>
+          <span className="flex h-7 w-7 items-center justify-center bg-black text-white"><ArrowUpRight className="h-4 w-4" /></span>
+        </button>
+
+        <p className="mt-4 text-center text-[11px] text-white/45">
+          {mode === 'login' ? 'New to OH MAN?' : 'Already a member?'}{' '}
+          <button type="button" onClick={() => { setMode(current => current === 'login' ? 'signup' : 'login'); setShowPassword(false); }} className="font-mono text-[10px] font-bold text-[#f1c441] underline underline-offset-4">
+            {mode === 'login' ? 'CREATE ACCOUNT' : 'SIGN IN'}
+          </button>
+        </p>
+      </form>
+    </main>
+  );
+}
 
 function HomeScreen({ activeSlide, categories, products, featuredProducts, newestProducts, offers, onSlideChange, onOpenProduct, onOpenCollection, onOpenOffer, onViewAll }: { activeSlide: number; categories: Category[]; products: Product[]; featuredProducts: Product[]; newestProducts: Product[]; offers: Offer[]; onSlideChange: (index: number) => void; onOpenProduct: (product: Product) => void; onOpenCollection: (category: string) => void; onOpenOffer: (offer: Offer) => void; onViewAll: () => void }) {
   const slide = heroSlides[activeSlide];
@@ -341,6 +446,27 @@ function AccountRow({ label, value }: { label: string; value: string }) { return
 
 function BenefitsBar() { return <div className="grid grid-cols-3 border-t border-black/10 bg-[#e5f3f5] py-4 text-center"><div className="border-r border-black/10 px-2"><span className="font-bebas text-[12px]">CURATED</span><p className="mt-1 font-mono text-[7px] text-black/60">SINCE 2013</p></div><div className="border-r border-black/10 px-2"><span className="font-bebas text-[12px]">30 DAYS</span><p className="mt-1 font-mono text-[7px] text-black/60">EASY RETURNS</p></div><div className="px-2"><span className="font-bebas text-[12px]">FAST SHIP</span><p className="mt-1 font-mono text-[7px] text-black/60">PAN INDIA</p></div></div>; }
 
-function MenuDrawer({ categories, onClose, onNavigate, onOpenCollection }: { categories: Category[]; onClose: () => void; onNavigate: (tab: Tab) => void; onOpenCollection: (category: string) => void }) { return <div className="absolute inset-0 z-40 bg-black/40"><aside className="h-full w-[82%] bg-[#faf9f5] p-5 shadow-2xl"><div className="flex items-center justify-between"><img src="/ohman-logo.png" alt="OH MAN" className="h-8 w-20 object-contain" /><button onClick={onClose} aria-label="Close menu"><X className="h-6 w-6" /></button></div><p className="mt-7 font-mono text-[8px] font-bold tracking-[0.17em] text-[#be4935]">SHOP DEPARTMENTS</p><div className="mt-3 border-t border-black/10">{categories.map((category) => <button key={category.id} onClick={() => onOpenCollection(category.name)} className="flex w-full items-center justify-between border-b border-black/10 py-3 font-bebas text-[19px] tracking-wide">{category.name}<ArrowRight className="h-4 w-4" /></button>)}</div><p className="mt-7 font-mono text-[8px] font-bold tracking-[0.17em] text-[#be4935]">OH MAN</p><div className="mt-3 space-y-1"><button onClick={() => onNavigate('saved')} className="block font-bebas text-[16px] tracking-wide">SAVED PIECES</button><button onClick={() => onNavigate('account')} className="block font-bebas text-[16px] tracking-wide">MY ACCOUNT</button></div><div className="absolute bottom-6 left-5 right-5 border border-black bg-[#f1c441] p-3"><p className="font-bebas text-[15px]">MAZGAON, MUMBAI</p><p className="mt-1 font-mono text-[8px]">70–72 SHETH MOTISHA • OPEN EVERY DAY</p></div></aside></div>; }
+function MenuDrawer({ categories, onClose, onNavigate, onOpenCollection, onLogout }: { categories: Category[]; onClose: () => void; onNavigate: (tab: Tab) => void; onOpenCollection: (category: string) => void; onLogout: () => void }) {
+  return <div className="absolute inset-0 z-40 bg-black/40">
+    <aside className="relative h-full w-[82%] bg-[#faf9f5] p-5 shadow-2xl">
+      <div className="flex items-center justify-between"><img src="/ohman-logo.png" alt="OH MAN" className="h-8 w-20 object-contain" /><button onClick={onClose} aria-label="Close menu"><X className="h-6 w-6" /></button></div>
+      <p className="mt-7 font-mono text-[8px] font-bold tracking-[0.17em] text-[#be4935]">SHOP DEPARTMENTS</p>
+      <div className="mt-3 border-t border-black/10">{categories.map((category) => <button key={category.id} onClick={() => onOpenCollection(category.name)} className="flex w-full items-center justify-between border-b border-black/10 py-3 font-bebas text-[19px] tracking-wide">{category.name}<ArrowRight className="h-4 w-4" /></button>)}</div>
+      <p className="mt-7 font-mono text-[8px] font-bold tracking-[0.17em] text-[#be4935]">OH MAN</p>
+      <div className="mt-3 space-y-1"><button onClick={() => onNavigate('saved')} className="block font-bebas text-[16px] tracking-wide">SAVED PIECES</button><button onClick={() => onNavigate('account')} className="block font-bebas text-[16px] tracking-wide">MY ACCOUNT</button></div>
+
+      <div className="absolute bottom-5 left-5 right-5 space-y-2">
+        <button onClick={onLogout} className="flex w-full items-center justify-between border-2 border-black bg-[#191919] px-4 py-3 text-left text-white shadow-[3px_3px_0_#f1c441]">
+          <span>
+            <span className="block font-bebas text-[17px] tracking-wide">LOG OUT</span>
+            <span className="mt-0.5 block font-mono text-[7px] tracking-[0.08em] text-white/50">RETURN TO MEMBER LOGIN</span>
+          </span>
+          <LogOut className="h-5 w-5 text-[#f1c441]" />
+        </button>
+        <div className="border border-black bg-[#f1c441] p-3"><p className="font-bebas text-[15px]">MAZGAON, MUMBAI</p><p className="mt-1 font-mono text-[8px]">70–72 SHETH MOTISHA • OPEN EVERY DAY</p></div>
+      </div>
+    </aside>
+  </div>;
+}
 
 function BagDrawer({ products, offers, total, onClose, onRemove }: { products: Product[]; offers: Offer[]; total: number; onClose: () => void; onRemove: (id: string) => void }) { return <div className="absolute inset-0 z-40 flex justify-end bg-black/40"><aside className="flex h-full w-[86%] flex-col bg-white p-5 shadow-2xl"><div className="flex items-center justify-between"><div><p className="font-mono text-[8px] font-bold tracking-[0.17em] text-[#be4935]">YOUR BAG</p><h2 className="mt-1 font-bebas text-[25px] leading-none">READY TO MOVE.</h2></div><button onClick={onClose} aria-label="Close bag"><X className="h-6 w-6" /></button></div>{products.length ? <div className="mobile-scroll mt-6 min-h-0 flex-1 space-y-3 overflow-y-auto">{products.map((product, index) => { const offer = getProductOffer(product, offers); return <div key={`${product.id}-${index}`} className="flex gap-3 border-b border-black/10 pb-3"><img src={itemImage(product)} alt="" className="h-18 w-16 bg-[#ece9e1] object-cover" /><div className="min-w-0 flex-1"><p className="truncate font-bebas text-[15px] tracking-wide">{product.name}</p><p className="mt-1 font-mono text-[10px] text-black/55">M / {product.category}</p><p className="mt-2 flex items-center gap-1.5"><b className="font-bebas text-[15px]">₹{discountedPrice(product, offer).toLocaleString()}</b>{offer && <s className="font-mono text-[8px] text-black/45">₹{product.price.toLocaleString()}</s>}</p></div><button onClick={() => onRemove(product.id)} aria-label={`Remove ${product.name}`} className="self-start text-black/45"><Minus className="h-4 w-4" /></button></div>})}</div> : <div className="flex flex-1 flex-col items-center justify-center text-center"><ShoppingBag className="h-9 w-9 text-black/25" /><p className="mt-4 font-bebas text-xl">YOUR BAG IS EMPTY.</p><p className="mt-2 text-xs text-black/50">Find your next everyday essential.</p></div>}<div className="border-t border-black/10 pt-4"><div className="mb-4 flex items-center justify-between font-bebas text-[18px]"><span>SUBTOTAL</span><span>₹{total.toLocaleString()}</span></div><button disabled={!products.length} className="flex w-full items-center justify-center gap-2 bg-[#d25036] py-3 font-bebas text-[16px] tracking-wide text-white disabled:bg-black/20">CHECKOUT <ArrowRight className="h-4 w-4" /></button></div></aside></div>; }
